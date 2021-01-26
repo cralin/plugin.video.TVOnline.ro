@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+#
+#
+#    Copyright (C) 2021  Alin Cretu
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+-->
+
+
+<addon id="plugin.video.TVOnline.ro" provider-name="cralin" name="TVOnline.ro" version="19.1.1">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="script.module.requests" version="2.22.0"/>
+    <import addon="script.module.inputstreamhelper" version="0.4.7"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="main.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.service" library="service.py"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Watch romanian live TV channels.</summary>
+    <description lang="en_GB">
+Kodi addon for accessing live TV channels from various romanian online platforms.
+
+Supported platforms:
+  - DigiOnline.ro
+  - protvplus.ro
+
+For each supported platform, user registration and login credentials are required in order to access the media content.
+
+Visit https://www.digiromania.ro for more details.
+Visit https://protvplus.ro for more details.
+    </description>
+    <disclaimer lang="en_GB">
+The author is not connected to or in any other way affiliated with Kodi, Team Kodi, the XBMC foundation or any of the online platforms used by this add-on.
+    </disclaimer>
+    <assets>
+      <icon>resources/media/icon.png</icon>
+      <fanart>resources/media/fanart.jpg</fanart>
+      <screenshot></screenshot>
+    </assets>
+    <news>
+Starting with Kodi 19 (Matrix), Python 2.x is replaced with Python 3.x.
+
+When installing the add-on, please make sure you're downloading and using the add-on version matching the Kodi release installed on your device.
+
+Matching repository and package versions are listed below.
+
+  * 19.x.y.z addon version(s) ===> Kodi 19 (Matrix)
+  * 18.x.y.z addon version(s) ===> Kodi 18 (Leia)
+
+    </news>
+  </extension>
+</addon>
+

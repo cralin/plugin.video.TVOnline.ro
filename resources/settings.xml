@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<!--
+#
+#
+#    Copyright (C) 2021  Alin Cretu
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+-->
+
+<settings>
+  <category label="Accounts">
+      <setting label="DigiOnline.ro" type="lsep"/>
+    <setting id="digionline_Enabled" label="Enabled" type="bool" default="false"/>
+    <setting id="digionline_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
+    <setting id="digionline_Password" label="Password" type="text" default="__DEFAULT_PASSWORD__" option="hidden" subsetting="true" visible="eq(-2,true)"/>
+    <setting label="protvplus.ro" type="lsep"/>
+    <setting id="protvplus_Enabled" label="Enabled" type="bool" default="false"/>
+    <setting id="protvplus_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
+    <setting id="protvplus_Password" label="Password" type="text" default="__DEFAULT_PASSWORD__" option="hidden" subsetting="true" visible="eq(-2,true)"/>
+  </category>
+  <category label="General settings">
+    <setting label="Display" type="lsep"/>
+    <setting id="ShowTitleInChannelList" label="Show program title in channel list" type="bool" default="false"/>
+    <setting id="DebugEnabled" label="Enable debug logging" type="bool" default="false"/>
+  </category>
+  <category label="Cached data">
+    <setting label="Retention interval (days)" type="lsep"/>
+    <setting id="categoriesCachedDataRetentionInterval" label="Refresh list of categories every" type="slider" default="90" range="1,1,365" option="int"/>
+    <setting id="channelsCachedDataRetentionInterval" label="Refresh list of channels every" type="slider" default="30" range="1,1,365" option="int"/>
+    <setting type="sep"/>
+    <setting label="Retention interval (minutes)" type="lsep"/>
+    <setting id="EPGDataCachedDataRetentionInterval" label="Refresh channel EPG data every" type="slider" default="10" range="5,1,365" option="int"/>
+  </category>
+  <category label="Simple PVR integration">
+    <setting label="Data file(s)" type="lsep"/>
+    <setting id="PVRIPTVSimpleClientIntegration_m3u_FileRefreshTime" label="Update m3u file, daily at" type="time" default="01:00"/>
+    <setting id="PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime" label="Update XML file, daily at" type="time" default="01:10"/>
+  </category>
+</settings>
+
