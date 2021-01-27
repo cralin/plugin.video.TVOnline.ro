@@ -48,7 +48,7 @@ __config_PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime__ = ''
 
 
 # UserAgent exposed by this add-on
-__userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0'
+__userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
 
 # The IDs used by add-on
 __AddonID__ = 'plugin.video.TVOnline.ro'

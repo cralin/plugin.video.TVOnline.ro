@@ -1186,14 +1186,16 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file(M3U_FILE, START_NUMBER, NAME,
   common_vars.__logger__.debug('M3U_FILE = ' + M3U_FILE)
   common_vars.__logger__.debug('START_NUMBER = ' + str(START_NUMBER))
   
+  _CHNO_ = START_NUMBER
+
   # Login to DigiOnline for this session
   login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
 
   if login['exit_code'] != 0:
     common_vars.__logger__.debug('[digionline.ro] => Authentication error => Error message: '+ login['error_message'])
+    xbmcgui.Dialog().ok('[digionline.ro] => Authentication error', login['error_message'])
 
   else:
-    _CHNO_ = START_NUMBER
     _data_file_ = open(M3U_FILE, 'a', encoding='utf-8')
 
     # Get video categories
@@ -1254,6 +1256,7 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SE
 
   if login['exit_code'] != 0:
     common_vars.__logger__.debug('[Authentication error] => Error message: '+ login['error_message'])
+    xbmcgui.Dialog().ok('[digionline.ro] => Authentication error', login['error_message'])
 
   else:
     _data_file_ = open(XML_FILE, 'a', encoding='utf-8')
