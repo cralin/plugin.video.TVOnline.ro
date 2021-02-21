@@ -33,7 +33,6 @@ Matching repository and package versions are listed in the table below.
 
   | Kodi release | Repository | Add-on version |
   | :---: | :---: | :---: |
-  | Kodi 18 (Leia) | [repository.cralin.Kodi_18](https://github.com/cralin/repository.cralin.Kodi_18) | 18.x.y.z |
   | Kodi 19 (Matrix) | [repository.cralin.Kodi_19](https://github.com/cralin/repository.cralin.Kodi_19) | 19.x.y.z |
 
 
@@ -44,7 +43,6 @@ Installation methods and initial configuration are described in detail on the wi
 
   | Kodi release | Repository package | Add-on package |
   | :---: | :---: | :---:|
-  | Kodi 18 (Leia) | https://github.com/cralin/repository.cralin.Kodi_18/releases/latest | https://github.com/cralin/plugin.video.TVOnline.ro/releases |
   | Kodi 19 (Matrix) | https://github.com/cralin/repository.cralin.Kodi_19/releases/latest | https://github.com/cralin/plugin.video.TVOnline.ro/releases |
 
 
