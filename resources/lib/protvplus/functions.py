@@ -267,7 +267,7 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
     common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
 
-    _metadata_url_ = re.findall('<iframe src="(.+?)\?autoplay', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
+    _metadata_url_ = re.findall('src="(.+?)\?autoplay', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
     common_vars.__logger__.debug('Found _metadata_url_ = ' + str(_metadata_url_))
     
     # Get the stream data
