@@ -1242,14 +1242,8 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SE
   
   common_vars.__logger__.debug('XML_FILE = ' + XML_FILE)
 
-  _today_ = datetime.date(datetime.today())
-  common_vars.__logger__.debug('_today_: ' + str(_today_))
-  
-  _today_plus_1_ = datetime.date(datetime.today()) + timedelta(days=1)
-  common_vars.__logger__.debug('_today_plus_1_: ' + str(_today_plus_1_))
-  
-  _today_plus_2_ = datetime.date(datetime.today()) + timedelta(days=2)
-  common_vars.__logger__.debug('_today_plus_2_: ' + str(_today_plus_2_))
+  _raw_epg_data_ = json.loads(digionline_functions.PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION))
+  common_vars.__logger__.debug('_raw_epg_data_ = ' + str(_raw_epg_data_))
   
   # Login to DigiOnline for this session
   login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
@@ -1276,92 +1270,56 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SE
         common_vars.__logger__.debug('Channel data => ' +str(channel))
        
         _channel_metadata_ = json.loads(channel['metadata'])
+        
+        common_vars.__logger__.debug('Channel name: ' + channel['name'])
         common_vars.__logger__.debug('Channel streamId: ' + str(_channel_metadata_['new-info']['meta']['streamId']))
-                
-        _json_today_ = digionline_functions.PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION, _today_, _channel_metadata_['new-info']['meta']['streamId'])
-        common_vars.__logger__.debug('_json_today_: ' + str(_json_today_))
-        
-        ### Workaround for poorly coded/tested API providing EPG data
-        if _json_today_ == "ERR":
-          common_vars.__logger__.debug('Creating json data structure for \'' + channel['name'] + '\'' )
-          _json_today_ = '{"meta":{"version":"6"},"data":{"id_stream":"' + str(_channel_metadata_['new-info']['meta']['streamId']) + '","stream_name":"","stream_desc":"' + channel['name'] + '","ios_button":"","ios_button_on":"","ios_button_size":"","ios_button_url":"","epg":[]}}'
-          common_vars.__logger__.debug('_json_today_: ' + str(_json_today_))
-        
-        _json_today_plus_1_ = digionline_functions.PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION, _today_plus_1_, _channel_metadata_['new-info']['meta']['streamId'])
-        common_vars.__logger__.debug('_json_today_plus_1_: ' + str(_json_today_plus_1_))
-        
-        ### Workaround for poorly coded/tested API providing EPG data
-        if _json_today_plus_1_ == "ERR":
-          common_vars.__logger__.debug('Creating json data structure for \'' + channel['name'] + '\'' )
-          _json_today_plus_1_ = '{"meta":{"version":"6"},"data":{"id_stream":"' + str(_channel_metadata_['new-info']['meta']['streamId']) + '","stream_name":"","stream_desc":"' + channel['name'] + '","ios_button":"","ios_button_on":"","ios_button_size":"","ios_button_url":"","epg":[]}}'
-          common_vars.__logger__.debug('_json_today_plus_1_: ' + str(_json_today_plus_1_))
 
-        _json_today_plus_2_ = digionline_functions.PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION, _today_plus_2_, _channel_metadata_['new-info']['meta']['streamId'])
-        common_vars.__logger__.debug('_json_today_plus_2_: ' + str(_json_today_plus_2_))
-        
-        ### Workaround for poorly coded/tested API providing EPG data
-        if _json_today_plus_2_ == "ERR":
-          common_vars.__logger__.debug('Creating json data structure for \'' + channel['name'] + '\'' )
-          _json_today_plus_2_ = '{"meta":{"version":"6"},"data":{"id_stream":"' + str(_channel_metadata_['new-info']['meta']['streamId']) + '","stream_name":"","stream_desc":"' + channel['name'] + '","ios_button":"","ios_button_on":"","ios_button_size":"","ios_button_url":"","epg":[]}}'
-          common_vars.__logger__.debug('_json_today_plus_2_: ' + str(_json_today_plus_2_))
-
-        _epg_today_ = json.loads(_json_today_)
-        _epg_today_plus_1_ = json.loads(_json_today_plus_1_)
-        _epg_today_plus_2_ = json.loads(_json_today_plus_2_)
-        common_vars.__logger__.debug('_epg_today_: ' + str(_epg_today_))
-        common_vars.__logger__.debug('_epg_today_plus_1_: ' + str(_epg_today_plus_1_))
-        common_vars.__logger__.debug('_epg_today_plus_2_: ' + str(_epg_today_plus_2_))
-
-        _epg_ = _epg_today_.copy()
-        _epg_['data']['epg'] = _epg_today_['data']['epg'] + _epg_today_plus_1_['data']['epg'] + _epg_today_plus_2_['data']['epg']
-
-        _line_ = "  <channel id=\"digionline__" + _epg_['data']['id_stream'] + "\">"
+        _line_ = "  <channel id=\"digionline__" + str(_channel_metadata_['new-info']['meta']['streamId']) + "\">"
         _data_file_.write(_line_ + "\n")
-        _line_ = "    <display-name>" + _epg_['data']['stream_desc'] + "</display-name>"
+        _line_ = "    <display-name>" + channel['name'] + "</display-name>"
         _data_file_.write(_line_ + "\n")
         _line_ = "  </channel>"
         _data_file_.write(_line_ + "\n")
         
-        if _epg_['data']['epg']:
-          _len_ = len(_epg_['data']['epg'])
-          
-          for index, _program_data_ in enumerate(_epg_['data']['epg'], start=1):
-            _start_date_time_object_ = datetime.utcfromtimestamp(_program_data_['start_ts'])
-            if index < _len_:
-              _stop_date_time_object_ = datetime.utcfromtimestamp(_epg_['data']['epg'][index]['start_ts'])
-            else:
-              _stop_date_time_object_ = datetime.utcfromtimestamp(_program_data_['start_ts'])
+        for _ch_data_ in _raw_epg_data_['data']['channels']:
+          common_vars.__logger__.debug('streamId = ' + str(_channel_metadata_['new-info']['meta']['streamId']) + '  |  id_channel = ' + str(_ch_data_['id_channel']))
+          if int(_ch_data_['id_channel']) == int(_channel_metadata_['new-info']['meta']['streamId']):
+            common_vars.__logger__.debug('Channel EPG data: ' + str(_ch_data_))
 
-            _line_ = "  <programme start=\"" + str(_start_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" stop=\"" + str(_stop_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" channel=\"digionline__" + _epg_['data']['id_stream'] + "\">"
-            _data_file_.write(_line_ + "\n")
+            if _ch_data_['epg']:
+              for _program_data_ in _ch_data_['epg']:
+                _start_date_time_object_ = datetime.utcfromtimestamp(int(_program_data_['start_ts']))
+                _stop_date_time_object_ = datetime.utcfromtimestamp(int(_program_data_['end_ts']))
+                _line_ = "  <programme start=\"" + str(_start_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" stop=\"" + str(_stop_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" channel=\"digionline__" + str(_ch_data_['id_channel']) + "\">"
+                _data_file_.write(_line_ + "\n")
 
-            # Replace unwanted characters in the program name
-            _program_data_['program_name'] = re.sub('<', '"', _program_data_['program_name'], flags=re.IGNORECASE)
-            _program_data_['program_name'] = re.sub('>', '"', _program_data_['program_name'], flags=re.IGNORECASE)
-            _line_ = "    <title>" + _program_data_['program_name'] + "</title>"
-            _data_file_.write(_line_ + "\n")
+                # Replace unwanted characters in the program name
+                _program_data_['program_name'] = re.sub('<', '"', _program_data_['program_name'], flags=re.IGNORECASE)
+                _program_data_['program_name'] = re.sub('>', '"', _program_data_['program_name'], flags=re.IGNORECASE)
+                _line_ = "    <title>" + _program_data_['program_name'] + "</title>"
+                _data_file_.write(_line_ + "\n")
 
-             # Replace unwanted characters in the program description
-            _program_data_['program_description'] = re.sub('<', '"', _program_data_['program_description'], flags=re.IGNORECASE)
-            _program_data_['program_description'] = re.sub('>', '"', _program_data_['program_description'], flags=re.IGNORECASE)
-            _program_data_['program_description_l'] = re.sub('<', '"', _program_data_['program_description_l'], flags=re.IGNORECASE)
-            _program_data_['program_description_l'] = re.sub('>', '"', _program_data_['program_description_l'], flags=re.IGNORECASE)
-            _line_ = "    <desc>" + _program_data_['program_description'] + "\n\n    " + _program_data_['program_description_l'] + "\n    </desc>"
-            _data_file_.write(_line_ + "\n")
+                # Replace unwanted characters in the program description
+                _program_data_['program_description'] = re.sub('<', '"', _program_data_['program_description'], flags=re.IGNORECASE)
+                _program_data_['program_description'] = re.sub('>', '"', _program_data_['program_description'], flags=re.IGNORECASE)
+                _program_data_['program_description_l'] = re.sub('<', '"', _program_data_['program_description_l'], flags=re.IGNORECASE)
+                _program_data_['program_description_l'] = re.sub('>', '"', _program_data_['program_description_l'], flags=re.IGNORECASE)
+                _line_ = "    <desc>" + _program_data_['program_description'] + "\n\n    " + _program_data_['program_description_l'] + "\n    </desc>"
+                _data_file_.write(_line_ + "\n")
 
-            _line_ = "  </programme>"
-            _data_file_.write(_line_ + "\n")
+                _line_ = "  </programme>"
+                _data_file_.write(_line_ + "\n")
 
     _data_file_.close()
     
   common_vars.__logger__.debug('Exit function')
 
 
-def PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION, DATE, STREAMID):
+def PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  _url_ = "https://digiapis.rcs-rds.ro/digionline/api/v12/epg.php?action=getEPG&date=" + str(DATE) + "&id_stream=" + str(STREAMID)
+  _url_ = "https://digiapis.rcs-rds.ro/digionline/api/v13/epg.php"
   common_vars.__logger__.debug('URL = ' + str(_url_))
 
   # Setup headers for the request
@@ -1392,4 +1350,4 @@ def PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION, DATE, S
   common_vars.__logger__.debug('Exit function')
   return _request_.content.decode()
   
-  
+
