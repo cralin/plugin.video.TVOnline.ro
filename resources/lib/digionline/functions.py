@@ -1293,17 +1293,20 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SE
                 _line_ = "  <programme start=\"" + str(_start_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" stop=\"" + str(_stop_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" channel=\"digionline__" + str(_ch_data_['id_channel']) + "\">"
                 _data_file_.write(_line_ + "\n")
 
-                # Replace unwanted characters in the program name
-                _program_data_['program_name'] = re.sub('<', '"', _program_data_['program_name'], flags=re.IGNORECASE)
-                _program_data_['program_name'] = re.sub('>', '"', _program_data_['program_name'], flags=re.IGNORECASE)
+                # Escape special characters in the program name
+                _program_data_['program_name'] = re.sub('<', '&lt;', _program_data_['program_name'], flags=re.IGNORECASE)
+                _program_data_['program_name'] = re.sub('>', '&gt;', _program_data_['program_name'], flags=re.IGNORECASE)
+                _program_data_['program_name'] = re.sub('&', '&amp;', _program_data_['program_name'], flags=re.IGNORECASE)
                 _line_ = "    <title>" + _program_data_['program_name'] + "</title>"
                 _data_file_.write(_line_ + "\n")
 
-                # Replace unwanted characters in the program description
-                _program_data_['program_description'] = re.sub('<', '"', _program_data_['program_description'], flags=re.IGNORECASE)
-                _program_data_['program_description'] = re.sub('>', '"', _program_data_['program_description'], flags=re.IGNORECASE)
-                _program_data_['program_description_l'] = re.sub('<', '"', _program_data_['program_description_l'], flags=re.IGNORECASE)
-                _program_data_['program_description_l'] = re.sub('>', '"', _program_data_['program_description_l'], flags=re.IGNORECASE)
+                # Escape special characters in the program description
+                _program_data_['program_description'] = re.sub('<', '&lt;', _program_data_['program_description'], flags=re.IGNORECASE)
+                _program_data_['program_description'] = re.sub('>', '&gt;', _program_data_['program_description'], flags=re.IGNORECASE)
+                _program_data_['program_description'] = re.sub('>', '&amp;', _program_data_['program_description'], flags=re.IGNORECASE)
+                _program_data_['program_description_l'] = re.sub('<', '&lt;', _program_data_['program_description_l'], flags=re.IGNORECASE)
+                _program_data_['program_description_l'] = re.sub('>', '&gt;', _program_data_['program_description_l'], flags=re.IGNORECASE)
+                _program_data_['program_description_l'] = re.sub('&', '&amp;', _program_data_['program_description_l'], flags=re.IGNORECASE)
                 _line_ = "    <desc>" + _program_data_['program_description'] + "\n\n    " + _program_data_['program_description_l'] + "\n    </desc>"
                 _data_file_.write(_line_ + "\n")
 
