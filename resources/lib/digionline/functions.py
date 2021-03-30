@@ -1303,7 +1303,7 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SE
                 # Escape special characters in the program description
                 _program_data_['program_description'] = re.sub('<', '&lt;', _program_data_['program_description'], flags=re.IGNORECASE)
                 _program_data_['program_description'] = re.sub('>', '&gt;', _program_data_['program_description'], flags=re.IGNORECASE)
-                _program_data_['program_description'] = re.sub('>', '&amp;', _program_data_['program_description'], flags=re.IGNORECASE)
+                _program_data_['program_description'] = re.sub('&', '&amp;', _program_data_['program_description'], flags=re.IGNORECASE)
                 _program_data_['program_description_l'] = re.sub('<', '&lt;', _program_data_['program_description_l'], flags=re.IGNORECASE)
                 _program_data_['program_description_l'] = re.sub('>', '&gt;', _program_data_['program_description_l'], flags=re.IGNORECASE)
                 _program_data_['program_description_l'] = re.sub('&', '&amp;', _program_data_['program_description_l'], flags=re.IGNORECASE)
