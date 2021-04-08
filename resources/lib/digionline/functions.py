@@ -61,7 +61,7 @@ def init_AddonCookieJar(NAME, DATA_DIR):
     common_vars.__logger__.debug('[ Addon cookiefile ] Created cookiejar file: ' + str(cookies_file))
 
   # Load any cookies saved from the last run
-  common_vars.__digionline_CookieJar__.load()
+  common_vars.__digionline_CookieJar__.load(ignore_expires=True, ignore_discard=True)
   common_vars.__logger__.debug('[ Addon cookiejar ] Loaded cookiejar from file: ' + str(cookies_file))
 
 
@@ -111,7 +111,7 @@ def do_login(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__.debug('============== Stage 1: End ==============')
 
   # Save cookies for later use.
-  COOKIEJAR.save(ignore_discard=True)
+  COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
 
   common_vars.__logger__.debug('============== Stage 2: Start ==============')
 
@@ -183,7 +183,7 @@ def do_login(NAME, COOKIEJAR, SESSION):
     common_vars.__logger__.info('Authentication successfull')
 
     # Save cookies for later use.
-    COOKIEJAR.save(ignore_discard=True)
+    COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
 
     _auth_status_ = {}
     _auth_status_['exit_code'] = 0
@@ -299,9 +299,10 @@ def get_cached_categories(NAME, COOKIEJAR, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Cached data requires update.')
 
       # Login to DigiOnline for this session
-      login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
+#      login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
 
-      if login['exit_code'] != 0:
+#      if login['exit_code'] != 0:
+      if 0 != 0:
         common_vars.__logger__.debug('[digionline.ro] => Authentication error => Error message: '+ login['error_message'])
         _return_data_['status']['exit_code'] = login['exit_code']
         _return_data_['status']['error_message'] = login['error_message']
@@ -321,9 +322,10 @@ def get_cached_categories(NAME, COOKIEJAR, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Cached data file does not exist.')
 
     # Login to DigiOnline for this session
-    login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
+#    login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
 
-    if login['exit_code'] != 0:
+#    if login['exit_code'] != 0:
+    if 0 != 0:
       common_vars.__logger__.debug('[digionline.ro] => Authentication error => Error message: '+ login['error_message'])
       _return_data_['status']['exit_code'] = login['exit_code']
       _return_data_['status']['error_message'] = login['error_message']      
@@ -413,6 +415,9 @@ def get_categories(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
   common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
   common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+  # Save cookies for later use.
+  COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
 
   # Get the raw list of categories
   _raw_categories_ = re.findall('<a href=(.+?)class="nav-menu-item-link ">', _request_.content.decode(), re.IGNORECASE)
@@ -593,9 +598,10 @@ def get_cached_channels(category, NAME, COOKIEJAR, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Cached data requires update.')
 
       # Login to DigiOnline for this session
-      login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
+#      login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
 
-      if login['exit_code'] != 0:
+#      if login['exit_code'] != 0:
+      if 0 != 0:
         common_vars.__logger__.debug('[digionline.ro] => Authentication error => Error message: '+ login['error_message'])
         _return_data_['status']['exit_code'] = login['exit_code']
         _return_data_['status']['error_message'] = login['error_message']
@@ -615,9 +621,10 @@ def get_cached_channels(category, NAME, COOKIEJAR, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Cached data file does not exist.')
 
     # Login to DigiOnline for this session
-    login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
+#    login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
 
-    if login['exit_code'] != 0:
+#    if login['exit_code'] != 0:
+    if 0 != 0:
       common_vars.__logger__.debug('[digionline.ro] => Authentication error => Error message: '+ login['error_message'])
       _return_data_['status']['exit_code'] = login['exit_code']
       _return_data_['status']['error_message'] = login['error_message']      
@@ -684,6 +691,9 @@ def get_channels(category, NAME, COOKIEJAR, SESSION):
   common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
   common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
 
+  # Save cookies for later use.
+  COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
+
   _raw_channel_boxes_ = re.findall('<div class="box-container">(.+?)<figcaption>', _request_.content.decode(), re.IGNORECASE|re.DOTALL)
   common_vars.__logger__.debug('Found _raw_channel_boxes = ' + str(_raw_channel_boxes_))
 
@@ -728,6 +738,9 @@ def get_channels(category, NAME, COOKIEJAR, SESSION):
     common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
     common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
     common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+    # Save cookies for later use.
+    COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
 
     _raw_channel_details_box_ = re.findall('<div class="entry-video video-player(.+?)</div>', _request_.content.decode(), re.IGNORECASE|re.DOTALL)
     if not _raw_channel_details_box_:
@@ -956,9 +969,10 @@ def play_video(endpoint, metadata, NAME, COOKIEJAR, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Enter function')
 
   # Login to DigiOnline for this session
-  login = digionline_functions.do_login(common_vars.__AddonID__, COOKIEJAR, SESSION)
+#  login = digionline_functions.do_login(common_vars.__AddonID__, COOKIEJAR, SESSION)
 
-  if login['exit_code'] != 0:
+#  if login['exit_code'] != 0:
+  if 0 != 0:
     xbmcgui.Dialog().ok('[digionline.ro] => Authentication error', login['error_message'])
     common_vars.__logger__.debug('Exit function')
     xbmc.executebuiltin("XBMC.Container.Update(path,replace)")
@@ -1012,6 +1026,9 @@ def play_video(endpoint, metadata, NAME, COOKIEJAR, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
       common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
       common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+      # Save cookies for later use.
+      COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
 
       _stream_data_ = json.loads(_request_.content.decode())
       common_vars.__logger__.debug('_stream_data_ = ' + str(_stream_data_))
@@ -1095,6 +1112,9 @@ def play_video(endpoint, metadata, NAME, COOKIEJAR, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
       common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
       common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+      # Save cookies for later use.
+      COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
 
       _stream_data_ = json.loads(_request_.content.decode())
       common_vars.__logger__.debug('_stream_data_ = ' + str(_stream_data_))
@@ -1189,9 +1209,10 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file(M3U_FILE, START_NUMBER, NAME,
   _CHNO_ = START_NUMBER
 
   # Login to DigiOnline for this session
-  login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
+#  login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
 
-  if login['exit_code'] != 0:
+#  if login['exit_code'] != 0:
+  if 0 != 0:
     common_vars.__logger__.debug('[digionline.ro] => Authentication error => Error message: '+ login['error_message'])
     xbmcgui.Dialog().ok('[digionline.ro] => Authentication error', login['error_message'])
 
@@ -1246,9 +1267,10 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SE
   common_vars.__logger__.debug('_raw_epg_data_ = ' + str(_raw_epg_data_))
   
   # Login to DigiOnline for this session
-  login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
+#  login = digionline_functions.do_login(NAME, COOKIEJAR, SESSION)
 
-  if login['exit_code'] != 0:
+#  if login['exit_code'] != 0:
+  if 0 != 0:
     common_vars.__logger__.debug('[Authentication error] => Error message: '+ login['error_message'])
     xbmcgui.Dialog().ok('[digionline.ro] => Authentication error', login['error_message'])
 
@@ -1349,6 +1371,9 @@ def PVRIPTVSimpleClientIntegration_getEPG_data(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
   common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
   common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+  # Save cookies for later use.
+  COOKIEJAR.save(ignore_expires=True, ignore_discard=True)
 
   common_vars.__logger__.debug('Exit function')
   return _request_.content.decode()
