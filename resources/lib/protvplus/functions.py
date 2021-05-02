@@ -83,7 +83,7 @@ def do_auth_check(NAME, COOKIEJAR, SESSION):
   # Setup headers for the request
   MyHeaders = {
     'Host': 'protvplus.ro',
-    'User-Agent': common_vars.__userAgent__,
+    'User-Agent': common_vars.__protvplus_userAgent__,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Accept-Language': 'en-US',
     'Accept-Encoding': 'identity',
@@ -151,7 +151,7 @@ def do_login(NAME, COOKIEJAR, SESSION):
     
     MyHeaders = {
      'Host': 'protvplus.ro',
-     'User-Agent': common_vars.__userAgent__,
+     'User-Agent': common_vars.__protvplus_userAgent__,
      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
      'Accept-Language': 'en-US',
      'Accept-Encoding': 'identity',
@@ -241,7 +241,7 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
     # Setup headers for the request
     MyHeaders = {
       'Host': 'protvplus.ro',
-      'User-Agent': common_vars.__userAgent__,
+      'User-Agent': common_vars.__protvplus_userAgent__,
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
       'Accept-Language': 'en-US',
       'Accept-Encoding': 'identity',
@@ -274,7 +274,7 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
     # Setup headers for the request
     MyHeaders = {
       #'Host': 'protvplus.ro',
-      'User-Agent': common_vars.__userAgent__,
+      'User-Agent': common_vars.__protvplus_userAgent__,
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
       'Accept-Language': 'en-US',
       'Accept-Encoding': 'identity',
@@ -311,7 +311,7 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
 
     # Set the headers to be used with imputstream.adaptive
     _headers_ = ''
-    _headers_ = _headers_ + '&User-Agent=' + common_vars.__userAgent__
+    _headers_ = _headers_ + '&User-Agent=' + common_vars.__protvplus_userAgent__
     _headers_ = _headers_ + '&Connection=keep-alive'
     _headers_ = _headers_ + '&Accept-Language=en-US'
     _headers_ = _headers_ + '&Accept=*/*'
@@ -434,7 +434,7 @@ def get_channels(NAME, COOKIEJAR, SESSION):
   # Setup headers for the request
   MyHeaders = {
     'Host': 'protvplus.ro',
-    'User-Agent': common_vars.__userAgent__,
+    'User-Agent': common_vars.__protvplus_userAgent__,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Accept-Language': 'en-US',
     'Accept-Encoding': 'identity',
@@ -487,7 +487,7 @@ def get_channels(NAME, COOKIEJAR, SESSION):
 
     MyHeaders = {
       'Host': 'protvplus.ro',
-      'User-Agent': common_vars.__userAgent__,
+      'User-Agent': common_vars.__protvplus_userAgent__,
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
       'Accept-Language': 'en-US',
       'Accept-Encoding': 'identity',
@@ -651,7 +651,7 @@ def get_epg_data(NAME, COOKIEJAR, SESSION):
   # Setup headers for the request
   MyHeaders = {
     'Host': 'protvplus.ro',
-    'User-Agent': common_vars.__userAgent__,
+    'User-Agent': common_vars.__protvplus_userAgent__,
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Accept-Language': 'en-US',
     'Accept-Encoding': 'identity',

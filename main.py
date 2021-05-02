@@ -23,10 +23,10 @@ from urllib.parse import parse_qsl
 import xbmcgui
 import xbmcplugin
 import xbmcvfs
+import xbmcaddon
 import os
 import re
 import json
-import xbmcaddon
 import requests
 import logging
 import logging.handlers
@@ -204,14 +204,13 @@ def router(paramstring):
   # Check the parameters passed to the plugin
   if params:
       if params['action'] == 'list_categories':
-        # Display the list of categories in a provided account.
-        # list_channels(params['category'])        
+        # Display the list of categories in a provided account.    
 
         # digionline.ro
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
             common_vars.__logger__.info('\'digionline.ro\'  ==> Enabled')
-            digionline_functions.list_categories(common_vars.__AddonID__, common_vars.__digionline_CookieJar__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            digionline_functions.digionline__listCategories(common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
             common_vars.__logger__.info('\'digionline.ro\'  ==> Disabled')
 
@@ -230,7 +229,7 @@ def router(paramstring):
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
             common_vars.__logger__.info('\'digionline.ro\'  ==> Enabled')
-            digionline_functions.list_channels(params['category'], common_vars.__AddonID__, common_vars.__digionline_CookieJar__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            digionline_functions.digionline__listChannels(params['category_name'], params['channel_list'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
             common_vars.__logger__.info('\'digionline.ro\'  ==> Disabled')
 
@@ -249,7 +248,7 @@ def router(paramstring):
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
             common_vars.__logger__.info('\'digionline.ro\'  ==> Enabled')
-            digionline_functions.play_video(params['channel_endpoint'], params['channel_metadata'], common_vars.__AddonID__, common_vars.__digionline_CookieJar__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            digionline_functions.digionline__playVideo(params['channel_id'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
             common_vars.__logger__.info('\'digionline.ro\'  ==> Disabled')
             xbmcgui.Dialog().ok('\'Digionline.ro\' not enabled', 'The credentials for this media source are not enabled.')
@@ -281,7 +280,10 @@ if __name__ == '__main__':
   common_vars.__logger__.info('=== SYSINFO ===  Addon version: ' + str(__AddonVersion__))
   common_vars.__logger__.info('=== SYSINFO ===  System.BuildVersion: ' + str(__SystemBuildVersion__))
   common_vars.__logger__.info('=== SYSINFO ===  System.BuildDate: ' + str(__SystemBuildDate__))
-  
+
+  # Read the user preferences stored in the addon configuration
+  common_functions.read_AddonSettings(MyAddon, common_vars.__ServiceID__)
+
   # Call the router function and pass the plugin call parameters to it.
   router(sys.argv[2][1:])
 

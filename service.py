@@ -105,6 +105,8 @@ common_vars.__digionline_ServiceSession__.cookies = common_vars.__digionline_Coo
 common_vars.__protvplus_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
 
 
+
+
 def schedule_jobs():
   common_vars.__logger__.debug('Enter function')
   
@@ -124,50 +126,13 @@ def schedule_jobs():
     # Record the new values
     common_vars.__PVRIPTVSimpleClientIntegration_m3u_FileOldRefreshTime__ = common_vars.__PVRIPTVSimpleClientIntegration_m3u_FileRefreshTime__
     common_vars.__PVRIPTVSimpleClientIntegration_EPG_FileOldRefreshTime__ = common_vars.__PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime__
-    
-  else:
-    common_vars.__logger__.debug('Nothing to do !')
-      
-  common_vars.__logger__.debug('Exit function')
-
-
-def PVRIPTVSimpleClientIntegration_update_m3u_file():
-  common_vars.__logger__.debug('Enter function')
-
-  # Read the user preferences stored in the addon configuration
-  common_functions.read_AddonSettings(MyServiceAddon, common_vars.__ServiceID__)
-
-  _current_channel_number_ = 1
-  
-  _m3u_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_m3u_FileName__)
-  common_vars.__logger__.debug('_m3u_file_ = ' + _m3u_file_)
-  
-  _tmp_m3u_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_m3u_FileName__ + '.tmp')
-  common_vars.__logger__.debug('_tmp_m3u_file_ = ' + _tmp_m3u_file_)
-  
-  if common_functions.has_accounts_enabled() == 'true':
-    common_vars.__logger__.info('Addon has at least one account enabled')
-    
-    _data_file_ = open(_tmp_m3u_file_, 'w', encoding='utf-8')
-    _data_file_.write("#EXTM3U tvg-shift=0" + "\n")
-    _data_file_.close()
-  
-    # digionline.ro
-    if common_vars.__config_digionline_Enabled__ == 'true':
-      _current_channel_number_ = digionline_functions.PVRIPTVSimpleClientIntegration_update_m3u_file(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__digionline_CookieJar__, common_vars.__digionline_ServiceSession__)
-
-    common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
-
-    # protvplus.ro
-    if common_vars.__config_protvplus_Enabled__ == 'true':
-      _current_channel_number_ = protvplus_functions.PVRIPTVSimpleClientIntegration_update_m3u_file(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_ServiceSession__)
-
-    common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
- 
-    os.rename(_tmp_m3u_file_, _m3u_file_)
 
   else:
-    common_vars.__logger__.info('Addon has no accounts enabled')
+    common_vars.__logger__.debug('No re-scheduling required !')
+    
+  # (re)Initialize the files for PVR IPTV Simple Client
+  PVRIPTVSimpleClientIntegration_init_m3u_file()
+  PVRIPTVSimpleClientIntegration_init_EPG_file()
 
   common_vars.__logger__.debug('Exit function')
 
@@ -201,7 +166,6 @@ def PVRIPTVSimpleClientIntegration_check_data_file(DATAFILE):
       common_vars.__logger__.debug('\'' + DATAFILE + '\' is empty.')
       _return_code_ = 1
 
-
     # Get the value (seconds since epoch) of the last modification time.
     _last_update_ = os.path.getmtime(DATAFILE)
 
@@ -217,7 +181,6 @@ def PVRIPTVSimpleClientIntegration_check_data_file(DATAFILE):
     # The DATAFILE does not exist.
     common_vars.__logger__.debug('\'' + DATAFILE + '\' does not exist.')
     _return_code_ = 1
-
 
   common_vars.__logger__.debug('Exit function')
   return _return_code_
@@ -244,42 +207,49 @@ def PVRIPTVSimpleClientIntegration_init_m3u_file():
   common_vars.__logger__.debug('Exit function')
 
 
-def PVRIPTVSimpleClientIntegration_update_EPG_file():
+def PVRIPTVSimpleClientIntegration_update_m3u_file():
   common_vars.__logger__.debug('Enter function')
 
   # Read the user preferences stored in the addon configuration
   common_functions.read_AddonSettings(MyServiceAddon, common_vars.__ServiceID__)
+
+  _current_channel_number_ = 1
   
-  _epg_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_EPG_FileName__)
-  common_vars.__logger__.debug('_epg_file_ = ' + _epg_file_)
-
-  _tmp_epg_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_EPG_FileName__ + '.tmp')
-
-  common_vars.__logger__.debug('_tmp_epg_file_ = ' + _tmp_epg_file_)
-
+  if not os.path.exists(MyServiceAddon_DataDir + '/' + common_vars.__PVRIPTVSimpleClientIntegration_DataDir__ ):
+    os.makedirs(MyServiceAddon_DataDir + '/' + common_vars.__PVRIPTVSimpleClientIntegration_DataDir__)
+    
+  _m3u_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_m3u_FileName__)
+  common_vars.__logger__.debug('_m3u_file_ = ' + _m3u_file_)
+  
+  _tmp_m3u_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_m3u_FileName__ + '.tmp')
+  common_vars.__logger__.debug('_tmp_m3u_file_ = ' + _tmp_m3u_file_)
+  
   if common_functions.has_accounts_enabled() == 'true':
     common_vars.__logger__.info('Addon has at least one account enabled')
-      
-    _data_file_ = open(_tmp_epg_file_, 'w', encoding='utf-8')
-    _data_file_.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + "\n")
-    _data_file_.write("<tv>" + "\n")
+    
+    _data_file_ = open(_tmp_m3u_file_, 'w', encoding='utf-8')
+    _data_file_.write("#EXTM3U tvg-shift=0" + "\n")
     _data_file_.close()
   
+    # digionline.ro
     if common_vars.__config_digionline_Enabled__ == 'true':
-      digionline_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_CookieJar__, common_vars.__digionline_ServiceSession__)
+      _current_channel_number_ = digionline_functions.digionline__updateM3Ufile(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
 
+    common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
+
+    # protvplus.ro
     if common_vars.__config_protvplus_Enabled__ == 'true':
-      protvplus_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_ServiceSession__)
+      _current_channel_number_ = protvplus_functions.PVRIPTVSimpleClientIntegration_update_m3u_file(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_ServiceSession__)
 
-    _data_file_ = open(_tmp_epg_file_, 'a', encoding='utf-8')
-    _data_file_.write("</tv>" + "\n")
-    _data_file_.close()
-    os.rename(_tmp_epg_file_, _epg_file_)
+    common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
+ 
+    os.rename(_tmp_m3u_file_, _m3u_file_)
 
   else:
     common_vars.__logger__.info('Addon has no accounts enabled')
-    
+
   common_vars.__logger__.debug('Exit function')
+
 
 
 def PVRIPTVSimpleClientIntegration_init_EPG_file():
@@ -303,6 +273,48 @@ def PVRIPTVSimpleClientIntegration_init_EPG_file():
   common_vars.__logger__.debug('Exit function')
 
 
+
+def PVRIPTVSimpleClientIntegration_update_EPG_file():
+  common_vars.__logger__.debug('Enter function')
+
+  # Read the user preferences stored in the addon configuration
+  common_functions.read_AddonSettings(MyServiceAddon, common_vars.__ServiceID__)
+
+  if not os.path.exists(MyServiceAddon_DataDir + '/' + common_vars.__PVRIPTVSimpleClientIntegration_DataDir__ ):
+    os.makedirs(MyServiceAddon_DataDir + '/' + common_vars.__PVRIPTVSimpleClientIntegration_DataDir__)
+      
+  _epg_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_EPG_FileName__)
+  common_vars.__logger__.debug('_epg_file_ = ' + _epg_file_)
+
+  _tmp_epg_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_EPG_FileName__ + '.tmp')
+
+  common_vars.__logger__.debug('_tmp_epg_file_ = ' + _tmp_epg_file_)
+
+  if common_functions.has_accounts_enabled() == 'true':
+    common_vars.__logger__.info('Addon has at least one account enabled')
+      
+    _data_file_ = open(_tmp_epg_file_, 'w', encoding='utf-8')
+    _data_file_.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + "\n")
+    _data_file_.write("<tv>" + "\n")
+    _data_file_.close()
+  
+    if common_vars.__config_digionline_Enabled__ == 'true':
+      digionline_functions.digionline__updateEPGfile(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+
+    if common_vars.__config_protvplus_Enabled__ == 'true':
+      protvplus_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_ServiceSession__)
+
+    _data_file_ = open(_tmp_epg_file_, 'a', encoding='utf-8')
+    _data_file_.write("</tv>" + "\n")
+    _data_file_.close()
+    os.rename(_tmp_epg_file_, _epg_file_)
+
+  else:
+    common_vars.__logger__.info('Addon has no accounts enabled')
+    
+  common_vars.__logger__.debug('Exit function')
+
+
 if __name__ == '__main__':
   common_vars.__logger__.debug('Enter __main__ ')
   common_vars.__logger__.info('=== SYSINFO ===  Addon version: ' + str(__AddonVersion__))
@@ -319,10 +331,6 @@ if __name__ == '__main__':
   schedule_jobs()
   schedule.every().minute.at(":05").do(schedule_jobs)
   
-  schedule.every().minute.at(":15").do(PVRIPTVSimpleClientIntegration_init_m3u_file)
-  schedule.every().minute.at(":15").do(PVRIPTVSimpleClientIntegration_init_EPG_file)
- 
-
   common_vars.__logger__.debug('Finished scheduling jobs')
 
   monitor = xbmc.Monitor()  

@@ -27,6 +27,9 @@
     <setting id="digionline_Enabled" label="Enabled" type="bool" default="false"/>
     <setting id="digionline_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
     <setting id="digionline_Password" label="Password" type="text" default="__DEFAULT_PASSWORD__" option="hidden" subsetting="true" visible="eq(-2,true)"/>
+    <setting id="digionline_DeviceManufacturer" label="Device Maufacturer" type="text" default="__DEFAULT_DEVICE_MAUFACTURER__" subsetting="true" visible="eq(-3,true)"/>
+    <setting id="digionline_DeviceModel" label="Device Model" type="text" default="__DEFAULT_DEVICE_MODEL__" subsetting="true" visible="eq(-4,true)"/>
+    <setting id="digionline_AndroidVersion" label="Android Version" type="text" default="__DEFAULT_ANDROID_VERSION__" subsetting="true" visible="eq(-5,true)"/>
     <setting label="protvplus.ro" type="lsep"/>
     <setting id="protvplus_Enabled" label="Enabled" type="bool" default="false"/>
     <setting id="protvplus_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
@@ -36,14 +39,6 @@
     <setting label="Display" type="lsep"/>
     <setting id="ShowTitleInChannelList" label="Show program title in channel list" type="bool" default="false"/>
     <setting id="DebugEnabled" label="Enable debug logging" type="bool" default="false"/>
-  </category>
-  <category label="Cached data">
-    <setting label="Retention interval (days)" type="lsep"/>
-    <setting id="categoriesCachedDataRetentionInterval" label="Refresh list of categories every" type="slider" default="90" range="1,1,365" option="int"/>
-    <setting id="channelsCachedDataRetentionInterval" label="Refresh list of channels every" type="slider" default="30" range="1,1,365" option="int"/>
-    <setting type="sep"/>
-    <setting label="Retention interval (minutes)" type="lsep"/>
-    <setting id="EPGDataCachedDataRetentionInterval" label="Refresh channel EPG data every" type="slider" default="10" range="5,1,365" option="int"/>
   </category>
   <category label="Simple PVR integration">
     <setting label="Data file(s)" type="lsep"/>

@@ -24,6 +24,9 @@
 __config_digionline_Enabled__ = ''
 __config_digionline_Username__ = ''
 __config_digionline_Password__ = ''
+__config_digionline_DeviceManufacturer__ = ''
+__config_digionline_DeviceModel__ = ''
+__config_digionline_AndroidVersion__ = ''
 
 __config_protvplus_Enabled__ = ''
 __config_protvplus_Username__ = ''
@@ -48,7 +51,10 @@ __config_PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime__ = ''
 
 
 # UserAgent exposed by this add-on
-__userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
+__digionline_API_userAgent__ = 'okhttp/4.8.1'
+__digionline_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
+__protvplus_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
+
 
 # The IDs used by add-on
 __AddonID__ = 'plugin.video.TVOnline.ro'
@@ -64,6 +70,10 @@ __digionline_CookieJar__ = ''
 
 __protvplus_CookiesFilename__ = 'protvplus.ro_cookies.txt'
 __protvplus_CookieJar__ = ''
+
+# File name for storing the state data
+__digionline_StateFilename__ = 'digionline.ro_state.txt'
+
 
 # The sessions used by add-on
 __digionline_Session__ = ''
@@ -86,6 +96,9 @@ __logger__ = ''
 __minute__ = (1 * 60)
 __day__ = (24 * 60 * 60)
 
+# Max interval between authentications
+__digionline_AuthInterval__ = (1 * __day__)
+
 # Directory holding the cached data. 
 __digionline_cache_dir__ = 'cached_data/digionline.ro'
 __protvplus_cache_dir__ = 'cached_data/protvplus.ro'
@@ -99,18 +112,16 @@ __PVRIPTVSimpleClientIntegration_protvplus_raw_m3u_FileName__ = __AddonID__ + 'p
 __PVRIPTVSimpleClientIntegration__protvplus_raw_EPG_FileName__ = __AddonID__ + 'protvplus.xml.raw'
 
 
-# File containing the local copy of the list of categories read from source
-__categoriesCachedDataFilename__ = 'categories.json'
+# File containing the local copy of the list of categories and channels read from source
+__digionline_categorieschannelsCachedDataFilename__ = 'categorieschannels.json'
+
+# File containing the local copy of the epg read from source
+__digionline_epgCachedDataFilename__ = 'epg.json'
+
 
 # Some sane defaults before being overwritten by the user settings
 # How much time has to pass before reading again from source the list of categories.
-__categoriesCachedDataRetentionInterval__ = (30 * __day__)
-
-# How much time has to pass before reading again from source the list of channels in a specific category.
-__channelsCachedDataRetentionInterval__ = (10 * __day__)
-
-# How much time has to pass before reading again from source the EPG data for a channel.
-__EPGDataCachedDataRetentionInterval__ = (10 * __minute__)
+__CachedDataRetentionInterval__ = (1 * __day__)
 
 
 ### Service variables

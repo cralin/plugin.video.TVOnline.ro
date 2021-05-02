@@ -37,8 +37,18 @@ def read_AddonSettings(__MyAddon__, NAME):
   # Accounts
   common_vars.__config_digionline_Enabled__ = __MyAddon__.getSetting('digionline_Enabled')
   common_vars.__logger__.debug('[ Addon settings ] digionline_Enabled = ' + str(common_vars.__config_digionline_Enabled__))
+
   common_vars.__config_digionline_Username__ = __MyAddon__.getSetting('digionline_Username')
   common_vars.__config_digionline_Password__ = __MyAddon__.getSetting('digionline_Password')
+
+  common_vars.__config_digionline_DeviceManufacturer__ = __MyAddon__.getSetting('digionline_DeviceManufacturer')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_DeviceManufacturer = ' + str(common_vars.__config_digionline_DeviceManufacturer__))
+
+  common_vars.__config_digionline_DeviceModel__ = __MyAddon__.getSetting('digionline_DeviceModel')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_DeviceModel = ' + str(common_vars.__config_digionline_DeviceModel__))
+
+  common_vars.__config_digionline_AndroidVersion__ = __MyAddon__.getSetting('digionline_AndroidVersion')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_AndroidVersion = ' + str(common_vars.__config_digionline_AndroidVersion__))
 
   common_vars.__config_protvplus_Enabled__ = __MyAddon__.getSetting('protvplus_Enabled')
   common_vars.__logger__.debug('[ Addon settings ] protvplus_Enabled = ' + str(common_vars.__config_protvplus_Enabled__))
@@ -50,14 +60,6 @@ def read_AddonSettings(__MyAddon__, NAME):
   common_vars.__logger__.debug('[ Addon settings ] ShowTitleInChannelList = ' + str(common_vars.__config_ShowTitleInChannelList__))
   common_vars.__config_DebugEnabled__ = __MyAddon__.getSetting('DebugEnabled')
   common_vars.__logger__.debug('[ Addon settings ] DebugEnabled = ' + str(common_vars.__config_DebugEnabled__))
-
-  # Cached data
-  common_vars.__config_categoriesCachedDataRetentionInterval__ = __MyAddon__.getSetting('categoriesCachedDataRetentionInterval')
-  common_vars.__logger__.debug('[ Addon settings ] categoriesCachedDataRetentionInterval = ' + str(common_vars.__config_categoriesCachedDataRetentionInterval__))
-  common_vars.__config_channelsCachedDataRetentionInterval__ = __MyAddon__.getSetting('channelsCachedDataRetentionInterval')
-  common_vars.__logger__.debug('[ Addon settings ] channelsCachedDataRetentionInterval = ' + str(common_vars.__config_channelsCachedDataRetentionInterval__))
-  common_vars.__config_EPGDataCachedDataRetentionInterval__ = __MyAddon__.getSetting('EPGDataCachedDataRetentionInterval')
-  common_vars.__logger__.debug('[ Addon settings ] EPGDataCachedDataRetentionInterval = ' + str(common_vars.__config_EPGDataCachedDataRetentionInterval__))
 
   ## Simple PVR integration
   common_vars.__config_PVRIPTVSimpleClientIntegration_m3u_FileRefreshTime__ = __MyAddon__.getSetting('PVRIPTVSimpleClientIntegration_m3u_FileRefreshTime')
