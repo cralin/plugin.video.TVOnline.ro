@@ -225,7 +225,7 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file():
   common_vars.__logger__.debug('_tmp_m3u_file_ = ' + _tmp_m3u_file_)
   
   if common_functions.has_accounts_enabled() == 'true':
-    common_vars.__logger__.info('Addon has at least one account enabled')
+    common_vars.__logger__.debug('Addon has at least one account enabled')
     
     _data_file_ = open(_tmp_m3u_file_, 'w', encoding='utf-8')
     _data_file_.write("#EXTM3U tvg-shift=0" + "\n")
@@ -246,7 +246,7 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file():
     os.rename(_tmp_m3u_file_, _m3u_file_)
 
   else:
-    common_vars.__logger__.info('Addon has no accounts enabled')
+    common_vars.__logger__.debug('Addon has no accounts enabled')
 
   common_vars.__logger__.debug('Exit function')
 
@@ -291,7 +291,7 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
   common_vars.__logger__.debug('_tmp_epg_file_ = ' + _tmp_epg_file_)
 
   if common_functions.has_accounts_enabled() == 'true':
-    common_vars.__logger__.info('Addon has at least one account enabled')
+    common_vars.__logger__.debug('Addon has at least one account enabled')
       
     _data_file_ = open(_tmp_epg_file_, 'w', encoding='utf-8')
     _data_file_.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + "\n")
@@ -310,16 +310,16 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
     os.rename(_tmp_epg_file_, _epg_file_)
 
   else:
-    common_vars.__logger__.info('Addon has no accounts enabled')
+    common_vars.__logger__.debug('Addon has no accounts enabled')
     
   common_vars.__logger__.debug('Exit function')
 
 
 if __name__ == '__main__':
   common_vars.__logger__.debug('Enter __main__ ')
-  common_vars.__logger__.info('=== SYSINFO ===  Addon version: ' + str(__AddonVersion__))
-  common_vars.__logger__.info('=== SYSINFO ===  System.BuildVersion: ' + str(__SystemBuildVersion__))
-  common_vars.__logger__.info('=== SYSINFO ===  System.BuildDate: ' + str(__SystemBuildDate__))
+  common_vars.__logger__.debug('=== SYSINFO ===  Addon version: ' + str(__AddonVersion__))
+  common_vars.__logger__.debug('=== SYSINFO ===  System.BuildVersion: ' + str(__SystemBuildVersion__))
+  common_vars.__logger__.debug('=== SYSINFO ===  System.BuildDate: ' + str(__SystemBuildDate__))
 
   # Read the user preferences stored in the addon configuration
   common_functions.read_AddonSettings(MyServiceAddon, common_vars.__ServiceID__)

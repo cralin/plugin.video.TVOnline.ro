@@ -305,7 +305,7 @@ def digionline__registerUser(NAME, SESSION, DATA_DIR):
 
   _response_ = json.loads(_request_.content.decode())
   
-  if _request_.status_code == 200:
+  if _response_['result']['code'] == '200':
     common_vars.__logger__.debug('Received message: ' + str(_response_['data']['message']))
     __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
     __rsd__['state_data']['registeredUser']['userName'] = common_vars.__config_digionline_Username__
@@ -316,10 +316,29 @@ def digionline__registerUser(NAME, SESSION, DATA_DIR):
     digionline_functions.digionline__write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   else:
-    common_vars.__logger__.debug('Received message: ' + str(_response_['data']['message']))
+    common_vars.__logger__.debug('Received message: ' + str(_response_['result']['message']))
+    xbmcgui.Dialog().ok('[digionline.ro] => Error code ' + str(_response_['result']['code']), str(_response_['result']['message']))
+    common_vars.__logger__.debug('Exit function')
+    return
 
   common_vars.__logger__.debug('Exit function')
 
+
+def digionline__isDeviceRegistered(NAME, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+  
+  __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+  
+  if __rsd__['state_data']['registeredDeviceID'] != __rsd__['state_data']['deviceID']:
+    # Device not registered
+    common_vars.__logger__.debug('Device is not registered.')
+    common_vars.__logger__.debug('Exit function')
+    return False
+  else:
+    common_vars.__logger__.debug('Device is registered.')
+    common_vars.__logger__.debug('Exit function')
+    return True
 
 def digionline__registerDevice(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
@@ -362,7 +381,7 @@ def digionline__registerDevice(NAME, SESSION, DATA_DIR):
 
   _response_ = json.loads(_request_.content.decode())
   
-  if _request_.status_code == 200:
+  if _response_['result']['code'] == 200:
     common_vars.__logger__.debug('Received message: ' + str(_response_['data']['message']))
     __rsd__['state_data']['registeredDeviceID'] = __rsd__['state_data']['deviceID']
     common_vars.__logger__.debug('State data: ' + str(__rsd__['state_data']))
@@ -370,7 +389,8 @@ def digionline__registerDevice(NAME, SESSION, DATA_DIR):
     digionline_functions.digionline__write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   else:
-    common_vars.__logger__.debug('Received message: ' + str(_response_['data']['message']))
+    common_vars.__logger__.debug('Received message: ' + str(_response_['result']['message']))
+    xbmcgui.Dialog().ok('[digionline.ro] => Error code ' + str(_response_['result']['code']), str(_response_['result']['message']))
 
   common_vars.__logger__.debug('Exit function')
 
@@ -382,10 +402,10 @@ def digionline__doAuth(NAME, SESSION, DATA_DIR):
   digionline_functions.digionline__init(NAME, DATA_DIR)
 
   if not digionline_functions.digionline__isUserRegistered(NAME, DATA_DIR):
-    
     common_vars.__logger__.debug('Registering user')
     digionline_functions.digionline__registerUser(NAME, SESSION, DATA_DIR)
     
+  if digionline_functions.digionline__isUserRegistered(NAME, DATA_DIR) and not digionline__isDeviceRegistered(NAME, DATA_DIR):
     common_vars.__logger__.debug('Registering device')
     digionline_functions.digionline__registerDevice(NAME, SESSION, DATA_DIR)
 
@@ -558,7 +578,7 @@ def digionline__listCategories(NAME, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Received categories = ' + str(categories))
 
   for category in categories:
-    common_vars.__logger__.info('Category:  id = \'' + str(category['id_category']) + '\', Name = \'' + str(category['category_name']) + '\', Title = \'' + str(category['category_desc']) + '\', Channel list = \'' + str(category['channels_list']) + '\'')
+    common_vars.__logger__.debug('Category:  id = \'' + str(category['id_category']) + '\', Name = \'' + str(category['category_name']) + '\', Title = \'' + str(category['category_desc']) + '\', Channel list = \'' + str(category['channels_list']) + '\'')
 
     # Create a list item with a text label and a thumbnail image.
     list_item = xbmcgui.ListItem(label=category['category_desc'])

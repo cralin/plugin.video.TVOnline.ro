@@ -123,7 +123,7 @@ def list_enabled_accounts():
 
   # digionline.ro
   if common_vars.__config_digionline_Enabled__ == 'true':
-    common_vars.__logger__.info('\'digionline.ro\'  ==> Enabled')
+    common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
 
     # Create a list item with a text label and a thumbnail image.
     list_item = xbmcgui.ListItem(label='digionline.ro')
@@ -146,12 +146,12 @@ def list_enabled_accounts():
     xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
 
   else:
-    common_vars.__logger__.info('\'digionline.ro\'  ==> Disabled')
+    common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
 
 
   # protvplus.ro
   if common_vars.__config_protvplus_Enabled__ == 'true':
-    common_vars.__logger__.info('\'protvplus.ro\'  ==> Enabled')
+    common_vars.__logger__.debug('\'protvplus.ro\'  ==> Enabled')
 
     # Create a list item with a text label and a thumbnail image.
     list_item = xbmcgui.ListItem(label='protvplus.ro')
@@ -174,7 +174,7 @@ def list_enabled_accounts():
     xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
 
   else:
-    common_vars.__logger__.info('\'protvplus.ro\'  ==> Disabled')
+    common_vars.__logger__.debug('\'protvplus.ro\'  ==> Disabled')
 
   # Add a sort method for the virtual folder items (alphabetically, ignore articles)
   # See: https://romanvm.github.io/Kodistubs/_autosummary/xbmcplugin.html
@@ -209,18 +209,18 @@ def router(paramstring):
         # digionline.ro
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
-            common_vars.__logger__.info('\'digionline.ro\'  ==> Enabled')
+            common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
             digionline_functions.digionline__listCategories(common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
-            common_vars.__logger__.info('\'digionline.ro\'  ==> Disabled')
+            common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
 
 #        # protvplus.ro
 #        if params['account'] == 'protvplus.ro':
 #          if common_vars.__config_protvplus_Enabled__ == 'true':
-#            common_vars.__logger__.info('\'protvplus.ro\'  ==> Enabled')
+#            common_vars.__logger__.debug('\'protvplus.ro\'  ==> Enabled')
 #            protvplus_functions.list_categories(common_vars.__AddonID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_Session__, MyAddon_DataDir)
 #          else:
-#            common_vars.__logger__.info('\'protvplus.ro\'  ==> Disabled')
+#            common_vars.__logger__.debug('\'protvplus.ro\'  ==> Disabled')
 
       elif params['action'] == 'list_channels':
         # Display the list of channels in the provided category from provided account.
@@ -228,18 +228,18 @@ def router(paramstring):
         # digionline.ro
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
-            common_vars.__logger__.info('\'digionline.ro\'  ==> Enabled')
+            common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
             digionline_functions.digionline__listChannels(params['category_name'], params['channel_list'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
-            common_vars.__logger__.info('\'digionline.ro\'  ==> Disabled')
+            common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
 
         # protvplus.ro
         if params['account'] == 'protvplus.ro':
           if common_vars.__config_protvplus_Enabled__ == 'true':
-            common_vars.__logger__.info('\'protvplus.ro\'  ==> Enabled')
+            common_vars.__logger__.debug('\'protvplus.ro\'  ==> Enabled')
             protvplus_functions.list_channels(common_vars.__AddonID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_Session__, MyAddon_DataDir)
           else:
-            common_vars.__logger__.info('\'protvplus.ro\'  ==> Disabled')      
+            common_vars.__logger__.debug('\'protvplus.ro\'  ==> Disabled')      
       
       elif params['action'] == 'play':
         # Play a video from the provided URL.
@@ -247,19 +247,19 @@ def router(paramstring):
         # digionline.ro
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
-            common_vars.__logger__.info('\'digionline.ro\'  ==> Enabled')
+            common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
             digionline_functions.digionline__playVideo(params['channel_id'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
-            common_vars.__logger__.info('\'digionline.ro\'  ==> Disabled')
+            common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
             xbmcgui.Dialog().ok('\'Digionline.ro\' not enabled', 'The credentials for this media source are not enabled.')
             
         # protvplus.ro
         if params['account'] == 'protvplus.ro':
           if common_vars.__config_protvplus_Enabled__ == 'true':
-            common_vars.__logger__.info('\'protvplus.ro\'  ==> Enabled')
+            common_vars.__logger__.debug('\'protvplus.ro\'  ==> Enabled')
             protvplus_functions.play_video(params['channel_endpoint'], common_vars.__AddonID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_Session__, MyAddon_DataDir)
           else:
-            common_vars.__logger__.info('\'protvplus.ro\'  ==> Disabled')
+            common_vars.__logger__.debug('\'protvplus.ro\'  ==> Disabled')
             xbmcgui.Dialog().ok('\'protvplus.ro\' not enabled', 'The credentials for this media source are not enabled.')
 
       else:
@@ -277,9 +277,9 @@ def router(paramstring):
 
 if __name__ == '__main__':
   common_vars.__logger__.debug('Enter function')
-  common_vars.__logger__.info('=== SYSINFO ===  Addon version: ' + str(__AddonVersion__))
-  common_vars.__logger__.info('=== SYSINFO ===  System.BuildVersion: ' + str(__SystemBuildVersion__))
-  common_vars.__logger__.info('=== SYSINFO ===  System.BuildDate: ' + str(__SystemBuildDate__))
+  common_vars.__logger__.debug('=== SYSINFO ===  Addon version: ' + str(__AddonVersion__))
+  common_vars.__logger__.debug('=== SYSINFO ===  System.BuildVersion: ' + str(__SystemBuildVersion__))
+  common_vars.__logger__.debug('=== SYSINFO ===  System.BuildDate: ' + str(__SystemBuildDate__))
 
   # Read the user preferences stored in the addon configuration
   common_functions.read_AddonSettings(MyAddon, common_vars.__ServiceID__)
