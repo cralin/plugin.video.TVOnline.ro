@@ -270,10 +270,14 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
     _metadata_url_ = re.findall('src="(.+?)\?autoplay', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
     common_vars.__logger__.debug('Found _metadata_url_ = ' + str(_metadata_url_))
     
+    _stream_data__host_ = re.findall('//(.+?)/', _metadata_url_, re.IGNORECASE|re.DOTALL)[0]
+    common_vars.__logger__.debug('Found _stream_data__host_ = ' + str(_stream_data__host_))
+
     # Get the stream data
     # Setup headers for the request
     MyHeaders = {
-      #'Host': 'protvplus.ro',
+      'Host': _stream_data__host_,
+      'Referer': 'https://protvplus.ro',
       'User-Agent': common_vars.__protvplus_userAgent__,
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
       'Accept-Language': 'en-US',
@@ -309,8 +313,14 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
     _stream_manifest_url_ = _stream_data_['tracks']['HLS'][0]['src']
     common_vars.__logger__.debug('Found _stream_manifest_url_ = ' + _stream_manifest_url_)
 
+    _stream_manifest_host_ = re.findall('//(.+?)/', _stream_manifest_url_, re.IGNORECASE|re.DOTALL)[0]
+    common_vars.__logger__.debug('Found _stream_manifest_host_ = ' + _stream_manifest_host_)
+
     # Set the headers to be used with imputstream.adaptive
     _headers_ = ''
+    _headers_ = _headers_ + '&Host=' + _stream_manifest_host_
+    _headers_ = _headers_ + '&Origin=https://' + _stream_data__host_
+    _headers_ = _headers_ + '&Referer=https://' + _stream_data__host_ + '/'
     _headers_ = _headers_ + '&User-Agent=' + common_vars.__protvplus_userAgent__
     _headers_ = _headers_ + '&Connection=keep-alive'
     _headers_ = _headers_ + '&Accept-Language=en-US'
