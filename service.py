@@ -243,7 +243,7 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file():
 
     common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
  
-    os.rename(_tmp_m3u_file_, _m3u_file_)
+    os.replace(_tmp_m3u_file_, _m3u_file_)
 
   else:
     common_vars.__logger__.debug('Addon has no accounts enabled')
@@ -307,7 +307,7 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
     _data_file_ = open(_tmp_epg_file_, 'a', encoding='utf-8')
     _data_file_.write("</tv>" + "\n")
     _data_file_.close()
-    os.rename(_tmp_epg_file_, _epg_file_)
+    os.replace(_tmp_epg_file_, _epg_file_)
 
   else:
     common_vars.__logger__.debug('Addon has no accounts enabled')
