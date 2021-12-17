@@ -304,7 +304,7 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
     common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
 
-    _raw_stream_data_ = re.findall('\'player-1\', (.+?), {"video"', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
+    _raw_stream_data_ = re.findall('\'player-1\', processAdTagModifier\((.+?)\), {"video"', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
     common_vars.__logger__.debug('Found _raw_stream_data_ = ' + str(_raw_stream_data_))
     
     _stream_data_ = json.loads(_raw_stream_data_)
