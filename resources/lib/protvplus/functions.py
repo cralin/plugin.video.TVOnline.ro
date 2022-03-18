@@ -492,7 +492,7 @@ def get_channels(NAME, COOKIEJAR, SESSION):
     _channel_logo_ = re.findall('<img src="(.+?)"', _raw_channel_, re.IGNORECASE)[0]
     common_vars.__logger__.debug('_channel_logo_ = ' + str(_channel_logo_))
     
-    _channel_id_ = re.findall(_channel_url_ + '" data-channel-id="(.+?)"', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
+    _channel_id_ = re.findall('tv-live/(.+?)-', _channel_url_, re.IGNORECASE|re.DOTALL)[0]
     common_vars.__logger__.debug('_channel_id_ = ' + str(_channel_id_))
 
     MyHeaders = {
