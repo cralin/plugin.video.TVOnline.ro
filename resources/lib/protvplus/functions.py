@@ -469,10 +469,10 @@ def get_channels(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
   common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
   
-  _raw_channel_data_ = re.findall('title="TV LIVE(.+?)<nav class="e-navigation">', _request_.content.decode(), re.IGNORECASE|re.DOTALL)
+  _raw_channel_data_ = re.findall('<ul class="channels-main">(.+?)</nav>', _request_.content.decode(), re.IGNORECASE|re.DOTALL)
   common_vars.__logger__.debug('Found _raw_channel_data_ = ' + str(_raw_channel_data_))
   
-  _raw_channels_ = re.findall('<li>(.+?)</li>', str(_raw_channel_data_), re.IGNORECASE|re.DOTALL)
+  _raw_channels_ = re.findall('<li class="e-channel color(.+?)</span>', str(_raw_channel_data_), re.IGNORECASE|re.DOTALL)
   common_vars.__logger__.debug('Found _raw_channels_ = ' + str(_raw_channels_))
   
   # Initialize the list of channels
@@ -483,7 +483,7 @@ def get_channels(NAME, COOKIEJAR, SESSION):
 
     _channel_record_ = {}
 
-    _channel_name_ = re.findall('title="(.+?)">', _raw_channel_, re.IGNORECASE)[0]
+    _channel_name_ = re.findall('alt="(.+?)">', _raw_channel_, re.IGNORECASE)[0]
     common_vars.__logger__.debug('_channel_name_ = ' + str(_channel_name_))
 
     _channel_url_ = re.findall('<a href="(.+?)"', _raw_channel_, re.IGNORECASE)[0]
@@ -491,8 +491,8 @@ def get_channels(NAME, COOKIEJAR, SESSION):
 
     _channel_logo_ = re.findall('<img src="(.+?)"', _raw_channel_, re.IGNORECASE)[0]
     common_vars.__logger__.debug('_channel_logo_ = ' + str(_channel_logo_))
-    
-    _channel_id_ = re.findall('tv-live/(.+?)-', _channel_url_, re.IGNORECASE|re.DOTALL)[0]
+
+    _channel_id_ = re.findall('data-channel-id="(.+?)">', _raw_channel_, re.IGNORECASE|re.DOTALL)[0]
     common_vars.__logger__.debug('_channel_id_ = ' + str(_channel_id_))
 
     MyHeaders = {
