@@ -233,126 +233,148 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
   
   _auth_ = do_login(NAME, COOKIEJAR, SESSION)
   common_vars.__logger__.debug('_auth_ = ' + str(_auth_))
+
+  # Check for valid subscription
+  __no_valid_subscription__ = False
   
+  if not _auth_['data']['is_subscribed']:
+    __no_valid_subscription__ = True
+    common_vars.__logger__.info('_auth_[data][is_subscribed] = ' + str(_auth_['data']['is_subscribed']))
+    common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
+
+  else:
+    if not _auth_['data']['is_trial']:
+      __no_valid_subscription__ = True
+      common_vars.__logger__.info('_auth_[data][is_trial] = ' + str(_auth_['data']['is_trial']))
+      common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
+
+  # End check for valid subscription
+    
   if _auth_['status'] == "unauthorized":
     common_vars.__logger__.info('[voyo.ro] => Authentication error => Invalid username or password.')
     xbmcgui.Dialog().ok('[voyo.ro] => Authentication error', 'Invalid username or password')
-    
+
     common_vars.__logger__.debug('Exit function')
-  
+
   else:
-    # Get the URL for the stream metadata
+    if __no_valid_subscription__:
+      common_vars.__logger__.info('[voyo.ro] => No valid subscription => Pentru a putea vizualiza acest canal trebuie să ai abonament VOYO.')
+      xbmcgui.Dialog().ok('[voyo.ro] => No valid subscription', 'Pentru a putea vizualiza acest canal trebuie să ai abonament VOYO.')
 
-    # Setup headers for the request
-    MyHeaders = {
-#      'Host': 'protvplus.ro',
-      'Referer': 'https://voyo.protv.ro',
-      'User-Agent': common_vars.__voyo_userAgent__,
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Accept-Language': 'en-US',
-      'Accept-Encoding': 'identity',
-      'Connection': 'keep-alive',
-      'Upgrade-Insecure-Requests': '1',
-      'Cache-Control': 'max-age=0',
-      #'Authorization': 'Bearer ' + _auth_['data']['bearer']
-    }
+      common_vars.__logger__.debug('Exit function')  
+    else:
+      # Get the URL for the stream metadata
 
-    common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
-    common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
-    common_vars.__logger__.debug('URL: ' + CHANNEL_ENDPOINT)
-    common_vars.__logger__.debug('Method: GET')
+      # Setup headers for the request
+      MyHeaders = {
+#        'Host': 'protvplus.ro',
+        'Referer': 'https://voyo.protv.ro',
+        'User-Agent': common_vars.__voyo_userAgent__,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US',
+        'Accept-Encoding': 'identity',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Cache-Control': 'max-age=0',
+        #'Authorization': 'Bearer ' + _auth_['data']['bearer']
+      }
 
-    # Send the GET request
-    _request_ = SESSION.get(CHANNEL_ENDPOINT, headers=MyHeaders)
+      common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
+      common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+      common_vars.__logger__.debug('URL: ' + CHANNEL_ENDPOINT)
+      common_vars.__logger__.debug('Method: GET')
 
-    # Save cookies for later use.
-    COOKIEJAR.save(ignore_discard=True)
+      # Send the GET request
+      _request_ = SESSION.get(CHANNEL_ENDPOINT, headers=MyHeaders)
 
-    common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
-    common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
-    common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
-    common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+      # Save cookies for later use.
+      COOKIEJAR.save(ignore_discard=True)
 
-#    _metadata_url_ = re.findall('src="(.+?)\?autoplay', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
-#    common_vars.__logger__.debug('Found _metadata_url_ = ' + str(_metadata_url_))
+      common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+      common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
+      common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+      common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+#      _metadata_url_ = re.findall('src="(.+?)\?autoplay', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
+#      common_vars.__logger__.debug('Found _metadata_url_ = ' + str(_metadata_url_))
 #    
-#    _stream_data__host_ = re.findall('//(.+?)/', _metadata_url_, re.IGNORECASE|re.DOTALL)[0]
-#    common_vars.__logger__.debug('Found _stream_data__host_ = ' + str(_stream_data__host_))
+#      _stream_data__host_ = re.findall('//(.+?)/', _metadata_url_, re.IGNORECASE|re.DOTALL)[0]
+#      common_vars.__logger__.debug('Found _stream_data__host_ = ' + str(_stream_data__host_))
 #
-#    # Get the stream data
-#    # Setup headers for the request
-#    MyHeaders = {
-#      'Host': _stream_data__host_,
-#      'Referer': 'https://protvplus.ro',
-#      'User-Agent': common_vars.__protvplus_userAgent__,
-#      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-#      'Accept-Language': 'en-US',
-#      'Accept-Encoding': 'identity',
-#      'Connection': 'keep-alive',
-#      'Upgrade-Insecure-Requests': '1',
-#      'Cache-Control': 'max-age=0',
-#      #'Authorization': 'Bearer ' + _auth_['data']['bearer']
-#    }
+#      # Get the stream data
+#      # Setup headers for the request
+#      MyHeaders = {
+#        'Host': _stream_data__host_,
+#        'Referer': 'https://protvplus.ro',
+#        'User-Agent': common_vars.__protvplus_userAgent__,
+#        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+#        'Accept-Language': 'en-US',
+#        'Accept-Encoding': 'identity',
+#        'Connection': 'keep-alive',
+#        'Upgrade-Insecure-Requests': '1',
+#        'Cache-Control': 'max-age=0',
+#        #'Authorization': 'Bearer ' + _auth_['data']['bearer']
+#      }
 #
-#    common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
-#    common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
-#    common_vars.__logger__.debug('URL: ' + _metadata_url_)
-#    common_vars.__logger__.debug('Method: GET')
+#      common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
+#      common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+#      common_vars.__logger__.debug('URL: ' + _metadata_url_)
+#      common_vars.__logger__.debug('Method: GET')
 #
-#    # Send the GET request
-#    _request_ = SESSION.get(_metadata_url_, headers=MyHeaders)
+#      # Send the GET request
+#      _request_ = SESSION.get(_metadata_url_, headers=MyHeaders)
 #
-#    # Save cookies for later use.
-#    COOKIEJAR.save(ignore_discard=True)
+#      # Save cookies for later use.
+#      COOKIEJAR.save(ignore_discard=True)
 
-#    common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
-#    common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
-#    common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
-#    common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+#      common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+#      common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
+#      common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+#      common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
 
-    _metadata_url_ = CHANNEL_ENDPOINT
-    common_vars.__logger__.debug('_metadata_url_ = ' + str(_metadata_url_))
+      _metadata_url_ = CHANNEL_ENDPOINT
+      common_vars.__logger__.debug('_metadata_url_ = ' + str(_metadata_url_))
+
+      _stream_data__host_ = re.findall('//(.+?)/', _metadata_url_, re.IGNORECASE|re.DOTALL)[0]
+      common_vars.__logger__.debug('Found _stream_data__host_ = ' + str(_stream_data__host_))
+
+      _raw_stream_data_ = re.findall('\'player-1\', processAdTagModifier\((.+?)\), {"video"', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
+      common_vars.__logger__.debug('Found _raw_stream_data_ = ' + str(_raw_stream_data_))
     
-    _stream_data__host_ = re.findall('//(.+?)/', _metadata_url_, re.IGNORECASE|re.DOTALL)[0]
-    common_vars.__logger__.debug('Found _stream_data__host_ = ' + str(_stream_data__host_))
+      _stream_data_ = json.loads(_raw_stream_data_)
+      common_vars.__logger__.debug('_stream_data_ = ' + str(_stream_data_))
 
-    _raw_stream_data_ = re.findall('\'player-1\', processAdTagModifier\((.+?)\), {"video"', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
-    common_vars.__logger__.debug('Found _raw_stream_data_ = ' + str(_raw_stream_data_))
-    
-    _stream_data_ = json.loads(_raw_stream_data_)
-    common_vars.__logger__.debug('_stream_data_ = ' + str(_stream_data_))
-    
-    _stream_manifest_url_ = _stream_data_['tracks']['HLS'][0]['src']
-    common_vars.__logger__.debug('Found _stream_manifest_url_ = ' + _stream_manifest_url_)
+      _stream_manifest_url_ = _stream_data_['tracks']['HLS'][0]['src']
+      common_vars.__logger__.debug('Found _stream_manifest_url_ = ' + _stream_manifest_url_)
 
-    _stream_manifest_host_ = re.findall('//(.+?)/', _stream_manifest_url_, re.IGNORECASE|re.DOTALL)[0]
-    common_vars.__logger__.debug('Found _stream_manifest_host_ = ' + _stream_manifest_host_)
+      _stream_manifest_host_ = re.findall('//(.+?)/', _stream_manifest_url_, re.IGNORECASE|re.DOTALL)[0]
+      common_vars.__logger__.debug('Found _stream_manifest_host_ = ' + _stream_manifest_host_)
 
-    # Set the headers to be used with imputstream.adaptive
-    _headers_ = ''
-    _headers_ = _headers_ + '&Host=' + _stream_manifest_host_
-    _headers_ = _headers_ + '&Origin=https://' + _stream_data__host_
-    _headers_ = _headers_ + '&Referer=https://' + _stream_data__host_ + '/'
-    _headers_ = _headers_ + '&User-Agent=' + common_vars.__voyo_userAgent__
-    _headers_ = _headers_ + '&Connection=keep-alive'
-    _headers_ = _headers_ + '&Accept-Language=en-US'
-    _headers_ = _headers_ + '&Accept=*/*'
-    _headers_ = _headers_ + '&Accept-Encoding=identity'
-    common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
+      # Set the headers to be used with imputstream.adaptive
+      _headers_ = ''
+      _headers_ = _headers_ + '&Host=' + _stream_manifest_host_
+      _headers_ = _headers_ + '&Origin=https://' + _stream_data__host_
+      _headers_ = _headers_ + '&Referer=https://' + _stream_data__host_ + '/'
+      _headers_ = _headers_ + '&User-Agent=' + common_vars.__voyo_userAgent__
+      _headers_ = _headers_ + '&Connection=keep-alive'
+      _headers_ = _headers_ + '&Accept-Language=en-US'
+      _headers_ = _headers_ + '&Accept=*/*'
+      _headers_ = _headers_ + '&Accept-Encoding=identity'
+      common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
 
-    # Create a playable item with a path to play.
-    # See:  https://github.com/peak3d/inputstream.adaptive/issues/131#issuecomment-375059796
-    is_helper = inputstreamhelper.Helper('hls')
-    if is_helper.check_inputstream():
-      play_item = xbmcgui.ListItem(path=_stream_manifest_url_ + '|' + _headers_)
-      play_item.setProperty('inputstream', 'inputstream.adaptive')
-      play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
-      play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-      play_item.setMimeType('application/vnd.apple.mpegurl')
-      play_item.setContentLookup(False)
+      # Create a playable item with a path to play.
+      # See:  https://github.com/peak3d/inputstream.adaptive/issues/131#issuecomment-375059796
+      is_helper = inputstreamhelper.Helper('hls')
+      if is_helper.check_inputstream():
+        play_item = xbmcgui.ListItem(path=_stream_manifest_url_ + '|' + _headers_)
+        play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        play_item.setMimeType('application/vnd.apple.mpegurl')
+        play_item.setContentLookup(False)
 
-      # Pass the item to the Kodi player.
-      xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
+        # Pass the item to the Kodi player.
+        xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
 
   common_vars.__logger__.debug('Exit function')
  
