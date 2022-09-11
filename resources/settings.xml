@@ -30,10 +30,10 @@
     <setting id="digionline_DeviceManufacturer" label="Device Maufacturer" type="text" default="__DEFAULT_DEVICE_MAUFACTURER__" subsetting="true" visible="eq(-3,true)"/>
     <setting id="digionline_DeviceModel" label="Device Model" type="text" default="__DEFAULT_DEVICE_MODEL__" subsetting="true" visible="eq(-4,true)"/>
     <setting id="digionline_AndroidVersion" label="Android Version" type="text" default="__DEFAULT_ANDROID_VERSION__" subsetting="true" visible="eq(-5,true)"/>
-    <setting label="protvplus.ro" type="lsep"/>
-    <setting id="protvplus_Enabled" label="Enabled" type="bool" default="false"/>
-    <setting id="protvplus_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
-    <setting id="protvplus_Password" label="Password" type="text" default="__DEFAULT_PASSWORD__" option="hidden" subsetting="true" visible="eq(-2,true)"/>
+    <setting label="voyo.ro" type="lsep"/>
+    <setting id="voyo_Enabled" label="Enabled" type="bool" default="false"/>
+    <setting id="voyo_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
+    <setting id="voyo_Password" label="Password" type="text" default="__DEFAULT_PASSWORD__" option="hidden" subsetting="true" visible="eq(-2,true)"/>
   </category>
   <category label="General settings">
     <setting label="Display" type="lsep"/>

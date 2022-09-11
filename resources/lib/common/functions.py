@@ -35,6 +35,7 @@ def read_AddonSettings(__MyAddon__, NAME):
   # Read the user preferences stored in the addon configuration
 
   # Accounts
+  # digionline.ro
   common_vars.__config_digionline_Enabled__ = __MyAddon__.getSetting('digionline_Enabled')
   common_vars.__logger__.debug('[ Addon settings ] digionline_Enabled = ' + str(common_vars.__config_digionline_Enabled__))
 
@@ -50,10 +51,12 @@ def read_AddonSettings(__MyAddon__, NAME):
   common_vars.__config_digionline_AndroidVersion__ = __MyAddon__.getSetting('digionline_AndroidVersion')
   common_vars.__logger__.debug('[ Addon settings ] digionline_AndroidVersion = ' + str(common_vars.__config_digionline_AndroidVersion__))
 
-  common_vars.__config_protvplus_Enabled__ = __MyAddon__.getSetting('protvplus_Enabled')
-  common_vars.__logger__.debug('[ Addon settings ] protvplus_Enabled = ' + str(common_vars.__config_protvplus_Enabled__))
-  common_vars.__config_protvplus_Username__ = __MyAddon__.getSetting('protvplus_Username')
-  common_vars.__config_protvplus_Password__ = __MyAddon__.getSetting('protvplus_Password')
+  # voyo.ro
+  common_vars.__config_voyo_Enabled__ = __MyAddon__.getSetting('voyo_Enabled')
+  common_vars.__logger__.debug('[ Addon settings ] voyo_Enabled = ' + str(common_vars.__config_voyo_Enabled__))
+  common_vars.__config_voyo_Username__ = __MyAddon__.getSetting('voyo_Username')
+  common_vars.__config_voyo_Password__ = __MyAddon__.getSetting('voyo_Password')
+
 
   # General settings
   common_vars.__config_ShowTitleInChannelList__ = __MyAddon__.getSetting('ShowTitleInChannelList')
@@ -95,8 +98,8 @@ def has_accounts_enabled():
     common_vars.__logger__.debug('[ Addon settings ] digionline_Enabled = ' + str(common_vars.__config_digionline_Enabled__))
     _answer_ = 'true'
     
-  if common_vars.__config_protvplus_Enabled__ == 'true':
-    common_vars.__logger__.debug('[ Addon settings ] protvplus_Enabled = ' + str(common_vars.__config_protvplus_Enabled__))
+  if common_vars.__config_voyo_Enabled__ == 'true':
+    common_vars.__logger__.debug('[ Addon settings ] voyo_Enabled = ' + str(common_vars.__config_voyo_Enabled__))
     _answer_ = 'true'
 
   return _answer_

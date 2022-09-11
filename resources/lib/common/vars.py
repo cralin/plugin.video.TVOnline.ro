@@ -28,9 +28,9 @@ __config_digionline_DeviceManufacturer__ = ''
 __config_digionline_DeviceModel__ = ''
 __config_digionline_AndroidVersion__ = ''
 
-__config_protvplus_Enabled__ = ''
-__config_protvplus_Username__ = ''
-__config_protvplus_Password__ = ''
+__config_voyo_Enabled__ = ''
+__config_voyo_Username__ = ''
+__config_voyo_Password__ = ''
 
 # General settings
 __config_ShowTitleInChannelList__ = ''
@@ -53,8 +53,7 @@ __config_PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime__ = ''
 # UserAgent exposed by this add-on
 __digionline_API_userAgent__ = 'okhttp/4.8.1'
 __digionline_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
-__protvplus_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
-
+__voyo_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
 
 # The IDs used by add-on
 __AddonID__ = 'plugin.video.TVOnline.ro'
@@ -68,8 +67,8 @@ __ServiceLogFilename__ = __ServiceID__ + '.log'
 __digionline_CookiesFilename__ = 'digionline.ro_cookies.txt'
 __digionline_CookieJar__ = ''
 
-__protvplus_CookiesFilename__ = 'protvplus.ro_cookies.txt'
-__protvplus_CookieJar__ = ''
+__voyo_CookiesFilename__ = 'voyo.ro_cookies.txt'
+__voyo_CookieJar__ = ''
 
 # File name for storing the state data
 __digionline_StateFilename__ = 'digionline.ro_state.txt'
@@ -77,10 +76,10 @@ __digionline_StateFilename__ = 'digionline.ro_state.txt'
 
 # The sessions used by add-on
 __digionline_Session__ = ''
-__protvplus_Session__ = ''
+__voyo_Session__ = ''
 
 __digionline_ServiceSession__ = ''
-__protvplus_ServiceSession__ = ''
+__voyo_ServiceSession__ = ''
 
 # The plugin url in plugin:// notation.
 __plugin_url__ = ''
@@ -101,16 +100,14 @@ __digionline_AuthInterval__ = (1 * __day__)
 
 # Directory holding the cached data. 
 __digionline_cache_dir__ = 'cached_data/digionline.ro'
-__protvplus_cache_dir__ = 'cached_data/protvplus.ro'
-
+__voyo_cache_dir__ = 'cached_data/voyo.ro'
 
 # File names for the raw data
 __PVRIPTVSimpleClientIntegration_digionline_raw_m3u_FileName__ = __AddonID__ + 'digionline.m3u.raw'
 __PVRIPTVSimpleClientIntegration__digionline_raw_EPG_FileName__ = __AddonID__ + 'digionline.xml.raw'
  
-__PVRIPTVSimpleClientIntegration_protvplus_raw_m3u_FileName__ = __AddonID__ + 'protvplus.m3u.raw'
-__PVRIPTVSimpleClientIntegration__protvplus_raw_EPG_FileName__ = __AddonID__ + 'protvplus.xml.raw'
-
+__PVRIPTVSimpleClientIntegration_voyo_raw_m3u_FileName__ = __AddonID__ + 'voyo.m3u.raw'
+__PVRIPTVSimpleClientIntegration__voyo_raw_EPG_FileName__ = __AddonID__ + 'voyo.xml.raw'
 
 # File containing the local copy of the list of categories and channels read from source
 __digionline_categorieschannelsCachedDataFilename__ = 'categorieschannels.json'

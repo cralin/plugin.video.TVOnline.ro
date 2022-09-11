@@ -32,7 +32,7 @@ import time
 import resources.lib.common.vars as common_vars
 import resources.lib.common.functions as common_functions
 import resources.lib.digionline.functions as digionline_functions
-import resources.lib.protvplus.functions as protvplus_functions
+import resources.lib.voyo.functions as voyo_functions
 import resources.lib.schedule as schedule
 import re
 
@@ -94,17 +94,15 @@ common_vars.__logger__.addHandler(handler)
 
 # Initialize the __AddonCookieJar__ variable
 digionline_functions.init_AddonCookieJar(common_vars.__ServiceID__, MyServiceAddon_DataDir)
-protvplus_functions.init_AddonCookieJar(common_vars.__ServiceID__, MyServiceAddon_DataDir)
+voyo_functions.init_AddonCookieJar(common_vars.__ServiceID__, MyServiceAddon_DataDir)
 
 # Start a new requests session and initialize the cookiejar
 common_vars.__digionline_ServiceSession__ = requests.Session()
-common_vars.__protvplus_ServiceSession__ = requests.Session()
+common_vars.__voyo_ServiceSession__ = requests.Session()
 
 # Put all session cookeis in the cookiejar
 common_vars.__digionline_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
-common_vars.__protvplus_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
-
-
+common_vars.__voyo_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
 
 
 def schedule_jobs():
@@ -237,12 +235,12 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file():
 
     common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
 
-    # protvplus.ro
-    if common_vars.__config_protvplus_Enabled__ == 'true':
-      _current_channel_number_ = protvplus_functions.PVRIPTVSimpleClientIntegration_update_m3u_file(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_ServiceSession__)
+    # voyo.ro
+    if common_vars.__config_voyo_Enabled__ == 'true':
+      _current_channel_number_ = voyo_functions.PVRIPTVSimpleClientIntegration_update_m3u_file(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_ServiceSession__)
 
     common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
- 
+
     os.replace(_tmp_m3u_file_, _m3u_file_)
 
   else:
@@ -301,8 +299,8 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
     if common_vars.__config_digionline_Enabled__ == 'true':
       digionline_functions.digionline__updateEPGfile(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
 
-    if common_vars.__config_protvplus_Enabled__ == 'true':
-      protvplus_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__protvplus_CookieJar__, common_vars.__protvplus_ServiceSession__)
+#    if common_vars.__config_voyo_Enabled__ == 'true':
+#      voyo_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_ServiceSession__)
 
     _data_file_ = open(_tmp_epg_file_, 'a', encoding='utf-8')
     _data_file_.write("</tv>" + "\n")
