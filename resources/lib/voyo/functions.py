@@ -237,16 +237,13 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
   # Check for valid subscription
   __no_valid_subscription__ = False
   
-  if not _auth_['data']['is_subscribed']:
+  if _auth_['data']['is_subscribed']:
+    common_vars.__logger__.info('_auth_[data][is_subscribed] = ' + str(_auth_['data']['is_subscribed']))
+    common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
+  else:
     __no_valid_subscription__ = True
     common_vars.__logger__.info('_auth_[data][is_subscribed] = ' + str(_auth_['data']['is_subscribed']))
     common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
-
-  else:
-    if not _auth_['data']['is_trial']:
-      __no_valid_subscription__ = True
-      common_vars.__logger__.info('_auth_[data][is_trial] = ' + str(_auth_['data']['is_trial']))
-      common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
 
   # End check for valid subscription
     
