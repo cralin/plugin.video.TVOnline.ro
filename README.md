@@ -20,7 +20,7 @@ Parts of or the entire add-on could break and/or not work anymore at any given t
   | Name | Platform URL | User account required |
   | :---: | :---: | :---: |
   | DIGI Online | [https://www.digionline.ro](https://www.digionline.ro) | Yes |
-  | PRO TV PLUS | [https://protvplus.ro](https://protvplus.ro) | Yes |
+  | Voyo | [https://voyo.protv.ro](https://voyo.protv.ro) | Yes |
 
 
 
