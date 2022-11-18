@@ -42,14 +42,14 @@ def read_AddonSettings(__MyAddon__, NAME):
   common_vars.__config_digionline_Username__ = __MyAddon__.getSetting('digionline_Username')
   common_vars.__config_digionline_Password__ = __MyAddon__.getSetting('digionline_Password')
 
-  common_vars.__config_digionline_DeviceManufacturer__ = __MyAddon__.getSetting('digionline_DeviceManufacturer')
-  common_vars.__logger__.debug('[ Addon settings ] digionline_DeviceManufacturer = ' + str(common_vars.__config_digionline_DeviceManufacturer__))
+  common_vars.__config_digionline_PhoneDeviceManufacturer__ = __MyAddon__.getSetting('digionline_PhoneDeviceManufacturer')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_PhoneDeviceManufacturer = ' + str(common_vars.__config_digionline_PhoneDeviceManufacturer__))
 
-  common_vars.__config_digionline_DeviceModel__ = __MyAddon__.getSetting('digionline_DeviceModel')
-  common_vars.__logger__.debug('[ Addon settings ] digionline_DeviceModel = ' + str(common_vars.__config_digionline_DeviceModel__))
+  common_vars.__config_digionline_PhoneDeviceModel__ = __MyAddon__.getSetting('digionline_PhoneDeviceModel')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_PhoneDeviceModel = ' + str(common_vars.__config_digionline_PhoneDeviceModel__))
 
-  common_vars.__config_digionline_AndroidVersion__ = __MyAddon__.getSetting('digionline_AndroidVersion')
-  common_vars.__logger__.debug('[ Addon settings ] digionline_AndroidVersion = ' + str(common_vars.__config_digionline_AndroidVersion__))
+  common_vars.__config_digionline_PhoneAndroidVersion__ = __MyAddon__.getSetting('digionline_PhoneAndroidVersion')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_PhoneAndroidVersion = ' + str(common_vars.__config_digionline_PhoneAndroidVersion__))
 
   # voyo.ro
   common_vars.__config_voyo_Enabled__ = __MyAddon__.getSetting('voyo_Enabled')

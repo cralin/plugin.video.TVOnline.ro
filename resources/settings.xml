@@ -21,29 +21,227 @@
 #
 -->
 
-<settings>
-  <category label="Accounts">
-      <setting label="DigiOnline.ro" type="lsep"/>
-    <setting id="digionline_Enabled" label="Enabled" type="bool" default="false"/>
-    <setting id="digionline_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
-    <setting id="digionline_Password" label="Password" type="text" default="__DEFAULT_PASSWORD__" option="hidden" subsetting="true" visible="eq(-2,true)"/>
-    <setting id="digionline_DeviceManufacturer" label="Device Maufacturer" type="text" default="__DEFAULT_DEVICE_MAUFACTURER__" subsetting="true" visible="eq(-3,true)"/>
-    <setting id="digionline_DeviceModel" label="Device Model" type="text" default="__DEFAULT_DEVICE_MODEL__" subsetting="true" visible="eq(-4,true)"/>
-    <setting id="digionline_AndroidVersion" label="Android Version" type="text" default="__DEFAULT_ANDROID_VERSION__" subsetting="true" visible="eq(-5,true)"/>
-    <setting label="voyo.ro" type="lsep"/>
-    <setting id="voyo_Enabled" label="Enabled" type="bool" default="false"/>
-    <setting id="voyo_Username" label="Username" type="text" default="__DEFAULT_USER__" subsetting="true" visible="eq(-1,true)"/>
-    <setting id="voyo_Password" label="Password" type="text" default="__DEFAULT_PASSWORD__" option="hidden" subsetting="true" visible="eq(-2,true)"/>
-  </category>
-  <category label="General settings">
-    <setting label="Display" type="lsep"/>
-    <setting id="ShowTitleInChannelList" label="Show program title in channel list" type="bool" default="false"/>
-    <setting id="DebugEnabled" label="Enable debug logging" type="bool" default="false"/>
-  </category>
-  <category label="Simple PVR integration">
-    <setting label="Data file(s)" type="lsep"/>
-    <setting id="PVRIPTVSimpleClientIntegration_m3u_FileRefreshTime" label="Update m3u file, daily at" type="time" default="00:05"/>
-    <setting id="PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime" label="Update XML file, daily at" type="time" default="00:10"/>
-  </category>
+<settings version="1">
+  <section id="plugin.video.TVOnline.ro">
+    <category id="Accounts" label="30101" help="">
+      <group id="DigiOnline.ro" label="30102">  
+        <setting id="digionline_Enabled" type="boolean" label="30103" help="">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="digionline_Username" type="string" label="30104" help="" parent="digionline_Enabled">
+          <level>0</level>
+          <default>__DEFAULT_USER__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30104</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="digionline_Enabled">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="digionline_Password" type="string" label="30105" help="" parent="digionline_Enabled">
+          <level>0</level>
+          <default>__DEFAULT_PASSWORD__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30105</heading>
+            <hidden>true</hidden>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="digionline_Enabled">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="digionline_BehaveAs" type="integer" label="30118" help="" parent="digionline_Enabled">
+          <level>0</level>
+          <default>0</default>
+            <constraints>
+              <options>
+                <option label="Android Phone">0</option>
+                <option label="Android TV">1</option>
+              </options>
+            </constraints>
+            <control type="spinner" format="string"/>
+          <dependencies>
+            <dependency type="visible" setting="digionline_Enabled">true</dependency>
+          </dependencies>
+          </setting>
+        <setting id="digionline_PhoneDeviceManufacturer" type="string" label="30106" help="" parent="digionline_BehaveAs">
+          <level>0</level>
+          <default>__DEFAULT_DEVICE_MAUFACTURER__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30106</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="digionline_Enabled">true</condition>
+                <condition setting="digionline_BehaveAs">0</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="digionline_PhoneDeviceModel" type="string" label="30107" help="" parent="digionline_BehaveAs">
+          <level>0</level>
+          <default>__DEFAULT_DEVICE_MODEL__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30107</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="digionline_Enabled">true</condition>
+                <condition setting="digionline_BehaveAs">0</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="digionline_PhoneAndroidVersion" type="string" label="30108" help="" parent="digionline_BehaveAs">
+          <level>0</level>
+          <default>__DEFAULT_ANDROID_VERSION__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30108</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="digionline_Enabled">true</condition>
+                <condition setting="digionline_BehaveAs">0</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="digionline_TVDeviceModel" type="string" label="30119" help="" parent="digionline_BehaveAs">
+          <level>0</level>
+          <default>__DEFAULT_DEVICE_MODEL__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30119</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="digionline_Enabled">true</condition>
+                <condition setting="digionline_BehaveAs">1</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+        <setting id="digionline_TVAndroidVersion" type="string" label="30120" help="" parent="digionline_BehaveAs">
+          <level>0</level>
+          <default>__DEFAULT_ANDROID_VERSION__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30120</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition setting="digionline_Enabled">true</condition>
+                <condition setting="digionline_BehaveAs">1</condition>
+              </and>
+            </dependency>
+          </dependencies>
+        </setting>
+
+        <setting id="digionline_TVPlatform" type="string" label="30121" help="" parent="digionline_BehaveAs">
+          <level>0</level>
+          <default>Android</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30121</heading>
+          </control>
+          <visible>false</visible>
+        </setting>
+
+      </group>
+      <group id="voyo.ro" label="30109">
+        <setting id="voyo_Enabled" type="boolean" label="30103" help="">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="voyo_Username" type="string" label="30104" help="" parent="voyo_Enabled">
+          <level>0</level>
+          <default>__DEFAULT_USER__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30104</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="voyo_Enabled">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="voyo_Password" type="string" label="30105" help="" parent="voyo_Enabled">
+          <level>0</level>
+          <default>__DEFAULT_PASSWORD__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30105</heading>
+            <hidden>true</hidden>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="voyo_Enabled">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+    </category>
+    <category id="GeneralSettings" label="30110" help="">
+      <group id="Display" label="30111">
+        <setting id="ShowTitleInChannelList" type="boolean" label="30112" help="">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="DebugEnabled" type="boolean" label="30113" help="">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+    </category>
+    <category id="SimplePVRIntegration" label="30114" help="">
+      <group id="DataFiles" label="30115">
+        <setting id="PVRIPTVSimpleClientIntegration_m3u_FileRefreshTime" type="time" label="30116" help="">
+          <level>0</level>
+          <default>00:05</default>
+          <control type="button" format="time">
+            <heading>30116</heading>
+          </control>
+        </setting>
+        <setting id="PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime" type="time" label="30117" help="">
+          <level>0</level>
+          <default>00:10</default>
+          <control type="button" format="time">
+            <heading>30117</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
 

@@ -24,9 +24,12 @@
 __config_digionline_Enabled__ = ''
 __config_digionline_Username__ = ''
 __config_digionline_Password__ = ''
-__config_digionline_DeviceManufacturer__ = ''
-__config_digionline_DeviceModel__ = ''
-__config_digionline_AndroidVersion__ = ''
+__config_digionline_PhoneDeviceManufacturer__ = ''
+__config_digionline_PhoneDeviceModel__ = ''
+__config_digionline_PhoneAndroidVersion__ = ''
+__config_digionline_TVDeviceModel__ = ''
+__config_digionline_TVAndroidVersion__ = ''
+__config_digionline_TVPlatform__ = ''
 
 __config_voyo_Enabled__ = ''
 __config_voyo_Username__ = ''
@@ -70,8 +73,14 @@ __digionline_CookieJar__ = ''
 __voyo_CookiesFilename__ = 'voyo.ro_cookies.txt'
 __voyo_CookieJar__ = ''
 
-# File name for storing the state data
-__digionline_StateFilename__ = 'digionline.ro_state.txt'
+# Legacy file name for storing the state data
+__digionline_LegacyStateFilename__ = 'digionline.ro_state.txt'
+
+# File name for storing the state data when behaving as Android phone
+__digionline_PhoneStateFilename__ = 'digionline.ro_PhoneState.txt'
+
+# File name for storing the state data when behaving as Android TV
+__digionline_TVStateFilename__ = 'digionline.ro_TVState.txt'
 
 
 # The sessions used by add-on

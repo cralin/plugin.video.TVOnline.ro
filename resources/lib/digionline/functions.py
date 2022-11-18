@@ -90,27 +90,27 @@ def digionline__check_DefaultUserSettings(NAME):
     __ret__ = 1
     common_vars.__logger__.debug('5. __ret__ = ' + str(__ret__))
      
-  if str(common_vars.__config_digionline_DeviceManufacturer__) == "__DEFAULT_DEVICE_MAUFACTURER__":
+  if str(common_vars.__config_digionline_PhoneDeviceManufacturer__) == "__DEFAULT_DEVICE_MAUFACTURER__":
     __ret__ = 1
     common_vars.__logger__.debug('6. __ret__ = ' + str(__ret__))
   
-  if str(common_vars.__config_digionline_DeviceManufacturer__) == "":
+  if str(common_vars.__config_digionline_PhoneDeviceManufacturer__) == "":
     __ret__ = 1
     common_vars.__logger__.debug('7. __ret__ = ' + str(__ret__))
    
-  if str(common_vars.__config_digionline_DeviceModel__) == "__DEFAULT_DEVICE_MODEL__":
+  if str(common_vars.__config_digionline_PhoneDeviceModel__) == "__DEFAULT_DEVICE_MODEL__":
     __ret__ = 1
     common_vars.__logger__.debug('8. __ret__ = ' + str(__ret__))
   
-  if str(common_vars.__config_digionline_DeviceModel__) == "":
+  if str(common_vars.__config_digionline_PhoneDeviceModel__) == "":
     __ret__ = 1
     common_vars.__logger__.debug('9. __ret__ = ' + str(__ret__))
    
-  if str(common_vars.__config_digionline_AndroidVersion__) == "__DEFAULT_ANDROID_DEVICE__":
+  if str(common_vars.__config_digionline_PhoneAndroidVersion__) == "__DEFAULT_ANDROID_DEVICE__":
     __ret__ = 1
     common_vars.__logger__.debug('10. __ret__ = ' + str(__ret__))
   
-  if str(common_vars.__config_digionline_AndroidVersion__) == "":
+  if str(common_vars.__config_digionline_PhoneAndroidVersion__) == "":
     __ret__ = 1
     common_vars.__logger__.debug('11. __ret__ = ' + str(__ret__))
 
@@ -124,7 +124,7 @@ def digionline__write_stateData(STATE_DATA, NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  __state_file__ = os.path.join(DATA_DIR, common_vars.__digionline_StateFilename__)
+  __state_file__ = os.path.join(DATA_DIR, common_vars.__digionline_PhoneStateFilename__)
   common_vars.__logger__.debug('Writting to \'' + __state_file__ +'\'')
   _file_ = open(__state_file__, 'w')
   json.dump(STATE_DATA, _file_)
@@ -135,8 +135,16 @@ def digionline__read_stateData(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  __state_file__ = os.path.join(DATA_DIR, common_vars.__digionline_StateFilename__)
+  __legacy_state_file__ = os.path.join(DATA_DIR, common_vars.__digionline_LegacyStateFilename__)
+  __state_file__ = os.path.join(DATA_DIR, common_vars.__digionline_PhoneStateFilename__)
   
+  if not os.path.exists(__state_file__) and os.path.exists(__legacy_state_file__):
+    common_vars.__logger__.debug('\'' + __state_file__ + '\' does not exist.')
+    common_vars.__logger__.debug('\'' + __legacy_state_file__ + '\' exists.')
+    common_vars.__logger__.debug('Rename: \'' + __legacy_state_file__ + '\' -> \'' + __state_file__ + '\'')
+    
+    os.replace(__legacy_state_file__, __state_file__)
+    
   if not os.path.exists(__state_file__) or os.path.getsize(__state_file__) == 0:
     common_vars.__logger__.debug('\'' + __state_file__ +'\' does not exist or it is empty.')
     
@@ -208,17 +216,17 @@ def digionline__init(NAME, DATA_DIR):
       __rsd__['state_data']['deviceID'] = digionline_functions.digionline__generateDeviceID(NAME)
       common_vars.__logger__.debug('deviceID = ' + __rsd__['state_data']['deviceID'])
       
-      __deviceManufacturer__ = re.sub("\\W", "_", common_vars.__config_digionline_DeviceManufacturer__)
+      __deviceManufacturer__ = re.sub("\\W", "_", common_vars.__config_digionline_PhoneDeviceManufacturer__)
       __deviceManufacturer__ = re.sub("[^\\x00-\\x7F]", "_", __deviceManufacturer__)
       common_vars.__logger__.debug('deviceManufacturer = ' + __deviceManufacturer__)
       __rsd__['state_data']['deviceManufacturer'] = __deviceManufacturer__
 
-      __deviceModel__ = re.sub("\\W", "_", common_vars.__config_digionline_DeviceModel__)
+      __deviceModel__ = re.sub("\\W", "_", common_vars.__config_digionline_PhoneDeviceModel__)
       __deviceModel__ = re.sub("[^\\x00-\\x7F]", "_", __deviceModel__)
       common_vars.__logger__.debug('deviceModel = ' + __deviceModel__)
       __rsd__['state_data']['deviceModel'] = __deviceModel__
       
-      __androidVersion__ = re.sub("\\W", "_", common_vars.__config_digionline_AndroidVersion__)
+      __androidVersion__ = re.sub("\\W", "_", common_vars.__config_digionline_PhoneAndroidVersion__)
       __androidVersion__ = re.sub("[^\\x00-\\x7F]", "_", __androidVersion__)
       __androidVersion__ = 'REL_' + __androidVersion__
       common_vars.__logger__.debug('__androidVersion__ = ' + __androidVersion__)
@@ -233,7 +241,7 @@ def digionline__generateDeviceID(NAME):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  __section_1__ = common_vars.__config_digionline_DeviceManufacturer__ + "_" + common_vars.__config_digionline_DeviceModel__ + "_" + str(int(time.time()))
+  __section_1__ = common_vars.__config_digionline_PhoneDeviceManufacturer__ + "_" + common_vars.__config_digionline_PhoneDeviceModel__ + "_" + str(int(time.time()))
   __section_1__ = re.sub("\\W", "_", __section_1__)
   __section_1__ = re.sub("[^\\x00-\\x7F]", "_", __section_1__)
   common_vars.__logger__.debug('__section_1__ = ' + __section_1__)
