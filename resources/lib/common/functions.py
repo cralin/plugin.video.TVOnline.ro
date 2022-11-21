@@ -42,6 +42,9 @@ def read_AddonSettings(__MyAddon__, NAME):
   common_vars.__config_digionline_Username__ = __MyAddon__.getSetting('digionline_Username')
   common_vars.__config_digionline_Password__ = __MyAddon__.getSetting('digionline_Password')
 
+  common_vars.__config_digionline_BehaveAs__ = __MyAddon__.getSetting('digionline_BehaveAs')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_BehaveAs = ' + common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__])
+
   common_vars.__config_digionline_PhoneDeviceManufacturer__ = __MyAddon__.getSetting('digionline_PhoneDeviceManufacturer')
   common_vars.__logger__.debug('[ Addon settings ] digionline_PhoneDeviceManufacturer = ' + str(common_vars.__config_digionline_PhoneDeviceManufacturer__))
 
@@ -50,6 +53,16 @@ def read_AddonSettings(__MyAddon__, NAME):
 
   common_vars.__config_digionline_PhoneAndroidVersion__ = __MyAddon__.getSetting('digionline_PhoneAndroidVersion')
   common_vars.__logger__.debug('[ Addon settings ] digionline_PhoneAndroidVersion = ' + str(common_vars.__config_digionline_PhoneAndroidVersion__))
+  
+  common_vars.__config_digionline_TVDeviceModel__ = __MyAddon__.getSetting('digionline_TVDeviceModel')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_TVDeviceModel = ' + str(common_vars.__config_digionline_TVDeviceModel__))
+
+  common_vars.__config_digionline_TVAndroidVersion__ = __MyAddon__.getSetting('digionline_TVAndroidVersion')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_TVAndroidVersion = ' + str(common_vars.__config_digionline_TVAndroidVersion__))
+  
+  common_vars.__config_digionline_TVPlatform__ = __MyAddon__.getSetting('digionline_TVPlatform')
+  common_vars.__logger__.debug('[ Addon settings ] digionline_TVPlatform = ' + str(common_vars.__config_digionline_TVPlatform__))
+
 
   # voyo.ro
   common_vars.__config_voyo_Enabled__ = __MyAddon__.getSetting('voyo_Enabled')

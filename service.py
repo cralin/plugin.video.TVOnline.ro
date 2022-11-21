@@ -231,7 +231,7 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file():
   
     # digionline.ro
     if common_vars.__config_digionline_Enabled__ == 'true':
-      _current_channel_number_ = digionline_functions.digionline__updateM3Ufile(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+      _current_channel_number_ = digionline_functions.digionline__phone_updateM3Ufile(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
 
     common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
 
@@ -297,7 +297,7 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
     _data_file_.close()
   
     if common_vars.__config_digionline_Enabled__ == 'true':
-      digionline_functions.digionline__updateEPGfile(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+      digionline_functions.digionline__phone_updateEPGfile(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
 
 #    if common_vars.__config_voyo_Enabled__ == 'true':
 #      voyo_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_ServiceSession__)

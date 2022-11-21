@@ -27,6 +27,7 @@ __config_digionline_Password__ = ''
 __config_digionline_PhoneDeviceManufacturer__ = ''
 __config_digionline_PhoneDeviceModel__ = ''
 __config_digionline_PhoneAndroidVersion__ = ''
+
 __config_digionline_TVDeviceModel__ = ''
 __config_digionline_TVAndroidVersion__ = ''
 __config_digionline_TVPlatform__ = ''
@@ -100,7 +101,11 @@ __logger__ = ''
 
 
 
-# Constants
+#### Constants
+__behave_map__ = {}
+__behave_map__['0'] = "Phone"
+__behave_map__['1'] = "TV"
+
 __minute__ = (1 * 60)
 __day__ = (24 * 60 * 60)
 
@@ -119,11 +124,12 @@ __PVRIPTVSimpleClientIntegration_voyo_raw_m3u_FileName__ = __AddonID__ + 'voyo.m
 __PVRIPTVSimpleClientIntegration__voyo_raw_EPG_FileName__ = __AddonID__ + 'voyo.xml.raw'
 
 # File containing the local copy of the list of categories and channels read from source
-__digionline_categorieschannelsCachedDataFilename__ = 'categorieschannels.json'
+__digionline_PhoneCategoriesChannelsCachedDataFilename__ = 'Phone_CategoriesChannels.json'
+__digionline_TVCategoriesChannelsCachedDataFilename__ = 'TV_CategoriesChannels.json'
 
 # File containing the local copy of the epg read from source
-__digionline_epgCachedDataFilename__ = 'epg.json'
-
+__digionline_PhoneEPGCachedDataFilename__ = 'Phone_EPG.json'
+__digionline_TVEPGCachedDataFilename__ = 'TV_EPG.json'
 
 # Some sane defaults before being overwritten by the user settings
 # How much time has to pass before reading again from source the list of categories.

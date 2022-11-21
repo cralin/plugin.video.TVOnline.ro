@@ -32,6 +32,7 @@ import time
 import json
 import uuid
 import hashlib
+import secrets
 import inputstreamhelper
 import resources.lib.common.vars as common_vars
 import resources.lib.common.functions as common_functions
@@ -89,7 +90,9 @@ def digionline__check_DefaultUserSettings(NAME):
   if str(common_vars.__config_digionline_Password__) == "":
     __ret__ = 1
     common_vars.__logger__.debug('5. __ret__ = ' + str(__ret__))
-     
+
+
+
   if str(common_vars.__config_digionline_PhoneDeviceManufacturer__) == "__DEFAULT_DEVICE_MAUFACTURER__":
     __ret__ = 1
     common_vars.__logger__.debug('6. __ret__ = ' + str(__ret__))
@@ -120,7 +123,7 @@ def digionline__check_DefaultUserSettings(NAME):
   return __ret__
 
 
-def digionline__write_stateData(STATE_DATA, NAME, DATA_DIR):
+def digionline__phone_write_stateData(STATE_DATA, NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -131,7 +134,7 @@ def digionline__write_stateData(STATE_DATA, NAME, DATA_DIR):
   _file_.close()
   
 
-def digionline__read_stateData(NAME, DATA_DIR):
+def digionline__phone_read_stateData(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -169,11 +172,11 @@ def digionline__read_stateData(NAME, DATA_DIR):
   return __ret__
 
 
-def digionline__init_stateData(NAME, DATA_DIR):
+def digionline__phone_init_stateData(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  __rsd__ = digionline__read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
   common_vars.__logger__.debug('__rsd__["exit_status"]: ' + str(__rsd__["exit_status"]))
   
   if __rsd__['exit_status'] != 0:
@@ -194,18 +197,18 @@ def digionline__init_stateData(NAME, DATA_DIR):
     __state_data__['registeredDeviceID'] = ""
     __state_data__['lastAuthTS'] = ""
     
-    digionline__write_stateData(__state_data__, NAME, DATA_DIR)
+    digionline__phone_write_stateData(__state_data__, NAME, DATA_DIR)
   
   common_vars.__logger__.debug('Enter function')
 
 
-def digionline__init(NAME, DATA_DIR):
+def digionline__phone_init(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
-  digionline_functions.digionline__init_stateData(NAME, DATA_DIR)
+  digionline_functions.digionline__phone_init_stateData(NAME, DATA_DIR)
 
-  __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
 
   if __rsd__['state_data']['deviceID'] == "":
     if digionline_functions.digionline__check_DefaultUserSettings(NAME) != 0:
@@ -213,7 +216,7 @@ def digionline__init(NAME, DATA_DIR):
         xbmcgui.Dialog().ok('[digionline.ro] => Incomplete configuration', "Please configure all fields for digionline.ro account.")
         xbmc.executebuiltin("XBMC.Container.Update(path,replace)")
     else:
-      __rsd__['state_data']['deviceID'] = digionline_functions.digionline__generateDeviceID(NAME)
+      __rsd__['state_data']['deviceID'] = digionline_functions.digionline__phone_generateDeviceID(NAME)
       common_vars.__logger__.debug('deviceID = ' + __rsd__['state_data']['deviceID'])
       
       __deviceManufacturer__ = re.sub("\\W", "_", common_vars.__config_digionline_PhoneDeviceManufacturer__)
@@ -232,12 +235,12 @@ def digionline__init(NAME, DATA_DIR):
       common_vars.__logger__.debug('__androidVersion__ = ' + __androidVersion__)
       __rsd__['state_data']['androidVersion'] = __androidVersion__
 
-      digionline_functions.digionline__write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+      digionline_functions.digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   common_vars.__logger__.debug('Exit function')
 
 
-def digionline__generateDeviceID(NAME):
+def digionline__phone_generateDeviceID(NAME):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -261,11 +264,11 @@ def digionline__generateDeviceID(NAME):
   return __ret__
 
 
-def digionline__isUserRegistered(NAME, DATA_DIR):
+def digionline__phone_isUserRegistered(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
-  __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
   _config_pass_hash_ = hashlib.md5(common_vars.__config_digionline_Password__.encode('utf-8')).hexdigest()
   
   if __rsd__['state_data']['registeredUser']['userName'] != common_vars.__config_digionline_Username__ or __rsd__['state_data']['registeredUser']['passwordHash'] != _config_pass_hash_:
@@ -279,7 +282,7 @@ def digionline__isUserRegistered(NAME, DATA_DIR):
     return True
 
 
-def digionline__registerUser(NAME, SESSION, DATA_DIR):
+def digionline__phone_registerUser(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -315,13 +318,13 @@ def digionline__registerUser(NAME, SESSION, DATA_DIR):
   
   if _response_['result']['code'] == '200':
     common_vars.__logger__.debug('Received message: ' + str(_response_['data']['message']))
-    __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+    __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
     __rsd__['state_data']['registeredUser']['userName'] = common_vars.__config_digionline_Username__
     __rsd__['state_data']['registeredUser']['passwordHash'] = _config_pass_hash_
     __rsd__['state_data']['registeredUser']['receivedHash'] = _response_['data']['h']
     __rsd__['state_data']['registeredUser']['registeredTS'] = time.time()
     common_vars.__logger__.debug('State data: ' + str(__rsd__['state_data']))
-    digionline_functions.digionline__write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+    digionline_functions.digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   else:
     common_vars.__logger__.debug('Received message: ' + str(_response_['result']['message']))
@@ -332,11 +335,11 @@ def digionline__registerUser(NAME, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Exit function')
 
 
-def digionline__isDeviceRegistered(NAME, DATA_DIR):
+def digionline__phone_isDeviceRegistered(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
-  __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
   
   if __rsd__['state_data']['registeredDeviceID'] != __rsd__['state_data']['deviceID']:
     # Device not registered
@@ -348,7 +351,7 @@ def digionline__isDeviceRegistered(NAME, DATA_DIR):
     common_vars.__logger__.debug('Exit function')
     return True
 
-def digionline__registerDevice(NAME, SESSION, DATA_DIR):
+def digionline__phone_registerDevice(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -359,7 +362,7 @@ def digionline__registerDevice(NAME, SESSION, DATA_DIR):
     'User-Agent': common_vars.__digionline_API_userAgent__
   }
   
-  __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
   
   # Setup parameters for the request  
   __c__ = hashlib.md5((__rsd__['state_data']['registeredUser']['userName'] + __rsd__['state_data']['registeredUser']['passwordHash'] + __rsd__['state_data']['deviceID'] + __rsd__['state_data']['deviceManufacturer'] + __rsd__['state_data']['deviceModel'] + __rsd__['state_data']['androidVersion'] + __rsd__['state_data']['registeredUser']['receivedHash']).encode('utf-8')).hexdigest()
@@ -394,7 +397,7 @@ def digionline__registerDevice(NAME, SESSION, DATA_DIR):
     __rsd__['state_data']['registeredDeviceID'] = __rsd__['state_data']['deviceID']
     common_vars.__logger__.debug('State data: ' + str(__rsd__['state_data']))
 
-    digionline_functions.digionline__write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+    digionline_functions.digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   else:
     common_vars.__logger__.debug('Received message: ' + str(_response_['result']['message']))
@@ -402,29 +405,29 @@ def digionline__registerDevice(NAME, SESSION, DATA_DIR):
 
   common_vars.__logger__.debug('Exit function')
 
-def digionline__doAuth(NAME, SESSION, DATA_DIR):
+def digionline__phone_doAuth(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
   # Initialize device data
-  digionline_functions.digionline__init(NAME, DATA_DIR)
+  digionline_functions.digionline__phone_init(NAME, DATA_DIR)
 
-  if not digionline_functions.digionline__isUserRegistered(NAME, DATA_DIR):
+  if not digionline_functions.digionline__phone_isUserRegistered(NAME, DATA_DIR):
     common_vars.__logger__.debug('Registering user')
-    digionline_functions.digionline__registerUser(NAME, SESSION, DATA_DIR)
+    digionline_functions.digionline__phone_registerUser(NAME, SESSION, DATA_DIR)
     
-  if digionline_functions.digionline__isUserRegistered(NAME, DATA_DIR) and not digionline__isDeviceRegistered(NAME, DATA_DIR):
+  if digionline_functions.digionline__phone_isUserRegistered(NAME, DATA_DIR) and not digionline__phone_isDeviceRegistered(NAME, DATA_DIR):
     common_vars.__logger__.debug('Registering device')
-    digionline_functions.digionline__registerDevice(NAME, SESSION, DATA_DIR)
+    digionline_functions.digionline__phone_registerDevice(NAME, SESSION, DATA_DIR)
 
   else:
-    __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+    __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
     common_vars.__logger__.debug('\'' + __rsd__['state_data']['registeredUser']['userName'] + '\' already registered at: ' + time.strftime("%Y%m%d_%H%M%S", time.gmtime(__rsd__['state_data']['registeredUser']['registeredTS'])))
 
   common_vars.__logger__.debug('Exit function')
 
 
-def digionline__getStreamDetails(STREAM_ID, NAME, SESSION, DATA_DIR):
+def digionline__phone_getStreamDetails(STREAM_ID, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -435,7 +438,7 @@ def digionline__getStreamDetails(STREAM_ID, NAME, SESSION, DATA_DIR):
     'User-Agent': common_vars.__digionline_API_userAgent__
   }
   
-  __rsd__ = digionline_functions.digionline__read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
   
   # Setup parameters for the request  
   MyParams = {
@@ -467,7 +470,7 @@ def digionline__getStreamDetails(STREAM_ID, NAME, SESSION, DATA_DIR):
   return _response_
 
 
-def digionline__getCategoriesChannels(NAME, SESSION):
+def digionline__phone_getCategoriesChannels(NAME, SESSION):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
@@ -495,17 +498,17 @@ def digionline__getCategoriesChannels(NAME, SESSION):
   return __ret__
   
 
-def digionline__updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR):
+def digionline___phone_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  _catchan_ = digionline__getCategoriesChannels(NAME, SESSION)
+  _catchan_ = digionline__phone_getCategoriesChannels(NAME, SESSION)
   common_vars.__logger__.debug('Received data = ' + str(_catchan_))
 
   if not os.path.exists(DATA_DIR + '/' + common_vars.__digionline_cache_dir__ ):
     os.makedirs(DATA_DIR + '/' + common_vars.__digionline_cache_dir__)
 
-  _cache_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_categorieschannelsCachedDataFilename__)
+  _cache_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_PhoneCategoriesChannelsCachedDataFilename__)
   common_vars.__logger__.debug('Cached data file: ' + _cache_data_file_)
 
   _data_file_ = open(_cache_data_file_, 'w')
@@ -515,11 +518,11 @@ def digionline__updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Exit function')
 
 
-def digionline__getCachedCategories(NAME, SESSION, DATA_DIR):
+def digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_categorieschannelsCachedDataFilename__)
+  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_PhoneCategoriesChannelsCachedDataFilename__)
   common_vars.__logger__.debug('Cached data file: ' + _cached_data_file_)
 
   if os.path.exists(_cached_data_file_) and os.path.getsize(_cached_data_file_) != 0:
@@ -543,7 +546,7 @@ def digionline__getCachedCategories(NAME, SESSION, DATA_DIR):
       
       # Call the function to update the cached data
       common_vars.__logger__.debug('Cached data requires update.')
-      digionline__updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+      digionline___phone_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
 
       common_vars.__logger__.debug('Read cached categories from data file: ' + _cached_data_file_)
       _data_file_ = open(_cached_data_file_, 'r')
@@ -557,7 +560,7 @@ def digionline__getCachedCategories(NAME, SESSION, DATA_DIR):
 
     # Call the function to update the cached data
     common_vars.__logger__.debug('Cached data file does not exist.')
-    digionline__updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+    digionline___phone_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
 
     common_vars.__logger__.debug('Read cached categories from data file: ' + _cached_data_file_)
     _data_file_ = open(_cached_data_file_, 'r')
@@ -571,7 +574,7 @@ def digionline__getCachedCategories(NAME, SESSION, DATA_DIR):
   return __ret__
 
 
-def digionline__listCategories(NAME, SESSION, DATA_DIR):
+def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -582,7 +585,7 @@ def digionline__listCategories(NAME, SESSION, DATA_DIR):
   xbmcplugin.setContent(int(common_vars.__handle__), 'videos')
 
   # Get video categories
-  categories = digionline_functions.digionline__getCachedCategories(NAME, SESSION, DATA_DIR)
+  categories = digionline_functions.digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received categories = ' + str(categories))
 
   for category in categories:
@@ -600,7 +603,7 @@ def digionline__listCategories(NAME, SESSION, DATA_DIR):
 
     # Create a URL for a plugin recursive call.
     # Example: plugin://plugin.video.example/?action=listing&category=filme
-    url = common_functions.get_url(action='list_channels', account='digionline.ro', category_id=category['id_category'], category_name=category['category_name'], channel_list=json.dumps(category['channels_list']))
+    url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', category_id=category['id_category'], category_name=category['category_name'], channel_list=json.dumps(category['channels_list']))
     common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
 
     # This means that this item opens a sub-list of lower level items.
@@ -619,11 +622,11 @@ def digionline__listCategories(NAME, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Exit function')
 
 
-def digionline__getCachedChannels(NAME, SESSION, DATA_DIR):
+def digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_categorieschannelsCachedDataFilename__)
+  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_PhoneCategoriesChannelsCachedDataFilename__)
   common_vars.__logger__.debug('Cached data file: ' + _cached_data_file_)
 
   if os.path.exists(_cached_data_file_) and os.path.getsize(_cached_data_file_) != 0:
@@ -647,7 +650,7 @@ def digionline__getCachedChannels(NAME, SESSION, DATA_DIR):
       
       # Call the function to update the cached data
       common_vars.__logger__.debug('Cached data requires update.')
-      digionline__updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+      digionline___phone_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
 
       common_vars.__logger__.debug('Read cached channels from data file: ' + _cached_data_file_)
       _data_file_ = open(_cached_data_file_, 'r')
@@ -661,7 +664,7 @@ def digionline__getCachedChannels(NAME, SESSION, DATA_DIR):
 
     # Call the function to update the cached data
     common_vars.__logger__.debug('Cached data file does not exist.')
-    digionline__updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+    digionline___phone_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
 
     common_vars.__logger__.debug('Read cached channels from data file: ' + _cached_data_file_)
     _data_file_ = open(_cached_data_file_, 'r')
@@ -675,7 +678,7 @@ def digionline__getCachedChannels(NAME, SESSION, DATA_DIR):
   return __ret__
 
 
-def digionline__listChannels(CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, DATA_DIR):
+def digionline__listChannels(BEHAVE_AS, CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, DATA_DIR):
 
   common_vars.__logger__.debug('Enter function')
   common_vars.__logger__.debug('Called with parameters:  Category name = ' + str(CATEGORY_NAME))
@@ -688,7 +691,7 @@ def digionline__listChannels(CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, DATA_DI
   xbmcplugin.setContent(int(common_vars.__handle__), 'videos')
 
   # Get the list of all cached channels.
-  _cached_channels_ = digionline_functions.digionline__getCachedChannels(NAME, SESSION, DATA_DIR)
+  _cached_channels_ = digionline_functions.digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received cached channels = ' + str(_cached_channels_))
   
   _channel_list_ = json.loads(CHANNEL_LIST)
@@ -723,7 +726,7 @@ def digionline__listChannels(CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, DATA_DI
 
         # Create a URL for a plugin recursive call.
         # Example: plugin://plugin.video.example/?action=play&channel_endpoint=/filme/tnt&channel_metadata=...
-        url = common_functions.get_url(action='play', account='digionline.ro', channel_id=channel['id_channel'])
+        url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='play', channel_id=channel['id_channel'])
         common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
 
         # This means that this item won't open any sub-list.
@@ -741,15 +744,16 @@ def digionline__listChannels(CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, DATA_DI
   common_vars.__logger__.debug('Exit function')
 
 
-def digionline__playVideo(CHANNEL_ID, NAME, SESSION, DATA_DIR):
+def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
+  common_vars.__logger__.debug('Called with parameters: BEHAVE_AS = ' + str(BEHAVE_AS))
   common_vars.__logger__.debug('Called with parameters: CHANNEL_ID = ' + str(CHANNEL_ID))
   
   # Authenticate if needed.
-  digionline_functions.digionline__doAuth(NAME, SESSION, DATA_DIR)
+  digionline_functions.digionline__phone_doAuth(NAME, SESSION, DATA_DIR)
 
-  _stream_details_ = digionline_functions. digionline__getStreamDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
+  _stream_details_ = digionline_functions. digionline__phone_getStreamDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Reveived data: ' + str(_stream_details_))
     
   if _stream_details_['error'] != "":
@@ -825,7 +829,7 @@ def digionline__playVideo(CHANNEL_ID, NAME, SESSION, DATA_DIR):
 
 
 
-def digionline__getEPG(DATE, NAME, SESSION):
+def digionline__phone_getEPG(DATE, NAME, SESSION):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
@@ -858,21 +862,21 @@ def digionline__getEPG(DATE, NAME, SESSION):
   return __ret__
   
 
-def digionline__updateCachedEPG(NAME, SESSION, DATA_DIR):
+def digionline__phone_updateCachedEPG(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
   _today_ = datetime.date(datetime.today())
   common_vars.__logger__.debug('_today_: ' + str(_today_))
-  _epg_today_ = digionline__getEPG(_today_, NAME, SESSION)
+  _epg_today_ = digionline__phone_getEPG(_today_, NAME, SESSION)
   
   _today_plus_1_ = datetime.date(datetime.today()) + timedelta(days=1)
   common_vars.__logger__.debug('_today_plus_1_: ' + str(_today_plus_1_))
-  _epg_today_plus_1_ = digionline__getEPG(_today_plus_1_, NAME, SESSION)
+  _epg_today_plus_1_ = digionline__phone_getEPG(_today_plus_1_, NAME, SESSION)
   
   _today_plus_2_ = datetime.date(datetime.today()) + timedelta(days=2)
   common_vars.__logger__.debug('_today_plus_2_: ' + str(_today_plus_2_))
-  _epg_today_plus_2_ = digionline__getEPG(_today_plus_2_, NAME, SESSION)
+  _epg_today_plus_2_ = digionline__phone_getEPG(_today_plus_2_, NAME, SESSION)
   
   _epg_data_ = []
     
@@ -900,7 +904,7 @@ def digionline__updateCachedEPG(NAME, SESSION, DATA_DIR):
   if not os.path.exists(DATA_DIR + '/' + common_vars.__digionline_cache_dir__ ):
     os.makedirs(DATA_DIR + '/' + common_vars.__digionline_cache_dir__)
 
-  _cache_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_epgCachedDataFilename__)
+  _cache_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_PhoneEPGCachedDataFilename__)
   common_vars.__logger__.debug('Cached data file: ' + _cache_data_file_)
 
   _data_file_ = open(_cache_data_file_, 'w')
@@ -910,11 +914,11 @@ def digionline__updateCachedEPG(NAME, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Exit function')
 
 
-def digionline__getCachedEPG(NAME, SESSION, DATA_DIR):
+def digionline__phone_getCachedEPG(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_epgCachedDataFilename__)
+  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_PhoneEPGCachedDataFilename__)
   common_vars.__logger__.debug('Cached data file: ' + _cached_data_file_)
 
   if os.path.exists(_cached_data_file_) and os.path.getsize(_cached_data_file_) != 0:
@@ -938,7 +942,7 @@ def digionline__getCachedEPG(NAME, SESSION, DATA_DIR):
       
       # Call the function to update the cached data
       common_vars.__logger__.debug('Cached data requires update.')
-      digionline__updateCachedEPG(NAME, SESSION, DATA_DIR)
+      digionline__phone_updateCachedEPG(NAME, SESSION, DATA_DIR)
 
       common_vars.__logger__.debug('Read cached EPG from data file: ' + _cached_data_file_)
       _data_file_ = open(_cached_data_file_, 'r')
@@ -952,7 +956,7 @@ def digionline__getCachedEPG(NAME, SESSION, DATA_DIR):
 
     # Call the function to update the cached data
     common_vars.__logger__.debug('Cached data file does not exist.')
-    digionline__updateCachedEPG(NAME, SESSION, DATA_DIR)
+    digionline__phone_updateCachedEPG(NAME, SESSION, DATA_DIR)
 
     common_vars.__logger__.debug('Read cached EPG from data file: ' + _cached_data_file_)
     _data_file_ = open(_cached_data_file_, 'r')
@@ -967,7 +971,7 @@ def digionline__getCachedEPG(NAME, SESSION, DATA_DIR):
 
 
 
-def digionline__updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
+def digionline__phone_updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
@@ -979,11 +983,11 @@ def digionline__updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
   _data_file_ = open(M3U_FILE, 'a', encoding='utf-8')
 
   # Get the list of categories
-  _categories_ = digionline__getCachedCategories(NAME, SESSION, DATA_DIR)
+  _categories_ = digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received categories = ' + str(_categories_))
   
   # Get the list of channels
-  _channels_ = digionline_functions.digionline__getCachedChannels(NAME, SESSION, DATA_DIR)
+  _channels_ = digionline_functions.digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received channels = ' + str(_channels_))
     
   for category in _categories_:
@@ -999,7 +1003,7 @@ def digionline__updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
         
           _line_ = "#EXTINF:0 tvg-id=\"digionline__" + str(channel['id_channel']) + "\" tvg-name=\"" + channel['channel_desc'] + "\" tvg-logo=\"" + channel['media_channel']['channel_logo_url'] + "\" tvg-chno=\"" + str(_CHNO_) + "\" group-title=\"" + category['category_desc'] + "\"," + channel['channel_desc']
 
-          _url_ = common_functions.get_url(action='play', account='digionline.ro', channel_id=channel['id_channel'])
+          _url_ = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='play', channel_id=channel['id_channel'])
           _play_url_ = "plugin://" + common_vars.__AddonID__ + "/" + _url_
 
           _data_file_.write(_line_ + "\n")
@@ -1014,14 +1018,14 @@ def digionline__updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
   return _CHNO_
 
 
-def digionline__updateEPGfile(XML_FILE, NAME, SESSION, DATA_DIR):
+def digionline__phone_updateEPGfile(XML_FILE, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
   common_vars.__logger__.debug('XML_FILE = ' + XML_FILE)
 
 
-  _epg_data_ = digionline__getCachedEPG(NAME, SESSION, DATA_DIR)
+  _epg_data_ = digionline__phone_getCachedEPG(NAME, SESSION, DATA_DIR)
 #  common_vars.__logger__.debug('_epg_data_ = ' + str(_epg_data_))
 
   _data_file_ = open(XML_FILE, 'a', encoding='utf-8')
@@ -1068,24 +1072,5 @@ def digionline__updateEPGfile(XML_FILE, NAME, SESSION, DATA_DIR):
   _data_file_.close()
 
   common_vars.__logger__.debug('Exit function')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

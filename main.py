@@ -134,8 +134,8 @@ def list_enabled_accounts():
                                 'mediatype': 'video'})
 
     # Create a URL for a plugin recursive call.
-    # Example: plugin://plugin.video.example/?action=listing&account=digionline.ro
-    url = common_functions.get_url(action='list_categories', account='digionline.ro')
+    # Example: plugin://plugin.video.example/?action=listing&account=digionline.ro&behaveas=phone
+    url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_categories')
     common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
 
     # This means that this item opens a sub-list of lower level items.
@@ -209,7 +209,7 @@ def router(paramstring):
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
-            digionline_functions.digionline__listCategories(common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            digionline_functions.digionline__listCategories(params['behaveas'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
 
@@ -220,7 +220,7 @@ def router(paramstring):
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
-            digionline_functions.digionline__listChannels(params['category_name'], params['channel_list'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            digionline_functions.digionline__listChannels(params['behaveas'], params['category_name'], params['channel_list'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
 
@@ -239,7 +239,7 @@ def router(paramstring):
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
-            digionline_functions.digionline__playVideo(params['channel_id'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            digionline_functions.digionline__playVideo(params['behaveas'], params['channel_id'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
             xbmcgui.Dialog().ok('\'Digionline.ro\' not enabled', 'The credentials for this media source are not enabled.')
@@ -271,9 +271,10 @@ if __name__ == '__main__':
   common_vars.__logger__.debug('=== SYSINFO ===  Addon version: ' + str(__AddonVersion__))
   common_vars.__logger__.debug('=== SYSINFO ===  System.BuildVersion: ' + str(__SystemBuildVersion__))
   common_vars.__logger__.debug('=== SYSINFO ===  System.BuildDate: ' + str(__SystemBuildDate__))
+  common_vars.__logger__.debug('=== ADDONINFO ===  Called with parameters: ' + str(parse_qsl(sys.argv[2][1:])))
 
   # Read the user preferences stored in the addon configuration
-  common_functions.read_AddonSettings(MyAddon, common_vars.__ServiceID__)
+  common_functions.read_AddonSettings(MyAddon, common_vars.__AddonID__)
 
   # Call the router function and pass the plugin call parameters to it.
   router(sys.argv[2][1:])

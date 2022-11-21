@@ -104,11 +104,11 @@ msgid "Behave as"
 msgstr ""
 
 msgctxt "#30119"
-msgid "Model"
+msgid "Device Model"
 msgstr ""
 
 msgctxt "#30120"
-msgid "Version"
+msgid "Android Version"
 msgstr ""
 
 msgctxt "#30121"
@@ -116,18 +116,18 @@ msgid "Platform"
 msgstr ""
 
 msgctxt "#30122"
-msgid "Template String"
+msgid "Phone App"
 msgstr ""
 
 msgctxt "#30123"
-msgid "Template String"
+msgid "TV App"
 msgstr ""
 
 msgctxt "#30124"
-msgid "Template String"
+msgid "30124 Template String"
 msgstr ""
 
 msgctxt "#30125"
-msgid "Template String"
+msgid "30125 Template String"
 msgstr ""
 
