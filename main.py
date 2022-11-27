@@ -220,7 +220,10 @@ def router(paramstring):
         if params['account'] == 'digionline.ro':
           if common_vars.__config_digionline_Enabled__ == 'true':
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Enabled')
-            digionline_functions.digionline__listChannels(params['behaveas'], params['category_name'], params['channel_list'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            if params['behaveas'] == "Phone":
+              digionline_functions.digionline__phone_listChannels(params['category_name'], params['channel_list'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
+            if params['behaveas'] == "TV":
+              digionline_functions.digionline__tv_listChannels(params['id_category'], params['category_name'], common_vars.__AddonID__, common_vars.__digionline_Session__, MyAddon_DataDir)
           else:
             common_vars.__logger__.debug('\'digionline.ro\'  ==> Disabled')
 

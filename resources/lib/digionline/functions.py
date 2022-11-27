@@ -91,31 +91,49 @@ def digionline__check_DefaultUserSettings(NAME):
     __ret__ = 1
     common_vars.__logger__.debug('5. __ret__ = ' + str(__ret__))
 
+  if common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] == "Phone":
 
+    if str(common_vars.__config_digionline_PhoneDeviceManufacturer__) == "__DEFAULT_DEVICE_MAUFACTURER__":
+      __ret__ = 1
+      common_vars.__logger__.debug('6. __ret__ = ' + str(__ret__))
+  
+    if str(common_vars.__config_digionline_PhoneDeviceManufacturer__) == "":
+      __ret__ = 1
+      common_vars.__logger__.debug('7. __ret__ = ' + str(__ret__))
+   
+    if str(common_vars.__config_digionline_PhoneDeviceModel__) == "__DEFAULT_DEVICE_MODEL__":
+      __ret__ = 1
+      common_vars.__logger__.debug('8. __ret__ = ' + str(__ret__))
+  
+    if str(common_vars.__config_digionline_PhoneDeviceModel__) == "":
+      __ret__ = 1
+      common_vars.__logger__.debug('9. __ret__ = ' + str(__ret__))
+   
+    if str(common_vars.__config_digionline_PhoneAndroidVersion__) == "__DEFAULT_ANDROID_DEVICE__":
+      __ret__ = 1
+      common_vars.__logger__.debug('10. __ret__ = ' + str(__ret__))
+  
+    if str(common_vars.__config_digionline_PhoneAndroidVersion__) == "":
+      __ret__ = 1
+      common_vars.__logger__.debug('11. __ret__ = ' + str(__ret__))
 
-  if str(common_vars.__config_digionline_PhoneDeviceManufacturer__) == "__DEFAULT_DEVICE_MAUFACTURER__":
-    __ret__ = 1
-    common_vars.__logger__.debug('6. __ret__ = ' + str(__ret__))
+  if common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] == "TV":
+
+    if str(common_vars.__config_digionline_TVDeviceModel__) == "__DEFAULT_DEVICE_MODEL__":
+      __ret__ = 1
+      common_vars.__logger__.debug('12. __ret__ = ' + str(__ret__))
   
-  if str(common_vars.__config_digionline_PhoneDeviceManufacturer__) == "":
-    __ret__ = 1
-    common_vars.__logger__.debug('7. __ret__ = ' + str(__ret__))
-   
-  if str(common_vars.__config_digionline_PhoneDeviceModel__) == "__DEFAULT_DEVICE_MODEL__":
-    __ret__ = 1
-    common_vars.__logger__.debug('8. __ret__ = ' + str(__ret__))
+    if str(common_vars.__config_digionline_TVDeviceModel__) == "":
+      __ret__ = 1
+      common_vars.__logger__.debug('13. __ret__ = ' + str(__ret__))
+
+    if str(common_vars.__config_digionline_TVAndroidVersion__) == "__DEFAULT_ANDROID_VERSION__":
+      __ret__ = 1
+      common_vars.__logger__.debug('14. __ret__ = ' + str(__ret__))
   
-  if str(common_vars.__config_digionline_PhoneDeviceModel__) == "":
-    __ret__ = 1
-    common_vars.__logger__.debug('9. __ret__ = ' + str(__ret__))
-   
-  if str(common_vars.__config_digionline_PhoneAndroidVersion__) == "__DEFAULT_ANDROID_DEVICE__":
-    __ret__ = 1
-    common_vars.__logger__.debug('10. __ret__ = ' + str(__ret__))
-  
-  if str(common_vars.__config_digionline_PhoneAndroidVersion__) == "":
-    __ret__ = 1
-    common_vars.__logger__.debug('11. __ret__ = ' + str(__ret__))
+    if str(common_vars.__config_digionline_TVAndroidVersion__) == "":
+      __ret__ = 1
+      common_vars.__logger__.debug('15. __ret__ = ' + str(__ret__))
 
   common_vars.__logger__.debug(' __ret__ = ' + str(__ret__))
   common_vars.__logger__.debug('Exit function')
@@ -199,7 +217,7 @@ def digionline__phone_init_stateData(NAME, DATA_DIR):
     
     digionline__phone_write_stateData(__state_data__, NAME, DATA_DIR)
   
-  common_vars.__logger__.debug('Enter function')
+  common_vars.__logger__.debug('Exit function')
 
 
 def digionline__phone_init(NAME, DATA_DIR):
@@ -574,6 +592,336 @@ def digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR):
   return __ret__
 
 
+######################################################################################################
+
+def digionline__tv_write_stateData(STATE_DATA, NAME, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  __state_file__ = os.path.join(DATA_DIR, common_vars.__digionline_TVStateFilename__)
+  common_vars.__logger__.debug('Writting to \'' + __state_file__ +'\'')
+  _file_ = open(__state_file__, 'w')
+  json.dump(STATE_DATA, _file_)
+  _file_.close()
+
+
+def digionline__tv_read_stateData(NAME, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+
+  __state_file__ = os.path.join(DATA_DIR, common_vars.__digionline_TVStateFilename__)
+
+  if not os.path.exists(__state_file__) or os.path.getsize(__state_file__) == 0:
+    common_vars.__logger__.debug('\'' + __state_file__ +'\' does not exist or it is empty.')
+
+    _read_data_ = {}
+    _read_data_['exit_status'] = 1
+    _read_data_['state_data'] = ""
+    __ret__ = _read_data_
+
+  else:
+    common_vars.__logger__.debug('Reading from \'' + __state_file__ +'\'')
+    _file_ = open(__state_file__, 'r')
+    _data_ = json.load(_file_)
+    _file_.close()
+
+    _read_data_ = {}
+    _read_data_['exit_status'] = 0
+    _read_data_['state_data'] = _data_
+    __ret__ = _read_data_
+
+  common_vars.__logger__.debug('Return data: ' + str(__ret__))
+  common_vars.__logger__.debug('Exit function')
+  return __ret__
+
+def digionline__tv_init_stateData(NAME, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  common_vars.__logger__.debug('Initializing stateData...')
+
+  __deviceID__ = secrets.token_hex(8)
+  common_vars.__logger__.debug('Generated deviceID: ' + __deviceID__)
+
+  __metadata__ = {}
+  __metadata__['version'] = "1"
+
+  __data__ = {}
+  __data__['deviceID'] = __deviceID__
+  __data__['AuthToken'] = ""
+
+  __state_data__ = {}
+  __state_data__['metadata'] = __metadata__
+  __state_data__['data'] = __data__
+
+  digionline_functions.digionline__tv_write_stateData(__state_data__, NAME, DATA_DIR)
+
+  common_vars.__logger__.debug('Initialized stateData: ' + str(__state_data__))
+  common_vars.__logger__.debug('Exit function')
+
+
+def digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  __URL__ = 'https://apitv.digionline.ro/api-ws/user-auth/jsonRpc'
+
+  # Setup headers for the request
+  MyHeaders = {
+    'User-Agent': common_vars.__digionline_API_userAgent__,
+    'Authorization': 'Basic ZGV2X3RlYW06ZGV2X3RlYW1fcGFzcw==',
+    'Content-Type': 'application/json'
+  }
+
+  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+
+  # Setup payload for the request
+  MyPayloadData = {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "auth",
+      "params": {
+        "params": {
+          "deviceId": __rsd__['state_data']['data']['deviceID'],
+          "model": common_vars.__config_digionline_TVDeviceModel__,
+          "password": common_vars.__config_digionline_Password__,
+          "platform": common_vars.__config_digionline_TVPlatform__,
+          "processor": common_vars.__config_digionline_TVAndroidVersion__,
+          "user": common_vars.__config_digionline_Username__
+        }
+      }
+    }
+
+  MyPayloadData_log = {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "auth",
+      "params": {
+        "params": {
+          "deviceId": __rsd__['state_data']['data']['deviceID'],
+          "model": common_vars.__config_digionline_TVDeviceModel__,
+          "password": "************************",
+          "platform": common_vars.__config_digionline_TVPlatform__,
+          "processor": common_vars.__config_digionline_TVAndroidVersion__,
+          "user": common_vars.__config_digionline_Username__
+        }
+      }
+    }
+
+  common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+  common_vars.__logger__.debug('URL: ' + __URL__)
+  common_vars.__logger__.debug('Method: POST')
+  common_vars.__logger__.debug('Payload: ' + str(MyPayloadData_log))
+
+  # Send the POST request
+  _request_ = SESSION.post(__URL__, headers=MyHeaders, data=json.dumps(MyPayloadData))
+
+  common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+  common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+  common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+  __ret__ = json.loads(_request_.content.decode())
+
+  common_vars.__logger__.debug('Exit function')
+  return __ret__
+
+
+def digionline__tv_doAuth(NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+
+  # State data not yet initialized
+  if __rsd__['exit_status'] != 0:
+    digionline_functions.digionline__tv_init_stateData(NAME, DATA_DIR)
+    __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+
+    __api_auth__ = digionline_functions.digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
+    common_vars.__logger__.debug('__api_auth__ = ' + str(__api_auth__))
+
+    if __api_auth__['result']['success']:
+      __rsd__['state_data']['data']['AuthToken'] = __api_auth__['result']['token']
+      digionline_functions.digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+
+    else:
+      xbmcgui.Dialog().ok('[digionline.ro] => Authentication error ' + str(__api_auth__['result']['errCode']), str(__api_auth__['result']['message']))
+
+  else:
+    common_vars.__logger__.debug('deviceID: ' + __rsd__['state_data']['data']['deviceID'])
+    common_vars.__logger__.debug('AuthToken: ' + __rsd__['state_data']['data']['AuthToken'])
+
+    # Device not yet authenticated/registered
+    if __rsd__['state_data']['data']['AuthToken'] == "":
+      common_vars.__logger__.debug('Not authenticated')
+
+      __api_auth__ = digionline_functions.digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
+      common_vars.__logger__.debug('__api_auth__ = ' + str(__api_auth__))
+
+      if __api_auth__['result']['success']:
+        __rsd__['state_data']['data']['AuthToken'] = __api_auth__['result']['token']
+        digionline_functions.digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+
+      else:
+        xbmcgui.Dialog().ok('[digionline.ro] => Authentication error ' + str(__api_auth__['result']['errCode']), str(__api_auth__['result']['message']))
+
+    else:
+      common_vars.__logger__.debug('Already authenticated')
+
+  common_vars.__logger__.debug('Exit function')
+
+
+def digionline__tv_getCategoriesChannels(NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  __URL__ = 'https://apitv.digionline.ro/api/channels_categories'
+
+  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+
+  # Setup headers for the request
+  MyHeaders = {
+    'User-Agent': common_vars.__digionline_API_userAgent__,
+    'Authorization': 'Bearer ' + __rsd__['state_data']['data']['AuthToken']
+  }
+
+  MyParams = {
+    "deviceId": __rsd__['state_data']['data']['deviceID']
+  }
+
+  common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+  common_vars.__logger__.debug('URL: ' + __URL__)
+  common_vars.__logger__.debug('Method: GET')
+  common_vars.__logger__.debug('Parameters: ' + str(MyParams))
+
+  # Send the GET request
+  _request_ = SESSION.get(__URL__, headers=MyHeaders, params=MyParams)
+
+  common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+  common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+  common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+  __ret__ = _request_.json()
+
+  common_vars.__logger__.debug('Exit function')
+  return __ret__
+
+
+def digionline___tv_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  _catchan_ = digionline__tv_getCategoriesChannels(NAME, SESSION, DATA_DIR)
+  common_vars.__logger__.debug('Received data = ' + str(_catchan_))
+
+  if not os.path.exists(DATA_DIR + '/' + common_vars.__digionline_cache_dir__ ):
+    os.makedirs(DATA_DIR + '/' + common_vars.__digionline_cache_dir__)
+
+  _cache_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_TVCategoriesChannelsCachedDataFilename__)
+  common_vars.__logger__.debug('Cached data file: ' + _cache_data_file_)
+
+  _data_file_ = open(_cache_data_file_, 'w')
+  json.dump(_catchan_, _data_file_)
+  _data_file_.close()
+
+  common_vars.__logger__.debug('Exit function')
+
+def digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_TVCategoriesChannelsCachedDataFilename__)
+  common_vars.__logger__.debug('Cached data file: ' + _cached_data_file_)
+
+  if os.path.exists(_cached_data_file_) and os.path.getsize(_cached_data_file_) != 0:
+    # The data file with cached categories exists and is not empty.
+    
+    # Get the value (seconds since epoch) of the last modification time for the file containing cached data.
+    _last_update_ = os.path.getmtime(_cached_data_file_)
+    common_vars.__logger__.debug('Cached data file last update: ' + time.strftime("%Y%m%d_%H%M%S", time.gmtime(_last_update_)))
+    
+    if _last_update_ > time.time() - common_vars.__CachedDataRetentionInterval__:
+      # Cached data is not yet expired.
+      common_vars.__logger__.debug('Read cached categories from data file: ' + _cached_data_file_)
+      _data_file_ = open(_cached_data_file_, 'r')
+      _catchan_ = json.load(_data_file_)
+      _data_file_.close()
+      
+      __ret__ = _catchan_['data']
+
+    else:
+      # Cached data is expired.
+      
+      # Call the function to update the cached data
+      common_vars.__logger__.debug('Cached data requires update.')
+      digionline___tv_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+
+      common_vars.__logger__.debug('Read cached categories from data file: ' + _cached_data_file_)
+      _data_file_ = open(_cached_data_file_, 'r')
+      _catchan_ = json.load(_data_file_)
+      _data_file_.close()
+      
+      __ret__ = _catchan_['data']
+
+  else:
+    # The data file with cached categories does not exist or it is empty.
+
+    # Call the function to update the cached data
+    common_vars.__logger__.debug('Cached data file does not exist.')
+    digionline___tv_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+
+    common_vars.__logger__.debug('Read cached categories from data file: ' + _cached_data_file_)
+    _data_file_ = open(_cached_data_file_, 'r')
+    _catchan_ = json.load(_data_file_)
+    _data_file_.close()
+    
+    __ret__ = _catchan_['data']
+
+  common_vars.__logger__.debug('Exit function')
+
+  return __ret__
+
+
+def digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  __URL__ = 'https://apitv.digionline.ro/api/channel'
+  
+  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+
+  # Setup headers for the request
+  MyHeaders = {
+    'User-Agent': common_vars.__digionline_API_userAgent__,
+    'Authorization': 'Bearer ' + __rsd__['state_data']['data']['AuthToken']
+  }
+
+  # Setup parameters for the request  
+  MyParams = {
+    'device_id': __rsd__['state_data']['data']['deviceID'],
+    'common_id': CHANNEL_ID
+  }  
+
+  common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+  common_vars.__logger__.debug('URL: ' + __URL__)
+  common_vars.__logger__.debug('Method: GET')
+  common_vars.__logger__.debug('Parameters: ' + str(MyParams))
+
+  # Send the GET request
+  _request_ = SESSION.get(__URL__, headers=MyHeaders, params=MyParams)
+
+  common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+  common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+  common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+  _response_ = json.loads(_request_.content.decode())
+  
+  common_vars.__logger__.debug('Exit function')
+  return _response_
+
+#################################################################################################
+
 def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
@@ -584,33 +932,66 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
   # Set plugin content.
   xbmcplugin.setContent(int(common_vars.__handle__), 'videos')
 
-  # Get video categories
-  categories = digionline_functions.digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
-  common_vars.__logger__.debug('Received categories = ' + str(categories))
+  if BEHAVE_AS == "Phone":
+    # Get video categories
+    categories = digionline_functions.digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
+    common_vars.__logger__.debug('Received categories = ' + str(categories))
 
-  for category in categories:
-    common_vars.__logger__.debug('Category:  id = \'' + str(category['id_category']) + '\', Name = \'' + str(category['category_name']) + '\', Title = \'' + str(category['category_desc']) + '\', Channel list = \'' + str(category['channels_list']) + '\'')
+    for category in categories:
+      common_vars.__logger__.debug('Category:  id = \'' + str(category['id_category']) + '\', Name = \'' + str(category['category_name']) + '\', Title = \'' + str(category['category_desc']) + '\', Channel list = \'' + str(category['channels_list']) + '\'')
 
-    # Create a list item with a text label and a thumbnail image.
-    list_item = xbmcgui.ListItem(label=category['category_desc'])
+      # Create a list item with a text label and a thumbnail image.
+      list_item = xbmcgui.ListItem(label=category['category_desc'])
 
-    # Set additional info for the list item.
-    # For available properties see https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
-    # 'mediatype' is needed for a skin to display info for this ListItem correctly.
-    list_item.setInfo('video', {'title': category['category_desc'],
-                                'genre': category['category_desc'],
-                                'mediatype': 'video'})
+      # Set additional info for the list item.
+      # For available properties see https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
+      # 'mediatype' is needed for a skin to display info for this ListItem correctly.
+      list_item.setInfo('video', {'title': category['category_desc'],
+                                  'genre': category['category_desc'],
+                                  'mediatype': 'video'})
 
-    # Create a URL for a plugin recursive call.
-    # Example: plugin://plugin.video.example/?action=listing&category=filme
-    url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', category_id=category['id_category'], category_name=category['category_name'], channel_list=json.dumps(category['channels_list']))
-    common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
+      # Create a URL for a plugin recursive call.
+      # Example: plugin://plugin.video.example/?action=listing&category=filme
+      url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', category_id=category['id_category'], category_name=category['category_name'], channel_list=json.dumps(category['channels_list']))
+      common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
 
-    # This means that this item opens a sub-list of lower level items.
-    is_folder = True
+      # This means that this item opens a sub-list of lower level items.
+      is_folder = True
 
-    # Add our item to the Kodi virtual folder listing.
-    xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
+      # Add our item to the Kodi virtual folder listing.
+      xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
+
+  if BEHAVE_AS == "TV":
+    digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+
+    # Get video categories
+    categories_channels = digionline_functions.digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+    common_vars.__logger__.debug('Received data = ' + str(categories_channels))
+
+    for category_data in categories_channels['categories_list']:
+      common_vars.__logger__.debug('Category:  id = \'' + str(category_data['id_category']) + '\', Name = \'' + str(category_data['category_name']) + '\', Title = \'' + str(category_data['category_desc']) + '\'')
+
+      # Create a list item with a text label and a thumbnail image.
+      list_item = xbmcgui.ListItem(label=category_data['category_desc'])
+
+      # Set additional info for the list item.
+      # For available properties see https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
+      # 'mediatype' is needed for a skin to display info for this ListItem correctly.
+      list_item.setInfo('video', {'title': category_data['category_desc'],
+                                  'genre': category_data['category_desc'],
+                                  'mediatype': 'video'})
+
+      # Create a URL for a plugin recursive call.
+      # Example: plugin://plugin.video.example/?action=listing&category=filme
+      url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', id_category=category_data['id_category'], category_name=category_data['category_name'])
+      common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
+
+      # This means that this item opens a sub-list of lower level items.
+      is_folder = True
+
+      # Add our item to the Kodi virtual folder listing.
+      xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
+
 
   # Add a sort method for the virtual folder items (alphabetically, ignore articles)
   # See: https://romanvm.github.io/Kodistubs/_autosummary/xbmcplugin.html
@@ -678,7 +1059,7 @@ def digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR):
   return __ret__
 
 
-def digionline__listChannels(BEHAVE_AS, CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, DATA_DIR):
+def digionline__phone_listChannels(CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, DATA_DIR):
 
   common_vars.__logger__.debug('Enter function')
   common_vars.__logger__.debug('Called with parameters:  Category name = ' + str(CATEGORY_NAME))
@@ -744,86 +1125,213 @@ def digionline__listChannels(BEHAVE_AS, CATEGORY_NAME, CHANNEL_LIST, NAME, SESSI
   common_vars.__logger__.debug('Exit function')
 
 
+def digionline__tv_listChannels(ID_CATEGORY, CATEGORY_NAME, NAME, SESSION, DATA_DIR):
+
+  common_vars.__logger__.debug('Enter function')
+  common_vars.__logger__.debug('Called with parameters:  ID_CATEGORY= = ' + str(ID_CATEGORY))
+  common_vars.__logger__.debug('Called with parameters:  CATEGORY_NAME = ' + CATEGORY_NAME)
+
+  # Set plugin category.
+  xbmcplugin.setPluginCategory(int(common_vars.__handle__), CATEGORY_NAME)
+
+  # Set plugin content.
+  xbmcplugin.setContent(int(common_vars.__handle__), 'videos')
+
+  digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+
+  # Get the list of all cached categories and channels
+  categories_channels = digionline_functions.digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+  common_vars.__logger__.debug('Received data = ' + str(categories_channels))
+  
+  
+  for channel_data in categories_channels['channels_list']:
+    if "channel_categories" in channel_data:
+      if ID_CATEGORY in channel_data['channel_categories']:
+        common_vars.__logger__.debug('Channel ID => ' + str(channel_data['id']))
+        common_vars.__logger__.debug('Channel name: ' + str(channel_data['name']))
+        common_vars.__logger__.debug('Channel logo: ' + str(channel_data['media_channel']['logo']))
+
+
+        # Create a list item with a text label and a thumbnail image.
+        list_item = xbmcgui.ListItem(label=channel_data['name'])
+
+        # Set additional info for the list item.
+        # For available properties see https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
+        # 'mediatype' is needed for skin to display info for this ListItem correctly.
+
+        list_item.setInfo('video', {'title': channel_data['name'],
+                                    'genre': CATEGORY_NAME,
+                                    'mediatype': 'video'})
+
+
+        # Set graphics (thumbnail, fanart, banner, poster, landscape etc.) for the list item.
+        list_item.setArt({'thumb': channel_data['media_channel']['logo']})
+
+        # Set 'IsPlayable' property to 'true'.
+        # This is mandatory for playable items!
+        list_item.setProperty('IsPlayable', 'true')
+
+        # Create a URL for a plugin recursive call.
+        # Example: plugin://plugin.video.example/?action=play&channel_endpoint=/filme/tnt&channel_metadata=...
+        url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='play', channel_id=channel_data['id'])
+        common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
+
+        # This means that this item won't open any sub-list.
+        is_folder = False
+
+        # Add our item to the Kodi virtual folder listing.
+        xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
+
+  # Add a sort method for the virtual folder items (alphabetically, ignore articles)
+  xbmcplugin.addSortMethod(int(common_vars.__handle__), xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
+
+  # Finish creating a virtual folder.
+  xbmcplugin.endOfDirectory(int(common_vars.__handle__))
+
+  common_vars.__logger__.debug('Exit function')
+
 def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   common_vars.__logger__.debug('Called with parameters: BEHAVE_AS = ' + str(BEHAVE_AS))
   common_vars.__logger__.debug('Called with parameters: CHANNEL_ID = ' + str(CHANNEL_ID))
-  
-  # Authenticate if needed.
-  digionline_functions.digionline__phone_doAuth(NAME, SESSION, DATA_DIR)
 
-  _stream_details_ = digionline_functions. digionline__phone_getStreamDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
-  common_vars.__logger__.debug('Reveived data: ' + str(_stream_details_))
+  if BEHAVE_AS == "Phone":
+    # Authenticate if needed.
+    digionline_functions.digionline__phone_doAuth(NAME, SESSION, DATA_DIR)
+
+    _stream_details_ = digionline_functions. digionline__phone_getStreamDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
+    common_vars.__logger__.debug('Received data: ' + str(_stream_details_))
     
-  if _stream_details_['error'] != "":
-    common_vars.__logger__.debug('[digionline.ro] => ' + _stream_details_['error'])
-    xbmcgui.Dialog().ok('[digionline.ro]', _stream_details_['error'])
+    if _stream_details_['error'] != "":
+      common_vars.__logger__.debug('[digionline.ro] => ' + _stream_details_['error'])
+      xbmcgui.Dialog().ok('[digionline.ro]', _stream_details_['error'])
 
-    common_vars.__logger__.debug('Exit function')
-    return
+      common_vars.__logger__.debug('Exit function')
+      return
 
-  common_vars.__logger__.debug('Playing a \'' + _stream_details_['stream']['f'] + '\' stream')
+    common_vars.__logger__.debug('Playing a \'' + _stream_details_['stream']['f'] + '\' stream')
 
-  if _stream_details_['stream']['f'] == "hls":
-    # Set the headers to be used with imputstream.adaptive
-    _headers_ = ''
-    _headers_ = _headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
+    if _stream_details_['stream']['f'] == "hls":
+      # Set the headers to be used with imputstream.adaptive
+      _headers_ = ''
+      _headers_ = _headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
 
-    common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
+      common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
 
-    # Create a playable item with a path to play.
-    # See:  https://github.com/peak3d/inputstream.adaptive/issues/131#issuecomment-375059796
-    is_helper = inputstreamhelper.Helper('hls')
-    if is_helper.check_inputstream():
-      play_item = xbmcgui.ListItem(path=_stream_details_['stream']['abr'] + '|' + _headers_)
-      play_item.setProperty('inputstream', 'inputstream.adaptive')
-      play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
-      play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-      play_item.setMimeType('application/vnd.apple.mpegurl')
-      play_item.setContentLookup(False)
+      # Create a playable item with a path to play.
+      # See:  https://github.com/peak3d/inputstream.adaptive/issues/131#issuecomment-375059796
+      is_helper = inputstreamhelper.Helper('hls')
+      if is_helper.check_inputstream():
+        play_item = xbmcgui.ListItem(path=_stream_details_['stream']['abr'] + '|' + _headers_)
+        play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        play_item.setMimeType('application/vnd.apple.mpegurl')
+        play_item.setContentLookup(False)
 
-      # Pass the item to the Kodi player.
-      xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
+        # Pass the item to the Kodi player.
+        xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
 
 
-  if _stream_details_['stream']['f'] == "dash":
-    # Set the headers to be used with imputstream.adaptive
-    _headers_ = ''
-    _headers_ = _headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
-    common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
+    if _stream_details_['stream']['f'] == "dash":
+      # Set the headers to be used with imputstream.adaptive
+      _headers_ = ''
+      _headers_ = _headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
+      common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
 
-    # Get the host needed to be set in the headers for the DRM license request
-    _lic_headers_host_ = re.findall('//(.+?)/', _stream_details_['stream']['abr'], re.IGNORECASE)[0]
-    common_vars.__logger__.debug('Found: _lic_headers_host_ = ' + _lic_headers_host_)
+      # Get the host needed to be set in the headers for the DRM license request
+      _lic_headers_host_ = re.findall('//(.+?)/', _stream_details_['stream']['abr'], re.IGNORECASE)[0]
+      common_vars.__logger__.debug('Found: _lic_headers_host_ = ' + _lic_headers_host_)
 
-    # Set the headers to be used when requesting license key
-    _lic_headers_ = ''
-    _lic_headers_ = _lic_headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
-#    _lic_headers_ = _lic_headers_ + '&User-Agent=user-agent'
-    _lic_headers_ = _lic_headers_ + '&Connection=keep-alive'
-    _lic_headers_ = _lic_headers_ + '&Accept-Encoding=identity'
-    _lic_headers_ = _lic_headers_ + '&verifypeer=false'
-    common_vars.__logger__.debug('Created: _lic_headers_ = ' + _lic_headers_)
+      # Set the headers to be used when requesting license key
+      _lic_headers_ = ''
+      _lic_headers_ = _lic_headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
+#      _lic_headers_ = _lic_headers_ + '&User-Agent=user-agent'
+      _lic_headers_ = _lic_headers_ + '&Connection=keep-alive'
+      _lic_headers_ = _lic_headers_ + '&Accept-Encoding=identity'
+      _lic_headers_ = _lic_headers_ + '&verifypeer=false'
+      common_vars.__logger__.debug('Created: _lic_headers_ = ' + _lic_headers_)
 
-    # Create a playable item with a path to play.
-    ### See:
-    ###    https://github.com/peak3d/inputstream.adaptive/wiki
-    ###    https://github.com/peak3d/inputstream.adaptive/wiki/Integration
-    ###    https://github.com/emilsvennesson/script.module.inputstreamhelper
+      # Create a playable item with a path to play.
+      ### See:
+      ###    https://github.com/peak3d/inputstream.adaptive/wiki
+      ###    https://github.com/peak3d/inputstream.adaptive/wiki/Integration
+      ###    https://github.com/emilsvennesson/script.module.inputstreamhelper
 
-    is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
-    if is_helper.check_inputstream():
-      play_item = xbmcgui.ListItem(path=_stream_details_['stream']['abr'])
-      play_item.setProperty('inputstream', 'inputstream.adaptive')
-      play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
-      play_item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
-      play_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
-      play_item.setProperty('inputstream.adaptive.license_key', _stream_details_['stream']['proxy'] + '|' + _lic_headers_ + '|R{SSM}|')
-      play_item.setMimeType('application/dash+xml')
+      is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
+      if is_helper.check_inputstream():
+        play_item = xbmcgui.ListItem(path=_stream_details_['stream']['abr'])
+        play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
+        play_item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+        play_item.setProperty('inputstream.adaptive.license_key', _stream_details_['stream']['proxy'] + '|' + _lic_headers_ + '|R{SSM}|')
+        play_item.setMimeType('application/dash+xml')
 
-      # Pass the item to the Kodi player.
-      xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
+        # Pass the item to the Kodi player.
+        xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
+
+  if BEHAVE_AS == "TV":
+    digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+
+    _channel_details_ = digionline_functions.digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
+    common_vars.__logger__.debug('Received data: ' + str(_channel_details_))
+    
+    if _channel_details_['meta'] != "":
+      if _channel_details_['meta']['error']['code'] == 10014:
+        common_vars.__logger__.debug('Response error code: ' + str(_channel_details_['meta']['error']['code']))
+        common_vars.__logger__.debug('Reset state data and re-authenticate.')
+        digionline_functions.digionline__tv_init_stateData(NAME, DATA_DIR)
+        digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+        _channel_details_ = digionline_functions.digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
+      else:
+        xbmcgui.Dialog().ok('[digionline.ro] => Error ' + str(_channel_details_['meta']['error']['code']), str(_channel_details_['meta']['error']['message']))
+        common_vars.__logger__.debug('Exit function')
+        return
+
+    if _channel_details_['data']['encrypted'] == "1" and _channel_details_['data']['encryption_type'] == "widevine":
+      
+      common_vars.__logger__.debug('Playing a \'' + _channel_details_['data']['encryption_type'] + '\' encrypted stream')
+      
+      # Set the headers to be used with imputstream.adaptive
+      _headers_ = ''
+      _headers_ = _headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
+      _headers_ = _headers_ + '&Authorization=Basic dWlwdHY6NTBhOTVlOTJiMjFjYTQ2Ng=='
+      common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
+
+#      # Get the host needed to be set in the headers for the DRM license request
+#      _lic_headers_host_ = re.findall('//(.+?)/', _stream_details_['stream']['abr'], re.IGNORECASE)[0]
+#      common_vars.__logger__.debug('Found: _lic_headers_host_ = ' + _lic_headers_host_)
+
+      # Set the headers to be used when requesting license key
+      _lic_headers_ = ''
+      _lic_headers_ = _lic_headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
+      _lic_headers_ = _lic_headers_ + '&Authorization=Basic dWlwdHY6NTBhOTVlOTJiMjFjYTQ2Ng=='
+#      _lic_headers_ = _lic_headers_ + '&User-Agent=user-agent'
+#      _lic_headers_ = _lic_headers_ + '&Connection=keep-alive'
+#      _lic_headers_ = _lic_headers_ + '&Accept-Encoding=identity'
+#      _lic_headers_ = _lic_headers_ + '&verifypeer=false'
+      common_vars.__logger__.debug('Created: _lic_headers_ = ' + _lic_headers_)
+
+      # Create a playable item with a path to play.
+      ### See:
+      ###    https://github.com/peak3d/inputstream.adaptive/wiki
+      ###    https://github.com/peak3d/inputstream.adaptive/wiki/Integration
+      ###    https://github.com/emilsvennesson/script.module.inputstreamhelper
+
+      is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
+      if is_helper.check_inputstream():
+        play_item = xbmcgui.ListItem(path=_channel_details_['data']['stream_url'])
+        play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
+        play_item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
+        play_item.setProperty('inputstream.adaptive.license_key', _channel_details_['data']['stream_proxy'] + '|' + _lic_headers_ + '|R{SSM}|')
+        play_item.setMimeType('application/dash+xml')
+
+        # Pass the item to the Kodi player.
+        xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
 
   common_vars.__logger__.debug('Exit function')
 
