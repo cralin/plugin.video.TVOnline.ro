@@ -594,6 +594,48 @@ def digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR):
 
 ######################################################################################################
 
+def digionline__write_PVRIPTVSimpleClientIntegration_FileVersionsData(STATE_DATA, NAME, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  __state_file__ = os.path.join(DATA_DIR, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_versions_FileName__)
+  common_vars.__logger__.debug('Writting to \'' + __state_file__ +'\'')
+  _file_ = open(__state_file__, 'w')
+  json.dump(STATE_DATA, _file_)
+  _file_.close()
+
+
+def digionline__read_PVRIPTVSimpleClientIntegration_FileVersionsData(NAME, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+
+  __state_file__ = os.path.join(DATA_DIR, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_versions_FileName__)
+
+  if not os.path.exists(__state_file__) or os.path.getsize(__state_file__) == 0:
+    common_vars.__logger__.debug('\'' + __state_file__ +'\' does not exist or it is empty.')
+
+    _read_data_ = {}
+    _read_data_['exit_status'] = 1
+    _read_data_['state_data'] = ""
+    __ret__ = _read_data_
+
+  else:
+    common_vars.__logger__.debug('Reading from \'' + __state_file__ +'\'')
+    _file_ = open(__state_file__, 'r')
+    _data_ = json.load(_file_)
+    _file_.close()
+
+    _read_data_ = {}
+    _read_data_['exit_status'] = 0
+    _read_data_['state_data'] = _data_
+    __ret__ = _read_data_
+
+  common_vars.__logger__.debug('Return data: ' + str(__ret__))
+  common_vars.__logger__.debug('Exit function')
+  return __ret__
+
+
 def digionline__tv_write_stateData(STATE_DATA, NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
@@ -962,6 +1004,7 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
       xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
 
   if BEHAVE_AS == "TV":
+
     digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
 
     # Get video categories
@@ -1336,6 +1379,92 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Exit function')
 
 
+def digionline__phone_updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+  
+  common_vars.__logger__.debug('M3U_FILE = ' + M3U_FILE)
+  common_vars.__logger__.debug('START_NUMBER = ' + str(START_NUMBER))
+  
+  _CHNO_ = START_NUMBER
+
+  _data_file_ = open(M3U_FILE, 'a', encoding='utf-8')
+
+  # Get the list of categories
+  _categories_ = digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
+  common_vars.__logger__.debug('Received categories = ' + str(_categories_))
+  
+  # Get the list of channels
+  _channels_ = digionline_functions.digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
+  common_vars.__logger__.debug('Received channels = ' + str(_channels_))
+    
+  for category in _categories_:
+    common_vars.__logger__.debug('Category name = ' + category['category_desc'])
+      
+    for cat_chan in category['channels_list']:
+      for channel in _channels_:
+        if cat_chan == channel['id_channel']:
+          common_vars.__logger__.debug('Channel ID => ' + str(channel['id_channel']))
+          common_vars.__logger__.debug('Channel name: ' + str(channel['channel_name']))
+          common_vars.__logger__.debug('Channel title: ' + str(channel['channel_desc']))
+          common_vars.__logger__.debug('Channel logo: ' + str(channel['media_channel']['channel_logo_url']))
+        
+          _line_ = "#EXTINF:0 tvg-id=\"digionline__" + str(channel['id_channel']) + "\" tvg-name=\"" + channel['channel_desc'] + "\" tvg-logo=\"" + channel['media_channel']['channel_logo_url'] + "\" tvg-chno=\"" + str(_CHNO_) + "\" group-title=\"" + category['category_desc'] + "\"," + channel['channel_desc']
+
+          _url_ = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='play', channel_id=channel['id_channel'])
+          _play_url_ = "plugin://" + common_vars.__AddonID__ + "/" + _url_
+
+          _data_file_.write(_line_ + "\n")
+          _data_file_.write(_play_url_ + "\n")
+        
+          _CHNO_ = _CHNO_ + 1
+
+  _data_file_.close()
+  
+  common_vars.__logger__.debug('Exit function')
+
+  return _CHNO_
+
+def digionline__tv_updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+  
+  common_vars.__logger__.debug('M3U_FILE = ' + M3U_FILE)
+  common_vars.__logger__.debug('START_NUMBER = ' + str(START_NUMBER))
+  
+  _CHNO_ = START_NUMBER
+
+  _data_file_ = open(M3U_FILE, 'a', encoding='utf-8')
+
+  # Get the list of categories and channels
+  _categories_channels_ = digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+  common_vars.__logger__.debug('Received data = ' + str(_categories_channels_))
+
+  for _category_ in _categories_channels_['categories_list']:
+    common_vars.__logger__.debug('Category:  id = \'' + str(_category_['id_category']) + '\', Name = \'' + str(_category_['category_name']) + '\', Title = \'' + str(_category_['category_desc']) + '\'')
+    
+    for _channel_ in _categories_channels_['channels_list']:
+      if "channel_categories" in _channel_:
+        if _category_['id_category'] in _channel_['channel_categories']:
+          common_vars.__logger__.debug('    Channel ID => ' + str(_channel_['id']) + ' Channel name: ' + str(_channel_['name']) + ' Channel logo: ' + str(_channel_['media_channel']['logo']))
+
+          _line_ = "#EXTINF:0 tvg-id=\"digionline__" + str(_channel_['id']) + "\" tvg-name=\"" + _channel_['name'] + "\" tvg-logo=\"" + _channel_['media_channel']['logo'] + "\" tvg-chno=\"" + str(_CHNO_) + "\" group-title=\"" + _category_['category_desc'] + "\"," + _channel_['name']
+
+          _url_ = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='play', channel_id=_channel_['id'])
+          
+          _play_url_ = "plugin://" + common_vars.__AddonID__ + "/" + _url_
+
+          _data_file_.write(_line_ + "\n")
+          _data_file_.write(_play_url_ + "\n")
+
+          _CHNO_ = _CHNO_ + 1
+
+  _data_file_.close()
+  
+  common_vars.__logger__.debug('Exit function')
+
+  return _CHNO_
+
 
 def digionline__phone_getEPG(DATE, NAME, SESSION):
   common_vars.__logger__ = logging.getLogger(NAME)
@@ -1478,54 +1607,6 @@ def digionline__phone_getCachedEPG(NAME, SESSION, DATA_DIR):
   return __ret__
 
 
-
-def digionline__phone_updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR):
-  common_vars.__logger__ = logging.getLogger(NAME)
-  common_vars.__logger__.debug('Enter function')
-  
-  common_vars.__logger__.debug('M3U_FILE = ' + M3U_FILE)
-  common_vars.__logger__.debug('START_NUMBER = ' + str(START_NUMBER))
-  
-  _CHNO_ = START_NUMBER
-
-  _data_file_ = open(M3U_FILE, 'a', encoding='utf-8')
-
-  # Get the list of categories
-  _categories_ = digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
-  common_vars.__logger__.debug('Received categories = ' + str(_categories_))
-  
-  # Get the list of channels
-  _channels_ = digionline_functions.digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
-  common_vars.__logger__.debug('Received channels = ' + str(_channels_))
-    
-  for category in _categories_:
-    common_vars.__logger__.debug('Category name = ' + category['category_desc'])
-      
-    for cat_chan in category['channels_list']:
-      for channel in _channels_:
-        if cat_chan == channel['id_channel']:
-          common_vars.__logger__.debug('Channel ID => ' + str(channel['id_channel']))
-          common_vars.__logger__.debug('Channel name: ' + str(channel['channel_name']))
-          common_vars.__logger__.debug('Channel title: ' + str(channel['channel_desc']))
-          common_vars.__logger__.debug('Channel logo: ' + str(channel['media_channel']['channel_logo_url']))
-        
-          _line_ = "#EXTINF:0 tvg-id=\"digionline__" + str(channel['id_channel']) + "\" tvg-name=\"" + channel['channel_desc'] + "\" tvg-logo=\"" + channel['media_channel']['channel_logo_url'] + "\" tvg-chno=\"" + str(_CHNO_) + "\" group-title=\"" + category['category_desc'] + "\"," + channel['channel_desc']
-
-          _url_ = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='play', channel_id=channel['id_channel'])
-          _play_url_ = "plugin://" + common_vars.__AddonID__ + "/" + _url_
-
-          _data_file_.write(_line_ + "\n")
-          _data_file_.write(_play_url_ + "\n")
-        
-          _CHNO_ = _CHNO_ + 1
-
-  _data_file_.close()
-  
-  common_vars.__logger__.debug('Exit function')
-
-  return _CHNO_
-
-
 def digionline__phone_updateEPGfile(XML_FILE, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
@@ -1580,5 +1661,232 @@ def digionline__phone_updateEPGfile(XML_FILE, NAME, SESSION, DATA_DIR):
   _data_file_.close()
 
   common_vars.__logger__.debug('Exit function')
+
+
+
+
+
+
+
+
+
+
+
+
+def digionline__tv_getEPG(DATE, NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  __URL__ = 'https://apitv.digionline.ro/api/epgs-full/byDate/' + str(DATE)
+
+  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+
+  # Setup headers for the request
+  MyHeaders = {
+    'User-Agent': common_vars.__digionline_API_userAgent__,
+    'Authorization': 'Bearer ' + __rsd__['state_data']['data']['AuthToken']
+  }
+  
+  # Setup parameters for the request  
+  MyParams = {
+    'device_id': __rsd__['state_data']['data']['deviceID']
+  }  
+
+  common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+  common_vars.__logger__.debug('URL: ' + __URL__)
+  common_vars.__logger__.debug('Method: GET')
+  common_vars.__logger__.debug('Parameters: ' + str(MyParams))
+
+  # Send the GET request
+  _request_ = SESSION.get(__URL__, headers=MyHeaders, params=MyParams)
+
+  common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+  common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+  common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+  __ret__ = _request_.json()
+  
+  common_vars.__logger__.debug('Exit function')
+  return __ret__
+  
+
+def digionline__tv_updateCachedEPG(NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  _today_ = datetime.date(datetime.today())
+  common_vars.__logger__.debug('_today_: ' + str(_today_))
+  _epg_today_ = digionline__tv_getEPG(_today_, NAME, SESSION, DATA_DIR)
+  
+  _today_plus_1_ = datetime.date(datetime.today()) + timedelta(days=1)
+  common_vars.__logger__.debug('_today_plus_1_: ' + str(_today_plus_1_))
+  _epg_today_plus_1_ = digionline__tv_getEPG(_today_plus_1_, NAME, SESSION, DATA_DIR)
+  
+  _today_plus_2_ = datetime.date(datetime.today()) + timedelta(days=2)
+  common_vars.__logger__.debug('_today_plus_2_: ' + str(_today_plus_2_))
+  _epg_today_plus_2_ = digionline__tv_getEPG(_today_plus_2_, NAME, SESSION, DATA_DIR)
+  
+  _epg_data_ = []
+    
+  
+  for _ch_ in _epg_today_['data']['channels']:
+    
+    _ch_epg_data_ = {}
+    _ch_epg_data_['channel_id'] = _epg_today_['data']['channels'][_ch_]['id']
+    _ch_epg_data_['channel_name'] = _epg_today_['data']['channels'][_ch_]['name']
+
+    __epg__ = _epg_today_['data']['channels'][_ch_]['epg']
+  
+    for _ch_1_ in _epg_today_plus_1_['data']['channels']:
+      if _epg_today_['data']['channels'][_ch_]['id'] == _epg_today_plus_1_['data']['channels'][_ch_1_]['id']:
+        __epg__ = __epg__ + _epg_today_plus_1_['data']['channels'][_ch_1_]['epg']
+
+    for _ch_2_ in _epg_today_plus_2_['data']['channels']:
+      if _epg_today_['data']['channels'][_ch_]['id'] == _epg_today_plus_2_['data']['channels'][_ch_2_]['id']:
+        __epg__ = __epg__ + _epg_today_plus_2_['data']['channels'][_ch_2_]['epg']
+
+    _ch_epg_data_['channel_epg'] = __epg__
+    _epg_data_.append(_ch_epg_data_)
+    
+
+  if not os.path.exists(DATA_DIR + '/' + common_vars.__digionline_cache_dir__ ):
+    os.makedirs(DATA_DIR + '/' + common_vars.__digionline_cache_dir__)
+
+  _cache_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_TVEPGCachedDataFilename__)
+  common_vars.__logger__.debug('Cached data file: ' + _cache_data_file_)
+
+  _data_file_ = open(_cache_data_file_, 'w')
+  json.dump(_epg_data_, _data_file_)
+  _data_file_.close()
+
+  common_vars.__logger__.debug('Exit function')
+
+
+def digionline__tv_getCachedEPG(NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  _cached_data_file_ = os.path.join(DATA_DIR, common_vars.__digionline_cache_dir__, common_vars.__digionline_TVEPGCachedDataFilename__)
+  common_vars.__logger__.debug('Cached data file: ' + _cached_data_file_)
+
+  if os.path.exists(_cached_data_file_) and os.path.getsize(_cached_data_file_) != 0:
+    # The data file with cached EPG data exists and is not empty.
+    
+    # Get the value (seconds since epoch) of the last modification time for the file containing cached data.
+    _last_update_ = os.path.getmtime(_cached_data_file_)
+    common_vars.__logger__.debug('Cached data file last update: ' + time.strftime("%Y%m%d_%H%M%S", time.gmtime(_last_update_)))
+    
+    if _last_update_ > time.time() - common_vars.__CachedDataRetentionInterval__:
+      # Cached data is not yet expired.
+      common_vars.__logger__.debug('Read cached EPG from data file: ' + _cached_data_file_)
+      _data_file_ = open(_cached_data_file_, 'r')
+      _epg_data_ = json.load(_data_file_)
+      _data_file_.close()
+      
+      __ret__ = _epg_data_
+
+    else:
+      # Cached data is expired.
+      
+      # Call the function to update the cached data
+      common_vars.__logger__.debug('Cached data requires update.')
+      digionline__tv_updateCachedEPG(NAME, SESSION, DATA_DIR)
+
+      common_vars.__logger__.debug('Read cached EPG from data file: ' + _cached_data_file_)
+      _data_file_ = open(_cached_data_file_, 'r')
+      _epg_data_ = json.load(_data_file_)
+      _data_file_.close()
+      
+      __ret__ = _epg_data_
+
+  else:
+    # The data file with cached EPG does not exist or it is empty.
+
+    # Call the function to update the cached data
+    common_vars.__logger__.debug('Cached data file does not exist.')
+    digionline__tv_updateCachedEPG(NAME, SESSION, DATA_DIR)
+
+    common_vars.__logger__.debug('Read cached EPG from data file: ' + _cached_data_file_)
+    _data_file_ = open(_cached_data_file_, 'r')
+    _epg_data_ = json.load(_data_file_)
+    _data_file_.close()
+      
+    __ret__ = _epg_data_
+
+  common_vars.__logger__.debug('Exit function')
+
+  return __ret__
+
+
+def digionline__tv_updateEPGfile(XML_FILE, NAME, SESSION, DATA_DIR):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  common_vars.__logger__.debug('XML_FILE = ' + XML_FILE)
+
+
+  _epg_data_ = digionline__tv_getCachedEPG(NAME, SESSION, DATA_DIR)
+#  common_vars.__logger__.debug('_epg_data_ = ' + str(_epg_data_))
+
+  _data_file_ = open(XML_FILE, 'a', encoding='utf-8')
+
+  for channel in _epg_data_:
+    common_vars.__logger__.debug('Channel ID => ' + str(channel['channel_id']))
+    common_vars.__logger__.debug('Channel name: ' + str(channel['channel_name']))
+    common_vars.__logger__.debug('Channel title: ' + str(channel['channel_name']))
+
+    _line_ = "  <channel id=\"digionline__" + str(channel['channel_id']) + "\">"
+    _data_file_.write(_line_ + "\n")
+    _line_ = "    <display-name>" + str(channel['channel_name']) + "</display-name>"
+    _data_file_.write(_line_ + "\n")
+    _line_ = "  </channel>"
+    _data_file_.write(_line_ + "\n")
+
+    for _program_data_ in channel['channel_epg']:
+
+      _start_date_time_object_ = datetime.utcfromtimestamp(int(_program_data_['s']/1000))
+      _stop_date_time_object_ = datetime.utcfromtimestamp(int(_program_data_['e']/1000))
+      _line_ = "  <programme start=\"" + str(_start_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" stop=\"" + str(_stop_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" channel=\"digionline__" + str(channel['channel_id']) + "\">"
+      _data_file_.write(_line_ + "\n")
+
+      # Escape special characters in the program name
+      _program_data_['n'] = re.sub('<', '&lt;', _program_data_['n'], flags=re.IGNORECASE)
+      _program_data_['n'] = re.sub('>', '&gt;', _program_data_['n'], flags=re.IGNORECASE)
+      _program_data_['n'] = re.sub('&', '&amp;', _program_data_['n'], flags=re.IGNORECASE)
+      _line_ = "    <title>" + _program_data_['n'] + "</title>"
+      _data_file_.write(_line_ + "\n")
+
+      # Escape special characters in the program description
+      _program_data_['d'] = re.sub('<', '&lt;', _program_data_['d'], flags=re.IGNORECASE)
+      _program_data_['d'] = re.sub('>', '&gt;', _program_data_['d'], flags=re.IGNORECASE)
+      _program_data_['d'] = re.sub('&', '&amp;', _program_data_['d'], flags=re.IGNORECASE)
+
+      _program_data_['l'] = re.sub('<', '&lt;', _program_data_['l'], flags=re.IGNORECASE)
+      _program_data_['l'] = re.sub('>', '&gt;', _program_data_['l'], flags=re.IGNORECASE)
+      _program_data_['l'] = re.sub('&', '&amp;', _program_data_['l'], flags=re.IGNORECASE)
+      _line_ = "    <desc>" + _program_data_['d'] + "\n\n    " + _program_data_['l'] + "\n    </desc>"
+      _data_file_.write(_line_ + "\n")
+
+      _line_ = "  </programme>"
+      _data_file_.write(_line_ + "\n")
+
+  _data_file_.close()
+
+  common_vars.__logger__.debug('Exit function')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

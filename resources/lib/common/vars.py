@@ -144,7 +144,8 @@ __PVRIPTVSimpleClientIntegration_DataDir__ = 'PVRIPTVSimpleClientIntegration'
 
 # File names for the data files
 __PVRIPTVSimpleClientIntegration_m3u_FileName__ = __AddonID__ + '.m3u'
-__PVRIPTVSimpleClientIntegration_EPG_FileName__ = __AddonID__ + '.xml' 
+__PVRIPTVSimpleClientIntegration_EPG_FileName__ = __AddonID__ + '.xml'
+__PVRIPTVSimpleClientIntegration_versions_FileName__ = __AddonID__ + '.json'
 
 # Time of day for refreshing the contents in the data files.
 __PVRIPTVSimpleClientIntegration_m3u_FileRefreshTime__ = ''

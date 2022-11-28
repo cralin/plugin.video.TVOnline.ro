@@ -164,6 +164,9 @@ def PVRIPTVSimpleClientIntegration_check_data_file(DATAFILE):
       common_vars.__logger__.debug('\'' + DATAFILE + '\' is empty.')
       _return_code_ = 1
 
+    
+
+
     # Get the value (seconds since epoch) of the last modification time.
     _last_update_ = os.path.getmtime(DATAFILE)
 
@@ -199,6 +202,42 @@ def PVRIPTVSimpleClientIntegration_init_m3u_file():
   _update_required_ = PVRIPTVSimpleClientIntegration_check_data_file(_m3u_file_)
   common_vars.__logger__.debug('_update_required_ ==> ' + str(_update_required_))
   
+  # Check if m3u file is created with the correct behavior URLs
+  _versions_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_versions_FileName__)
+  common_vars.__logger__.debug('_versions_file_ = ' + _versions_file_)
+      
+  __rsd__ = digionline_functions.digionline__read_PVRIPTVSimpleClientIntegration_FileVersionsData(common_vars.__ServiceID__, MyServiceAddon_DataDir)
+  common_vars.__logger__.debug('Received data:  ' + str(__rsd__))
+      
+  if __rsd__['exit_status'] != 0:
+    # Initialize the state data  
+    common_vars.__logger__.debug('Initialize state data')
+    __metadata__ = {}
+    __metadata__['version'] = "1"
+
+    __data__ = {}
+    __data__['m3u_file'] = ""
+    __data__['xml_file'] = ""
+
+    __state_data__ = {}
+    __state_data__['metadata'] = __metadata__
+    __state_data__['data'] = __data__
+
+    digionline_functions.digionline__write_PVRIPTVSimpleClientIntegration_FileVersionsData(__state_data__, common_vars.__ServiceID__, MyServiceAddon_DataDir)
+      
+    _update_required_ = 1
+    common_vars.__logger__.debug('_update_required_ ==> ' + str(_update_required_))
+      
+  else:
+    if __rsd__['state_data']['data']['m3u_file'] == common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__]:
+      # m3u file is created with the correct behavior URLs
+      common_vars.__logger__.debug('\'' + __rsd__['state_data']['data']['m3u_file'] + '\' = \'' + common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] + '\'')
+    else:
+      # m3u file is NOT created with the correct behavior URLs
+      common_vars.__logger__.debug('\'' + __rsd__['state_data']['data']['m3u_file'] + '\' != \'' + common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] + '\'')
+      _update_required_ = 1
+      common_vars.__logger__.debug('_update_required_ ==> ' + str(_update_required_))
+  
   if _update_required_ == 1:
     PVRIPTVSimpleClientIntegration_update_m3u_file()
 
@@ -231,7 +270,18 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file():
   
     # digionline.ro
     if common_vars.__config_digionline_Enabled__ == 'true':
-      _current_channel_number_ = digionline_functions.digionline__phone_updateM3Ufile(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+
+      if common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] == "Phone":
+        _current_channel_number_ = digionline_functions.digionline__phone_updateM3Ufile(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+
+      if common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] == "TV":
+        _current_channel_number_ = digionline_functions.digionline__tv_updateM3Ufile(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+
+      common_vars.__logger__.debug('Update state data after updating m3u file.')
+      __rsd__ = digionline_functions.digionline__read_PVRIPTVSimpleClientIntegration_FileVersionsData(common_vars.__ServiceID__, MyServiceAddon_DataDir)
+      __rsd__['state_data']['data']['m3u_file'] = common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__]
+      common_vars.__logger__.debug('__rsd__[\'state_data\'] = ' + str(__rsd__['state_data']))
+      digionline_functions.digionline__write_PVRIPTVSimpleClientIntegration_FileVersionsData(__rsd__['state_data'], common_vars.__ServiceID__, MyServiceAddon_DataDir)
 
     common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
 
@@ -265,6 +315,42 @@ def PVRIPTVSimpleClientIntegration_init_EPG_file():
   _update_required_ = PVRIPTVSimpleClientIntegration_check_data_file(_epg_file_)
   common_vars.__logger__.debug('_update_required_ ==> ' + str(_update_required_))
   
+  # Check if xml file is created with the correct behavior URLs
+  _versions_file_ = os.path.join(MyServiceAddon_DataDir, common_vars.__PVRIPTVSimpleClientIntegration_DataDir__, common_vars.__PVRIPTVSimpleClientIntegration_versions_FileName__)
+  common_vars.__logger__.debug('_versions_file_ = ' + _versions_file_)
+      
+  __rsd__ = digionline_functions.digionline__read_PVRIPTVSimpleClientIntegration_FileVersionsData(common_vars.__ServiceID__, MyServiceAddon_DataDir)
+  common_vars.__logger__.debug('Received data:  ' + str(__rsd__))
+      
+  if __rsd__['exit_status'] != 0:
+    # Initialize the state data  
+    common_vars.__logger__.debug('Initialize state data')
+    __metadata__ = {}
+    __metadata__['version'] = "1"
+
+    __data__ = {}
+    __data__['m3u_file'] = ""
+    __data__['xml_file'] = ""
+
+    __state_data__ = {}
+    __state_data__['metadata'] = __metadata__
+    __state_data__['data'] = __data__
+
+    digionline_functions.digionline__write_PVRIPTVSimpleClientIntegration_FileVersionsData(__state_data__, common_vars.__ServiceID__, MyServiceAddon_DataDir)
+      
+    _update_required_ = 1
+    common_vars.__logger__.debug('_update_required_ ==> ' + str(_update_required_))
+      
+  else:
+    if __rsd__['state_data']['data']['xml_file'] == common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__]:
+      # xml file is created with the correct behavior URLs
+      common_vars.__logger__.debug('\'' + __rsd__['state_data']['data']['xml_file'] + '\' = \'' + common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] + '\'')
+    else:
+      # xml file is NOT created with the correct behavior URLs
+      common_vars.__logger__.debug('\'' + __rsd__['state_data']['data']['xml_file'] + '\' != \'' + common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] + '\'')
+      _update_required_ = 1
+      common_vars.__logger__.debug('_update_required_ ==> ' + str(_update_required_))
+
   if _update_required_ == 1:
     PVRIPTVSimpleClientIntegration_update_EPG_file()
 
@@ -297,8 +383,19 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
     _data_file_.close()
   
     if common_vars.__config_digionline_Enabled__ == 'true':
-      digionline_functions.digionline__phone_updateEPGfile(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+    
+      if common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] == "Phone":
+        digionline_functions.digionline__phone_updateEPGfile(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
 
+      if common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__] == "TV":
+        digionline_functions.digionline__tv_updateEPGfile(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__digionline_ServiceSession__, MyServiceAddon_DataDir)
+
+      common_vars.__logger__.debug('Update state data after updating xml file.')
+      __rsd__ = digionline_functions.digionline__read_PVRIPTVSimpleClientIntegration_FileVersionsData(common_vars.__ServiceID__, MyServiceAddon_DataDir)
+      __rsd__['state_data']['data']['xml_file'] = common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__]
+      common_vars.__logger__.debug('__rsd__[\'state_data\'] = ' + str(__rsd__['state_data']))
+      digionline_functions.digionline__write_PVRIPTVSimpleClientIntegration_FileVersionsData(__rsd__['state_data'], common_vars.__ServiceID__, MyServiceAddon_DataDir)
+    
 #    if common_vars.__config_voyo_Enabled__ == 'true':
 #      voyo_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_ServiceSession__)
 
