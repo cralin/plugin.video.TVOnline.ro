@@ -22,7 +22,7 @@
 -->
 
 
-<addon id="plugin.video.TVOnline.ro" provider-name="cralin" name="TVOnline.ro" version="19.2.9">
+<addon id="plugin.video.TVOnline.ro" provider-name="cralin" name="TVOnline.ro" version="19.3.0">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.requests" version="2.22.0"/>
@@ -55,13 +55,6 @@ The author is not connected to or in any other way affiliated with Kodi, Team Ko
       <screenshot></screenshot>
     </assets>
     <news>
-Starting with Kodi 19 (Matrix), Python 2.x is replaced with Python 3.x.
-
-When installing the add-on, please make sure you're downloading and using the add-on version matching the Kodi release installed on your device.
-
-Matching repository and package versions are listed below.
-
-  * 19.x.y.z addon version(s) ===> Kodi 19 (Matrix)
 
     </news>
   </extension>
