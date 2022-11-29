@@ -854,6 +854,8 @@ def digionline___tv_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
+  digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+  
   _catchan_ = digionline__tv_getCategoriesChannels(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received data = ' + str(_catchan_))
 
@@ -961,8 +963,6 @@ def digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR):
   
   common_vars.__logger__.debug('Exit function')
   return _response_
-
-#################################################################################################
 
 def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
@@ -1503,6 +1503,8 @@ def digionline__phone_updateCachedEPG(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
+  digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+  
   _today_ = datetime.date(datetime.today())
   common_vars.__logger__.debug('_today_: ' + str(_today_))
   _epg_today_ = digionline__phone_getEPG(_today_, NAME, SESSION)
