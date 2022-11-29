@@ -463,7 +463,7 @@ def digionline__phone_getStreamDetails(STREAM_ID, NAME, SESSION, DATA_DIR):
     "action": "getStream",
     "id_stream": STREAM_ID,
     "platform": "Android",
-    "version_app": "1.0",
+    "version_app": "7.0.6-release",
     "i": __rsd__['state_data']['registeredDeviceID'],
     "sn": "ro.rcsrds.digionline",
     "s": "app",
