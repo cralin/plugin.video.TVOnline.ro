@@ -1,0 +1,133 @@
+#
+#
+#    Copyright (C) 2021  Alin Cretu
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.TVOnline.ro\n"
+"Report-Msgid-Bugs-To: https://github.com/cralin/plugin.video.TVOnline.ro\n"
+"POT-Creation-Date: 2022-11-17 20:00+0000\n"
+"PO-Revision-Date: 2022-11-17 20:00+0000\n"
+"Last-Translator: cralin <>\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+msgctxt "#30101"
+msgid "Accounts"
+msgstr ""
+
+msgctxt "#30102"
+msgid "DigiOnline.ro"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Enabled"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Username"
+msgstr ""
+
+msgctxt "#30105"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Device Manufacturer"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Device Model"
+msgstr ""
+
+msgctxt "#30108"
+msgid "Android Version"
+msgstr ""
+
+msgctxt "#30109"
+msgid "voyo.ro"
+msgstr ""
+
+msgctxt "#30110"
+msgid "General Settings"
+msgstr ""
+
+msgctxt "#30111"
+msgid "Display"
+msgstr ""
+
+msgctxt "#30112"
+msgid "Show program title in channel list"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Enable debug logging"
+msgstr ""
+
+msgctxt "#30114"
+msgid "Simple PVR integration"
+msgstr ""
+
+msgctxt "#30115"
+msgid "Data file(s)"
+msgstr ""
+
+msgctxt "#30116"
+msgid "Update m3u file, daily at"
+msgstr ""
+
+msgctxt "#30117"
+msgid "Update XML file, daily at"
+msgstr ""
+
+msgctxt "#30118"
+msgid "Behave as"
+msgstr ""
+
+msgctxt "#30119"
+msgid "Device Model"
+msgstr ""
+
+msgctxt "#30120"
+msgid "Android Version"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Platform"
+msgstr ""
+
+msgctxt "#30122"
+msgid "Phone App"
+msgstr ""
+
+msgctxt "#30123"
+msgid "TV App"
+msgstr ""
+
+msgctxt "#30124"
+msgid "30124 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
