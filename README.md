@@ -25,25 +25,15 @@ Parts of or the entire add-on could break and/or not work anymore at any given t
 
 
 ## Addon Installation & Updates
-Starting with Kodi 19 (Matrix), Python 2.x was replaced with Python 3.x.
-
-When installing the add-on, please make sure you're downloading and using the add-on version matching the Kodi release installed on your device. 
-
-Matching repository and package versions are listed in the table below.
-
-  | Kodi release | Repository | Add-on version |
-  | :---: | :---: | :---: |
-  | Kodi 19 (Matrix) | [repository.cralin.Kodi_19](https://github.com/cralin/repository.cralin.Kodi_19) | 19.x.y.z |
-
 
 Installation methods and initial configuration are described in detail on the wiki page(s) [here](https://github.com/cralin/plugin.video.TVOnline.ro/wiki#installation).
 
 
 ### Quick download links
 
-  | Kodi release | Repository package | Add-on package |
-  | :---: | :---: | :---:|
-  | Kodi 19 (Matrix) | https://github.com/cralin/repository.cralin.Kodi_19/releases/latest | https://github.com/cralin/plugin.video.TVOnline.ro/releases |
+  | Repository package | Add-on package |
+  | :---: | :---:|
+  | https://github.com/cralin/repository.cralin/releases/latest | https://github.com/cralin/plugin.video.TVOnline.ro/releases |
 
 
 
