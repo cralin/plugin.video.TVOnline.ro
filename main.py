@@ -34,6 +34,7 @@ import resources.lib.common.vars as common_vars
 import resources.lib.common.functions as common_functions
 import resources.lib.digionline.functions as digionline_functions
 import resources.lib.voyo.functions as voyo_functions
+import resources.lib.tvrplus.functions as tvrplus_functions
 import http.cookiejar
 
 
@@ -96,14 +97,17 @@ common_vars.__logger__.addHandler(handler)
 # Initialize the CookieJar variable 
 digionline_functions.init_AddonCookieJar(common_vars.__AddonID__, MyAddon_DataDir)
 voyo_functions.init_AddonCookieJar(common_vars.__AddonID__, MyAddon_DataDir)
+tvrplus_functions.init_AddonCookieJar(common_vars.__AddonID__, MyAddon_DataDir)
 
 # Start a new requests sessions and initialize the cookiejar
 common_vars.__digionline_Session__ = requests.Session()
 common_vars.__voyo_Session__ = requests.Session()
+common_vars.__tvrplus_Session__ = requests.Session()
 
 # Put all session cookeis in the cookiejar
 common_vars.__digionline_Session__.cookies = common_vars.__digionline_CookieJar__
 common_vars.__voyo_Session__.cookies = common_vars.__voyo_CookieJar__
+common_vars.__tvrplus_Session__.cookies = common_vars.__tvrplus_CookieJar__
 
 def list_enabled_accounts():
   ####
@@ -174,6 +178,33 @@ def list_enabled_accounts():
   else:
     common_vars.__logger__.debug('\'voyo.ro\'  ==> Disabled')
 
+  # tvrplus.ro
+  if common_vars.__config_tvrplus_Enabled__ == 'true':
+    common_vars.__logger__.debug('\'tvrplus.ro\'  ==> Enabled')
+
+    # Create a list item with a text label and a thumbnail image.
+    list_item = xbmcgui.ListItem(label='tvrplus.ro')
+
+    # Set additional info for the list item.
+    # For available properties see https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14
+    # 'mediatype' is needed for a skin to display info for this ListItem correctly.
+    list_item.setInfo('video', {'title': 'tvrplus.ro',
+                                'mediatype': 'video'})
+
+    # Create a URL for a plugin recursive call.
+    # Example: plugin://plugin.video.example/?action=listing&account=digionline.ro
+    url = common_functions.get_url(action='list_channels', account='tvrplus.ro')
+    common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
+
+    # This means that this item opens a sub-list of lower level items.
+    is_folder = True
+
+    # Add our item to the Kodi virtual folder listing.
+    xbmcplugin.addDirectoryItem(int(common_vars.__handle__), url, list_item, is_folder)
+
+  else:
+    common_vars.__logger__.debug('\'tvrplus.ro\'  ==> Disabled')
+
 
   # Add a sort method for the virtual folder items (alphabetically, ignore articles)
   # See: https://romanvm.github.io/Kodistubs/_autosummary/xbmcplugin.html
@@ -233,7 +264,16 @@ def router(paramstring):
             common_vars.__logger__.debug('\'voyo.ro\'  ==> Enabled')
             voyo_functions.list_channels(common_vars.__AddonID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_Session__, MyAddon_DataDir)
           else:
-            common_vars.__logger__.debug('\'voyo.ro\'  ==> Disabled')      
+            common_vars.__logger__.debug('\'voyo.ro\'  ==> Disabled')
+
+        # tvrplus.ro
+        if params['account'] == 'tvrplus.ro':
+          if common_vars.__config_tvrplus_Enabled__ == 'true':
+            common_vars.__logger__.debug('\'tvrplus.ro\'  ==> Enabled')
+            tvrplus_functions.list_channels(common_vars.__AddonID__, common_vars.__tvrplus_CookieJar__, common_vars.__tvrplus_Session__, MyAddon_DataDir)
+          else:
+            common_vars.__logger__.debug('\'tvrplus.ro\'  ==> Disabled')
+
 
       elif params['action'] == 'play':
         # Play a video from the provided URL.
@@ -255,6 +295,15 @@ def router(paramstring):
           else:
             common_vars.__logger__.debug('\'voyo.ro\'  ==> Disabled')
             xbmcgui.Dialog().ok('\'voyo.ro\' not enabled', 'The credentials for this media source are not enabled.')
+
+        # tvrplus.ro
+        if params['account'] == 'tvrplus.ro':
+          if common_vars.__config_tvrplus_Enabled__ == 'true':
+            common_vars.__logger__.debug('\'tvrplus.ro\'  ==> Enabled')
+            tvrplus_functions.play_video(params['channel_endpoint'], common_vars.__AddonID__, common_vars.__tvrplus_CookieJar__, common_vars.__tvrplus_Session__, MyAddon_DataDir)
+          else:
+            common_vars.__logger__.debug('\'tvrplus.ro\'  ==> Disabled')
+            xbmcgui.Dialog().ok('\'tvrplus.ro\' not enabled', 'This media source is not enabled.')
 
       else:
         # Raise an exception if the provided paramstring does not contain a supported action

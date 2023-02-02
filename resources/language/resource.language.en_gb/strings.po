@@ -124,10 +124,68 @@ msgid "TV App"
 msgstr ""
 
 msgctxt "#30124"
-msgid "30124 Template String"
+msgid "tvrplus.ro"
 msgstr ""
 
 msgctxt "#30125"
 msgid "30125 Template String"
 msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+msgctxt "#30125"
+msgid "30125 Template String"
+msgstr ""
+
+
+
+
+
+
+
+
+
+
 
