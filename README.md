@@ -21,6 +21,7 @@ Parts of or the entire add-on could break and/or not work anymore at any given t
   | :---: | :---: | :---: |
   | DIGI Online | [https://www.digionline.ro](https://www.digionline.ro) | Yes |
   | Voyo | [https://voyo.protv.ro](https://voyo.protv.ro) | Yes |
+  | TVR+ | [https://www.tvrplus.ro](https://www.tvrplus.ro) | No |
 
 
 
