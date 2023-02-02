@@ -209,6 +209,15 @@
           </dependencies>
         </setting>
       </group>
+
+      <group id="tvrplus.ro" label="30124">
+        <setting id="tvrplus_Enabled" type="boolean" label="30103" help="">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+      </group>
+      
     </category>
     <category id="GeneralSettings" label="30110" help="">
       <group id="Display" label="30111">

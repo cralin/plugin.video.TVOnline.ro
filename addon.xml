@@ -22,7 +22,7 @@
 -->
 
 
-<addon id="plugin.video.TVOnline.ro" provider-name="cralin" name="TVOnline.ro" version="20.0.0">
+<addon id="plugin.video.TVOnline.ro" provider-name="cralin" name="TVOnline.ro" version="20.0.1">
   <requires>
     <import addon="xbmc.python" version="3.0.1"/>
     <import addon="script.module.requests" version="2.27.1+matrix.1"/>
@@ -40,11 +40,13 @@ Kodi addon for accessing live TV channels from various romanian online platforms
 Supported platforms:
   - DigiOnline.ro
   - voyo.protv.ro
+  - tvrplus.ro
 
 For each supported platform, user registration and login credentials are required in order to access the media content.
 
 Visit https://www.digiromania.ro for more details.
 Visit https://voyo.protv.ro for more details.
+Visit https://www.tvrplus.ro for more details.
     </description>
     <disclaimer lang="en_GB">
 The author is not connected to or in any other way affiliated with Kodi, Team Kodi, the XBMC foundation or any of the online platforms used by this add-on.

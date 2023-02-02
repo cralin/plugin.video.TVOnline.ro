@@ -70,6 +70,9 @@ def read_AddonSettings(__MyAddon__, NAME):
   common_vars.__config_voyo_Username__ = __MyAddon__.getSetting('voyo_Username')
   common_vars.__config_voyo_Password__ = __MyAddon__.getSetting('voyo_Password')
 
+  # tvrplus.ro
+  common_vars.__config_tvrplus_Enabled__ = __MyAddon__.getSetting('tvrplus_Enabled')
+  common_vars.__logger__.debug('[ Addon settings ] tvrplus_Enabled = ' + str(common_vars.__config_tvrplus_Enabled__))
 
   # General settings
   common_vars.__config_ShowTitleInChannelList__ = __MyAddon__.getSetting('ShowTitleInChannelList')
@@ -113,6 +116,10 @@ def has_accounts_enabled():
     
   if common_vars.__config_voyo_Enabled__ == 'true':
     common_vars.__logger__.debug('[ Addon settings ] voyo_Enabled = ' + str(common_vars.__config_voyo_Enabled__))
+    _answer_ = 'true'
+
+  if common_vars.__config_tvrplus_Enabled__ == 'true':
+    common_vars.__logger__.debug('[ Addon settings ] tvrplus_Enabled = ' + str(common_vars.__config_tvrplus_Enabled__))
     _answer_ = 'true'
 
   return _answer_
