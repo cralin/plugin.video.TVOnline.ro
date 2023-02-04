@@ -33,6 +33,7 @@ import resources.lib.common.vars as common_vars
 import resources.lib.common.functions as common_functions
 import resources.lib.digionline.functions as digionline_functions
 import resources.lib.voyo.functions as voyo_functions
+import resources.lib.primaplay.functions as primaplay_functions
 import resources.lib.tvrplus.functions as tvrplus_functions
 import resources.lib.schedule as schedule
 import re
@@ -96,16 +97,19 @@ common_vars.__logger__.addHandler(handler)
 # Initialize the __AddonCookieJar__ variable
 digionline_functions.init_AddonCookieJar(common_vars.__ServiceID__, MyServiceAddon_DataDir)
 voyo_functions.init_AddonCookieJar(common_vars.__ServiceID__, MyServiceAddon_DataDir)
+primaplay_functions.init_AddonCookieJar(common_vars.__ServiceID__, MyServiceAddon_DataDir)
 tvrplus_functions.init_AddonCookieJar(common_vars.__ServiceID__, MyServiceAddon_DataDir)
 
 # Start a new requests session and initialize the cookiejar
 common_vars.__digionline_ServiceSession__ = requests.Session()
 common_vars.__voyo_ServiceSession__ = requests.Session()
+common_vars.__primaplay_ServiceSession__ = requests.Session()
 common_vars.__tvrplus_ServiceSession__ = requests.Session()
 
 # Put all session cookeis in the cookiejar
 common_vars.__digionline_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
 common_vars.__voyo_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
+common_vars.__primaplay_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
 common_vars.__tvrplus_ServiceSession__.cookies = common_vars.__digionline_CookieJar__
 
 
@@ -292,6 +296,12 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file():
 
     common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
 
+    # primaplay.ro
+    if common_vars.__config_primaplay_Enabled__ == 'true':
+      _current_channel_number_ = primaplay_functions.PVRIPTVSimpleClientIntegration_update_m3u_file(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__primaplay_CookieJar__, common_vars.__primaplay_ServiceSession__)
+
+    common_vars.__logger__.debug('_current_channel_number_ = ' + str(_current_channel_number_))
+
     # tvrplus.ro
     if common_vars.__config_tvrplus_Enabled__ == 'true':
       _current_channel_number_ = tvrplus_functions.PVRIPTVSimpleClientIntegration_update_m3u_file(_tmp_m3u_file_, _current_channel_number_, common_vars.__ServiceID__, common_vars.__tvrplus_CookieJar__, common_vars.__tvrplus_ServiceSession__)
@@ -403,9 +413,12 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
       __rsd__['state_data']['data']['xml_file'] = common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__]
       common_vars.__logger__.debug('__rsd__[\'state_data\'] = ' + str(__rsd__['state_data']))
       digionline_functions.digionline__write_PVRIPTVSimpleClientIntegration_FileVersionsData(__rsd__['state_data'], common_vars.__ServiceID__, MyServiceAddon_DataDir)
-    
+
 #    if common_vars.__config_voyo_Enabled__ == 'true':
 #      voyo_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_ServiceSession__)
+
+#    if common_vars.__config_primaplay_Enabled__ == 'true':
+#      primaplay_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__primaplay_CookieJar__, common_vars.__primaplay_ServiceSession__)
 
 #    if common_vars.__config_tvrplus_Enabled__ == 'true':
 #      tvrplus_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__tvrplus_CookieJar__, common_vars.__tvrplus_ServiceSession__)

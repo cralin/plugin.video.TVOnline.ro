@@ -36,6 +36,10 @@ __config_voyo_Enabled__ = ''
 __config_voyo_Username__ = ''
 __config_voyo_Password__ = ''
 
+__config_primaplay_Enabled__ = ''
+__config_primaplay_Username__ = ''
+__config_primaplay_Password__ = ''
+
 __config_tvrplus_Enabled__ = ''
 
 # General settings
@@ -60,6 +64,7 @@ __config_PVRIPTVSimpleClientIntegration_EPG_FileRefreshTime__ = ''
 __digionline_API_userAgent__ = 'okhttp/4.8.1'
 __digionline_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
 __voyo_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
+__primaplay_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
 __tvrplus_userAgent__ = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0'
 
 # The IDs used by add-on
@@ -77,6 +82,9 @@ __digionline_CookieJar__ = ''
 __voyo_CookiesFilename__ = 'voyo.ro_cookies.txt'
 __voyo_CookieJar__ = ''
 
+__primaplay_CookiesFilename__ = 'primaplay.ro_cookies.txt'
+__primaplay_CookieJar__ = ''
+
 __tvrplus_CookiesFilename__ = 'tvrplus.ro_cookies.txt'
 __tvrplus_CookieJar__ = ''
 
@@ -93,10 +101,12 @@ __digionline_TVStateFilename__ = 'digionline.ro_TVState.txt'
 # The sessions used by add-on
 __digionline_Session__ = ''
 __voyo_Session__ = ''
+__primaplay_Session__ = ''
 __tvrplus_Session__ = ''
 
 __digionline_ServiceSession__ = ''
 __voyo_ServiceSession__ = ''
+__primaplay_ServiceSession__ = ''
 __tvrplus_ServiceSession__ = ''
 
 # The plugin url in plugin:// notation.
@@ -123,6 +133,7 @@ __digionline_AuthInterval__ = (1 * __day__)
 # Directory holding the cached data. 
 __digionline_cache_dir__ = 'cached_data/digionline.ro'
 __voyo_cache_dir__ = 'cached_data/voyo.ro'
+__primaplay_cache_dir__ = 'cached_data/primaplay.ro'
 __tvrplus_cache_dir__ = 'cached_data/tvrplus.ro'
 
 # File names for the raw data
@@ -131,6 +142,9 @@ __PVRIPTVSimpleClientIntegration__digionline_raw_EPG_FileName__ = __AddonID__ + 
  
 __PVRIPTVSimpleClientIntegration_voyo_raw_m3u_FileName__ = __AddonID__ + 'voyo.m3u.raw'
 __PVRIPTVSimpleClientIntegration__voyo_raw_EPG_FileName__ = __AddonID__ + 'voyo.xml.raw'
+
+__PVRIPTVSimpleClientIntegration_primaplay_raw_m3u_FileName__ = __AddonID__ + 'primaplay.m3u.raw'
+__PVRIPTVSimpleClientIntegration__primaplay_raw_EPG_FileName__ = __AddonID__ + 'primaplay.xml.raw'
 
 __PVRIPTVSimpleClientIntegration_tvrplus_raw_m3u_FileName__ = __AddonID__ + 'tvrplus.m3u.raw'
 __PVRIPTVSimpleClientIntegration__tvrplus_raw_EPG_FileName__ = __AddonID__ + 'tvrplus.xml.raw'

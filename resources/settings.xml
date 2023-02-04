@@ -218,6 +218,41 @@
         </setting>
       </group>
       
+      <group id="primaplay.ro" label="30125">
+        <setting id="primaplay_Enabled" type="boolean" label="30103" help="">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
+        <setting id="primaplay_Username" type="string" label="30104" help="" parent="primaplay_Enabled">
+          <level>0</level>
+          <default>__DEFAULT_USER__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30104</heading>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="primaplay_Enabled">true</dependency>
+          </dependencies>
+        </setting>
+        <setting id="primaplay_Password" type="string" label="30105" help="" parent="primaplay_Enabled">
+          <level>0</level>
+          <default>__DEFAULT_PASSWORD__</default>
+          <constraints>
+            <allowempty>false</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30105</heading>
+            <hidden>true</hidden>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="primaplay_Enabled">true</dependency>
+          </dependencies>
+        </setting>
+      </group>
+
     </category>
     <category id="GeneralSettings" label="30110" help="">
       <group id="Display" label="30111">

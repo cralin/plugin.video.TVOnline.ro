@@ -128,7 +128,7 @@ msgid "tvrplus.ro"
 msgstr ""
 
 msgctxt "#30125"
-msgid "30125 Template String"
+msgid "primaplay.ro"
 msgstr ""
 
 msgctxt "#30125"
