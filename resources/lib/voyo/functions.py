@@ -150,7 +150,34 @@ def do_login(NAME, COOKIEJAR, SESSION):
   if _auth_check_1_['status'] == "unauthorized":
     common_vars.__logger__.info('Not authenticated.')
     
-    
+    MyHeaders = {
+     'User-Agent': common_vars.__voyo_userAgent__,
+     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+     'Accept-Language': 'en-US',
+     'Accept-Encoding': 'identity',
+     'Content-Type': 'application/x-www-form-urlencoded',
+     'Connection': 'keep-alive',
+     'Upgrade-Insecure-Requests': '1',
+     'Cache-Control': 'max-age=0'
+    }
+
+    common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
+    common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+    common_vars.__logger__.debug('URL: https://voyo.protv.ro/login')
+    common_vars.__logger__.debug('Method: GET')
+
+    # Send the GET request
+    _request_ = SESSION.get('https://voyo.protv.ro/login', headers=MyHeaders, allow_redirects=False)
+
+    # Save cookies for later use.
+    COOKIEJAR.save(ignore_discard=True)
+
+    common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+    common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
+    common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+    common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+
     MyHeaders = {
      'Host': 'voyo.protv.ro',
      'Origin': 'https://voyo.protvplus.ro',
@@ -233,19 +260,6 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
   
   _auth_ = do_login(NAME, COOKIEJAR, SESSION)
   common_vars.__logger__.debug('_auth_ = ' + str(_auth_))
-
-  # Check for valid subscription
-  __no_valid_subscription__ = False
-  
-  if _auth_['data']['is_subscribed']:
-    common_vars.__logger__.info('_auth_[data][is_subscribed] = ' + str(_auth_['data']['is_subscribed']))
-    common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
-  else:
-    __no_valid_subscription__ = True
-    common_vars.__logger__.info('_auth_[data][is_subscribed] = ' + str(_auth_['data']['is_subscribed']))
-    common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
-
-  # End check for valid subscription
     
   if _auth_['status'] == "unauthorized":
     common_vars.__logger__.info('[voyo.ro] => Authentication error => Invalid username or password.')
@@ -254,6 +268,17 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Exit function')
 
   else:
+
+    __no_valid_subscription__ = False
+
+    if _auth_['data']['is_subscribed']:
+      common_vars.__logger__.info('_auth_[data][is_subscribed] = ' + str(_auth_['data']['is_subscribed']))
+      common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
+    else:
+      __no_valid_subscription__ = True
+      common_vars.__logger__.info('_auth_[data][is_subscribed] = ' + str(_auth_['data']['is_subscribed']))
+      common_vars.__logger__.info(' __no_valid_subscription__ = ' + str(__no_valid_subscription__))
+
     if __no_valid_subscription__:
       common_vars.__logger__.info('[voyo.ro] => No valid subscription => Pentru a putea vizualiza acest canal trebuie să ai abonament VOYO.')
       xbmcgui.Dialog().ok('[voyo.ro] => No valid subscription', 'Pentru a putea vizualiza acest canal trebuie să ai abonament VOYO.')
