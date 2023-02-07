@@ -773,6 +773,8 @@ def digionline__tv_doAuth(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
+  _is_new_token_ = False
+
   __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
 
   # State data not yet initialized
@@ -786,17 +788,46 @@ def digionline__tv_doAuth(NAME, SESSION, DATA_DIR):
     if __api_auth__['result']['success']:
       __rsd__['state_data']['data']['AuthToken'] = __api_auth__['result']['token']
       digionline_functions.digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+      _is_new_token_ = True
 
     else:
       xbmcgui.Dialog().ok('[digionline.ro] => Authentication error ' + str(__api_auth__['result']['errCode']), str(__api_auth__['result']['message']))
+      common_vars.__logger__.debug('Exit function')
+      return
+
+
+  common_vars.__logger__.debug('deviceID: ' + __rsd__['state_data']['data']['deviceID'])
+  common_vars.__logger__.debug('AuthToken: ' + __rsd__['state_data']['data']['AuthToken'])
+
+  # Device not yet authenticated/registered
+  if __rsd__['state_data']['data']['AuthToken'] == "":
+    common_vars.__logger__.debug('Empty token')
+
+    __api_auth__ = digionline_functions.digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
+    common_vars.__logger__.debug('__api_auth__ = ' + str(__api_auth__))
+
+    if __api_auth__['result']['success']:
+      __rsd__['state_data']['data']['AuthToken'] = __api_auth__['result']['token']
+      digionline_functions.digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+      _is_new_token_ = True
+
+    else:
+      xbmcgui.Dialog().ok('[digionline.ro] => Authentication error ' + str(__api_auth__['result']['errCode']), str(__api_auth__['result']['message']))
+      common_vars.__logger__.debug('Exit function')
+      return
 
   else:
-    common_vars.__logger__.debug('deviceID: ' + __rsd__['state_data']['data']['deviceID'])
-    common_vars.__logger__.debug('AuthToken: ' + __rsd__['state_data']['data']['AuthToken'])
+    common_vars.__logger__.debug('Not empty token')
 
-    # Device not yet authenticated/registered
-    if __rsd__['state_data']['data']['AuthToken'] == "":
-      common_vars.__logger__.debug('Not authenticated')
+  # Device authenticated/registered, check for expired token
+  if not _is_new_token_:
+    common_vars.__logger__.debug('Not new token')
+
+    __check_token__ = digionline__tv_getCategoriesChannels(NAME, SESSION, DATA_DIR)
+
+    if 'logout' in __check_token__ and __check_token__['logout']:
+      common_vars.__logger__.debug('Response error message: ' + str(__check_token__['meta']['error']['message']))
+      common_vars.__logger__.debug('Drop token and re-authenticate.')
 
       __api_auth__ = digionline_functions.digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
       common_vars.__logger__.debug('__api_auth__ = ' + str(__api_auth__))
@@ -807,11 +838,17 @@ def digionline__tv_doAuth(NAME, SESSION, DATA_DIR):
 
       else:
         xbmcgui.Dialog().ok('[digionline.ro] => Authentication error ' + str(__api_auth__['result']['errCode']), str(__api_auth__['result']['message']))
+        common_vars.__logger__.debug('Exit function')
+        return
 
     else:
-      common_vars.__logger__.debug('Already authenticated')
+      common_vars.__logger__.debug('Token still valid.')
+
+  else:
+    common_vars.__logger__.debug('New token was generated. Not cheking if expired.')
 
   common_vars.__logger__.debug('Exit function')
+
 
 
 def digionline__tv_getCategoriesChannels(NAME, SESSION, DATA_DIR):
