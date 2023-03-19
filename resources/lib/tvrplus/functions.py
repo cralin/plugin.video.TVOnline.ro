@@ -158,6 +158,9 @@ def get_channels(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
+  MyAddon = xbmcaddon.Addon(id=common_vars.__AddonID__)
+  __tvrplus_cacert__ = MyAddon.getAddonInfo('path') + 'resources/lib/tvrplus/tvrplus-ro-chain.pem'
+
   # Setup headers for the request
   MyHeaders = {
     'Host': 'www.tvrplus.ro',
@@ -176,7 +179,7 @@ def get_channels(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__.debug('Method: GET')
 
   # Send the GET request
-  _request_ = SESSION.get('https://www.tvrplus.ro', headers=MyHeaders)
+  _request_ = SESSION.get('https://www.tvrplus.ro', headers=MyHeaders, verify=__tvrplus_cacert__)
 
   # Save cookies for later use.
   COOKIEJAR.save(ignore_discard=True)
@@ -238,6 +241,9 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Enter function')
   
   common_vars.__logger__.debug('Chanel endpoint = ' + CHANNEL_ENDPOINT)
+
+  MyAddon = xbmcaddon.Addon(id=common_vars.__AddonID__)
+  __tvrplus_cacert__ = MyAddon.getAddonInfo('path') + 'resources/lib/tvrplus/tvrplus-ro-chain.pem'
   
   # Get the URL for the stream m3u8 file
 
@@ -259,7 +265,7 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Method: GET')
 
   # Send the GET request
-  _request_ = SESSION.get(CHANNEL_ENDPOINT, headers=MyHeaders)
+  _request_ = SESSION.get(CHANNEL_ENDPOINT, headers=MyHeaders, verify=__tvrplus_cacert__)
 
   # Save cookies for later use.
   COOKIEJAR.save(ignore_discard=True)
