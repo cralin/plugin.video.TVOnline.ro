@@ -31,7 +31,6 @@ import json
 import inputstreamhelper
 import resources.lib.common.vars as common_vars
 import resources.lib.common.functions as common_functions
-import resources.lib.voyo.functions as voyo_functions
 
 
 def init_AddonCookieJar(NAME, DATA_DIR):
@@ -431,7 +430,7 @@ def list_channels(NAME, COOKIEJAR, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Enter function')
 
   # Get the list of videos in the category.
-  channels = voyo_functions.get_channels(NAME, COOKIEJAR, SESSION)
+  channels = get_channels(NAME, COOKIEJAR, SESSION)
   common_vars.__logger__.debug('Received channels = ' + str(channels))
 
   for channel in channels:
@@ -607,7 +606,7 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file(M3U_FILE, START_NUMBER, NAME,
   common_vars.__logger__.debug('START_NUMBER = ' + str(START_NUMBER))
   
   # Get the list of channels in the category.
-  channels = voyo_functions.get_channels(NAME, COOKIEJAR, SESSION)
+  channels = get_channels(NAME, COOKIEJAR, SESSION)
   common_vars.__logger__.debug('Received channels = ' + str(channels))
   
   _CHNO_ = START_NUMBER
@@ -638,10 +637,10 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file(M3U_FILE, START_NUMBER, NAME,
 #  common_vars.__logger__.debug('XML_FILE = ' + XML_FILE)
 #
 #  # Get the list of channels in the category.
-#  channels = voyo_functions.get_channels(NAME, COOKIEJAR, SESSION)
+#  channels = get_channels(NAME, COOKIEJAR, SESSION)
 #  common_vars.__logger__.debug('Received channels = ' + str(channels))
 #
-#  epg = voyo_functions.get_epg_data(NAME, COOKIEJAR, SESSION)
+#  epg = get_epg_data(NAME, COOKIEJAR, SESSION)
 #  common_vars.__logger__.debug('Received epg = ' + str(epg))
 #
 #  _data_file_ = open(XML_FILE, 'a', encoding='utf-8')

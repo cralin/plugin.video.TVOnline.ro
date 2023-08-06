@@ -31,7 +31,6 @@ import json
 import inputstreamhelper
 import resources.lib.common.vars as common_vars
 import resources.lib.common.functions as common_functions
-import resources.lib.tvrplus.functions as tvrplus_functions
 
 
 def init_AddonCookieJar(NAME, DATA_DIR):
@@ -93,7 +92,7 @@ def list_channels(NAME, COOKIEJAR, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Enter function')
 
   # Get the list of videos in the category.
-  channels = tvrplus_functions.get_channels(NAME, COOKIEJAR, SESSION)
+  channels = get_channels(NAME, COOKIEJAR, SESSION)
   common_vars.__logger__.debug('Received channels = ' + str(channels))
 
   for channel in channels:
@@ -315,7 +314,7 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file(M3U_FILE, START_NUMBER, NAME,
   common_vars.__logger__.debug('START_NUMBER = ' + str(START_NUMBER))
   
   # Get the list of channels in the category.
-  channels = tvrplus_functions.get_channels(NAME, COOKIEJAR, SESSION)
+  channels = get_channels(NAME, COOKIEJAR, SESSION)
   common_vars.__logger__.debug('Received channels = ' + str(channels))
   
   _CHNO_ = START_NUMBER
