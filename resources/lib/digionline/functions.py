@@ -36,7 +36,6 @@ import secrets
 import inputstreamhelper
 import resources.lib.common.vars as common_vars
 import resources.lib.common.functions as common_functions
-import resources.lib.digionline.functions as digionline_functions
 
 
 def init_AddonCookieJar(NAME, DATA_DIR):
@@ -224,17 +223,17 @@ def digionline__phone_init(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
-  digionline_functions.digionline__phone_init_stateData(NAME, DATA_DIR)
+  digionline__phone_init_stateData(NAME, DATA_DIR)
 
-  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
 
   if __rsd__['state_data']['deviceID'] == "":
-    if digionline_functions.digionline__check_DefaultUserSettings(NAME) != 0:
+    if digionline__check_DefaultUserSettings(NAME) != 0:
         common_vars.__logger__.debug('[digionline.ro] => Incomplete configuration => Please configure all fields for digionline.ro account.')
         xbmcgui.Dialog().ok('[digionline.ro] => Incomplete configuration', "Please configure all fields for digionline.ro account.")
         xbmc.executebuiltin("XBMC.Container.Update(path,replace)")
     else:
-      __rsd__['state_data']['deviceID'] = digionline_functions.digionline__phone_generateDeviceID(NAME)
+      __rsd__['state_data']['deviceID'] = digionline__phone_generateDeviceID(NAME)
       common_vars.__logger__.debug('deviceID = ' + __rsd__['state_data']['deviceID'])
       
       __deviceManufacturer__ = re.sub("\\W", "_", common_vars.__config_digionline_PhoneDeviceManufacturer__)
@@ -253,7 +252,7 @@ def digionline__phone_init(NAME, DATA_DIR):
       common_vars.__logger__.debug('__androidVersion__ = ' + __androidVersion__)
       __rsd__['state_data']['androidVersion'] = __androidVersion__
 
-      digionline_functions.digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+      digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   common_vars.__logger__.debug('Exit function')
 
@@ -286,7 +285,7 @@ def digionline__phone_isUserRegistered(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
-  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
   _config_pass_hash_ = hashlib.md5(common_vars.__config_digionline_Password__.encode('utf-8')).hexdigest()
   
   if __rsd__['state_data']['registeredUser']['userName'] != common_vars.__config_digionline_Username__ or __rsd__['state_data']['registeredUser']['passwordHash'] != _config_pass_hash_:
@@ -336,13 +335,13 @@ def digionline__phone_registerUser(NAME, SESSION, DATA_DIR):
   
   if _response_['result']['code'] == '200':
     common_vars.__logger__.debug('Received message: ' + str(_response_['data']['message']))
-    __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
+    __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
     __rsd__['state_data']['registeredUser']['userName'] = common_vars.__config_digionline_Username__
     __rsd__['state_data']['registeredUser']['passwordHash'] = _config_pass_hash_
     __rsd__['state_data']['registeredUser']['receivedHash'] = _response_['data']['h']
     __rsd__['state_data']['registeredUser']['registeredTS'] = time.time()
     common_vars.__logger__.debug('State data: ' + str(__rsd__['state_data']))
-    digionline_functions.digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+    digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   else:
     common_vars.__logger__.debug('Received message: ' + str(_response_['result']['message']))
@@ -357,7 +356,7 @@ def digionline__phone_isDeviceRegistered(NAME, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
   
-  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
   
   if __rsd__['state_data']['registeredDeviceID'] != __rsd__['state_data']['deviceID']:
     # Device not registered
@@ -380,7 +379,7 @@ def digionline__phone_registerDevice(NAME, SESSION, DATA_DIR):
     'User-Agent': common_vars.__digionline_API_userAgent__
   }
   
-  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
   
   # Setup parameters for the request  
   __c__ = hashlib.md5((__rsd__['state_data']['registeredUser']['userName'] + __rsd__['state_data']['registeredUser']['passwordHash'] + __rsd__['state_data']['deviceID'] + __rsd__['state_data']['deviceManufacturer'] + __rsd__['state_data']['deviceModel'] + __rsd__['state_data']['androidVersion'] + __rsd__['state_data']['registeredUser']['receivedHash']).encode('utf-8')).hexdigest()
@@ -415,7 +414,7 @@ def digionline__phone_registerDevice(NAME, SESSION, DATA_DIR):
     __rsd__['state_data']['registeredDeviceID'] = __rsd__['state_data']['deviceID']
     common_vars.__logger__.debug('State data: ' + str(__rsd__['state_data']))
 
-    digionline_functions.digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+    digionline__phone_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
   else:
     common_vars.__logger__.debug('Received message: ' + str(_response_['result']['message']))
@@ -428,18 +427,18 @@ def digionline__phone_doAuth(NAME, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Enter function')
 
   # Initialize device data
-  digionline_functions.digionline__phone_init(NAME, DATA_DIR)
+  digionline__phone_init(NAME, DATA_DIR)
 
-  if not digionline_functions.digionline__phone_isUserRegistered(NAME, DATA_DIR):
+  if not digionline__phone_isUserRegistered(NAME, DATA_DIR):
     common_vars.__logger__.debug('Registering user')
-    digionline_functions.digionline__phone_registerUser(NAME, SESSION, DATA_DIR)
+    digionline__phone_registerUser(NAME, SESSION, DATA_DIR)
     
-  if digionline_functions.digionline__phone_isUserRegistered(NAME, DATA_DIR) and not digionline__phone_isDeviceRegistered(NAME, DATA_DIR):
+  if digionline__phone_isUserRegistered(NAME, DATA_DIR) and not digionline__phone_isDeviceRegistered(NAME, DATA_DIR):
     common_vars.__logger__.debug('Registering device')
-    digionline_functions.digionline__phone_registerDevice(NAME, SESSION, DATA_DIR)
+    digionline__phone_registerDevice(NAME, SESSION, DATA_DIR)
 
   else:
-    __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
+    __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
     common_vars.__logger__.debug('\'' + __rsd__['state_data']['registeredUser']['userName'] + '\' already registered at: ' + time.strftime("%Y%m%d_%H%M%S", time.gmtime(__rsd__['state_data']['registeredUser']['registeredTS'])))
 
   common_vars.__logger__.debug('Exit function')
@@ -456,7 +455,7 @@ def digionline__phone_getStreamDetails(STREAM_ID, NAME, SESSION, DATA_DIR):
     'User-Agent': common_vars.__digionline_API_userAgent__
   }
   
-  __rsd__ = digionline_functions.digionline__phone_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__phone_read_stateData(NAME, DATA_DIR)
   
   # Setup parameters for the request  
   MyParams = {
@@ -697,7 +696,7 @@ def digionline__tv_init_stateData(NAME, DATA_DIR):
   __state_data__['metadata'] = __metadata__
   __state_data__['data'] = __data__
 
-  digionline_functions.digionline__tv_write_stateData(__state_data__, NAME, DATA_DIR)
+  digionline__tv_write_stateData(__state_data__, NAME, DATA_DIR)
 
   common_vars.__logger__.debug('Initialized stateData: ' + str(__state_data__))
   common_vars.__logger__.debug('Exit function')
@@ -716,7 +715,7 @@ def digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR):
     'Content-Type': 'application/json'
   }
 
-  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__tv_read_stateData(NAME, DATA_DIR)
 
   # Setup payload for the request
   MyPayloadData = {
@@ -775,19 +774,19 @@ def digionline__tv_doAuth(NAME, SESSION, DATA_DIR):
 
   _is_new_token_ = False
 
-  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__tv_read_stateData(NAME, DATA_DIR)
 
   # State data not yet initialized
   if __rsd__['exit_status'] != 0:
-    digionline_functions.digionline__tv_init_stateData(NAME, DATA_DIR)
-    __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+    digionline__tv_init_stateData(NAME, DATA_DIR)
+    __rsd__ = digionline__tv_read_stateData(NAME, DATA_DIR)
 
-    __api_auth__ = digionline_functions.digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
+    __api_auth__ = digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
     common_vars.__logger__.debug('__api_auth__ = ' + str(__api_auth__))
 
     if __api_auth__['result']['success']:
       __rsd__['state_data']['data']['AuthToken'] = __api_auth__['result']['token']
-      digionline_functions.digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+      digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
       _is_new_token_ = True
 
     else:
@@ -803,12 +802,12 @@ def digionline__tv_doAuth(NAME, SESSION, DATA_DIR):
   if __rsd__['state_data']['data']['AuthToken'] == "":
     common_vars.__logger__.debug('Empty token')
 
-    __api_auth__ = digionline_functions.digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
+    __api_auth__ = digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
     common_vars.__logger__.debug('__api_auth__ = ' + str(__api_auth__))
 
     if __api_auth__['result']['success']:
       __rsd__['state_data']['data']['AuthToken'] = __api_auth__['result']['token']
-      digionline_functions.digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+      digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
       _is_new_token_ = True
 
     else:
@@ -829,12 +828,12 @@ def digionline__tv_doAuth(NAME, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Response error message: ' + str(__check_token__['meta']['error']['message']))
       common_vars.__logger__.debug('Drop token and re-authenticate.')
 
-      __api_auth__ = digionline_functions.digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
+      __api_auth__ = digionline__tv_doAPIUserAuth(NAME, SESSION, DATA_DIR)
       common_vars.__logger__.debug('__api_auth__ = ' + str(__api_auth__))
 
       if __api_auth__['result']['success']:
         __rsd__['state_data']['data']['AuthToken'] = __api_auth__['result']['token']
-        digionline_functions.digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
+        digionline__tv_write_stateData(__rsd__['state_data'], NAME, DATA_DIR)
 
       else:
         xbmcgui.Dialog().ok('[digionline.ro] => Authentication error ' + str(__api_auth__['result']['errCode']), str(__api_auth__['result']['message']))
@@ -857,7 +856,7 @@ def digionline__tv_getCategoriesChannels(NAME, SESSION, DATA_DIR):
 
   __URL__ = 'https://apitv.digionline.ro/api/channels_categories'
 
-  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__tv_read_stateData(NAME, DATA_DIR)
 
   # Setup headers for the request
   MyHeaders = {
@@ -891,7 +890,7 @@ def digionline___tv_updateCachedCategoriesChannels(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+  digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
   
   _catchan_ = digionline__tv_getCategoriesChannels(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received data = ' + str(_catchan_))
@@ -970,7 +969,7 @@ def digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR):
 
   __URL__ = 'https://apitv.digionline.ro/api/channel'
   
-  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__tv_read_stateData(NAME, DATA_DIR)
 
   # Setup headers for the request
   MyHeaders = {
@@ -1013,7 +1012,7 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
 
   if BEHAVE_AS == "Phone":
     # Get video categories
-    categories = digionline_functions.digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
+    categories = digionline__phone_getCachedCategories(NAME, SESSION, DATA_DIR)
     common_vars.__logger__.debug('Received categories = ' + str(categories))
 
     for category in categories:
@@ -1042,10 +1041,10 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
 
   if BEHAVE_AS == "TV":
 
-    digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+    digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
 
     # Get video categories
-    categories_channels = digionline_functions.digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+    categories_channels = digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
     common_vars.__logger__.debug('Received data = ' + str(categories_channels))
 
     for category_data in categories_channels['categories_list']:
@@ -1152,7 +1151,7 @@ def digionline__phone_listChannels(CATEGORY_NAME, CHANNEL_LIST, NAME, SESSION, D
   xbmcplugin.setContent(int(common_vars.__handle__), 'videos')
 
   # Get the list of all cached channels.
-  _cached_channels_ = digionline_functions.digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
+  _cached_channels_ = digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received cached channels = ' + str(_cached_channels_))
   
   _channel_list_ = json.loads(CHANNEL_LIST)
@@ -1217,10 +1216,10 @@ def digionline__tv_listChannels(ID_CATEGORY, CATEGORY_NAME, NAME, SESSION, DATA_
   # Set plugin content.
   xbmcplugin.setContent(int(common_vars.__handle__), 'videos')
 
-  digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+  digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
 
   # Get the list of all cached categories and channels
-  categories_channels = digionline_functions.digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
+  categories_channels = digionline__tv_getCachedCategoriesChannels(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received data = ' + str(categories_channels))
   
   
@@ -1278,9 +1277,9 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
 
   if BEHAVE_AS == "Phone":
     # Authenticate if needed.
-    digionline_functions.digionline__phone_doAuth(NAME, SESSION, DATA_DIR)
+    digionline__phone_doAuth(NAME, SESSION, DATA_DIR)
 
-    _stream_details_ = digionline_functions. digionline__phone_getStreamDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
+    _stream_details_ =  digionline__phone_getStreamDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
     common_vars.__logger__.debug('Received data: ' + str(_stream_details_))
     
     if _stream_details_['error'] != "":
@@ -1353,18 +1352,18 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
         xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
 
   if BEHAVE_AS == "TV":
-    digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+    digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
 
-    _channel_details_ = digionline_functions.digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
+    _channel_details_ = digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
     common_vars.__logger__.debug('Received data: ' + str(_channel_details_))
     
     if _channel_details_['meta'] != "":
       if _channel_details_['meta']['error']['code'] == 10014:
         common_vars.__logger__.debug('Response error code: ' + str(_channel_details_['meta']['error']['code']))
         common_vars.__logger__.debug('Reset state data and re-authenticate.')
-        digionline_functions.digionline__tv_init_stateData(NAME, DATA_DIR)
-        digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
-        _channel_details_ = digionline_functions.digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
+        digionline__tv_init_stateData(NAME, DATA_DIR)
+        digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+        _channel_details_ = digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
       else:
         xbmcgui.Dialog().ok('[digionline.ro] => Error ' + str(_channel_details_['meta']['error']['code']), str(_channel_details_['meta']['error']['message']))
         common_vars.__logger__.debug('Exit function')
@@ -1432,7 +1431,7 @@ def digionline__phone_updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_
   common_vars.__logger__.debug('Received categories = ' + str(_categories_))
   
   # Get the list of channels
-  _channels_ = digionline_functions.digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
+  _channels_ = digionline__phone_getCachedChannels(NAME, SESSION, DATA_DIR)
   common_vars.__logger__.debug('Received channels = ' + str(_channels_))
     
   for category in _categories_:
@@ -1540,7 +1539,7 @@ def digionline__phone_updateCachedEPG(NAME, SESSION, DATA_DIR):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
-  digionline_functions.digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
+  digionline__tv_doAuth(NAME, SESSION, DATA_DIR)
   
   _today_ = datetime.date(datetime.today())
   common_vars.__logger__.debug('_today_: ' + str(_today_))
@@ -1718,7 +1717,7 @@ def digionline__tv_getEPG(DATE, NAME, SESSION, DATA_DIR):
 
   __URL__ = 'https://apitv.digionline.ro/api/epgs-full/byDate/' + str(DATE)
 
-  __rsd__ = digionline_functions.digionline__tv_read_stateData(NAME, DATA_DIR)
+  __rsd__ = digionline__tv_read_stateData(NAME, DATA_DIR)
 
   # Setup headers for the request
   MyHeaders = {
