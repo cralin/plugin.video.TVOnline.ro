@@ -1369,9 +1369,9 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
         common_vars.__logger__.debug('Exit function')
         return
 
-    if _channel_details_['data']['encrypted'] == "1" and _channel_details_['data']['encryption_type'] == "widevine":
+    if _channel_details_['data']['stream_url'] != "" and _channel_details_['data']['stream_proxy'] != "":
       
-      common_vars.__logger__.debug('Playing a \'' + _channel_details_['data']['encryption_type'] + '\' encrypted stream')
+      #common_vars.__logger__.debug('Playing a \'' + _channel_details_['data']['encryption_type'] + '\' encrypted stream')
       
       # Set the headers to be used with imputstream.adaptive
       _headers_ = ''
