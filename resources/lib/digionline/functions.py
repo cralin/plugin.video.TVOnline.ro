@@ -1016,7 +1016,7 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Received categories = ' + str(categories))
 
     for category in categories:
-      common_vars.__logger__.debug('Category:  id = \'' + str(category['id_category']) + '\', Name = \'' + str(category['category_name']) + '\', Title = \'' + str(category['category_desc']) + '\', Channel list = \'' + str(category['channels_list']) + '\'')
+      common_vars.__logger__.debug('Category:  id = \'' + str(category['id_category']) + '\', Name = \'' + str(category['category_desc']) + '\', Title = \'' + str(category['category_desc']) + '\', Channel list = \'' + str(category['channels_list']) + '\'')
 
       # Create a list item with a text label and a thumbnail image.
       list_item = xbmcgui.ListItem(label=category['category_desc'])
@@ -1030,7 +1030,7 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
 
       # Create a URL for a plugin recursive call.
       # Example: plugin://plugin.video.example/?action=listing&category=filme
-      url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', category_id=category['id_category'], category_name=category['category_name'], channel_list=json.dumps(category['channels_list']))
+      url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', category_id=category['id_category'], category_name=category['category_desc'], channel_list=json.dumps(category['channels_list']))
       common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
 
       # This means that this item opens a sub-list of lower level items.
@@ -1048,7 +1048,7 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Received data = ' + str(categories_channels))
 
     for category_data in categories_channels['categories_list']:
-      common_vars.__logger__.debug('Category:  id = \'' + str(category_data['id_category']) + '\', Name = \'' + str(category_data['category_name']) + '\', Title = \'' + str(category_data['category_desc']) + '\'')
+      common_vars.__logger__.debug('Category:  id = \'' + str(category_data['id_category']) + '\', Name = \'' + str(category_data['category_desc']) + '\', Title = \'' + str(category_data['category_desc']) + '\'')
 
       # Create a list item with a text label and a thumbnail image.
       list_item = xbmcgui.ListItem(label=category_data['category_desc'])
@@ -1062,7 +1062,7 @@ def digionline__listCategories(BEHAVE_AS, NAME, SESSION, DATA_DIR):
 
       # Create a URL for a plugin recursive call.
       # Example: plugin://plugin.video.example/?action=listing&category=filme
-      url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', id_category=category_data['id_category'], category_name=category_data['category_name'])
+      url = common_functions.get_url(account='digionline.ro', behaveas=common_vars.__behave_map__[common_vars.__config_digionline_BehaveAs__], action='list_channels', id_category=category_data['id_category'], category_name=category_data['category_desc'])
       common_vars.__logger__.debug('URL for plugin recursive call: ' + url)
 
       # This means that this item opens a sub-list of lower level items.
@@ -1477,7 +1477,7 @@ def digionline__tv_updateM3Ufile(M3U_FILE, START_NUMBER, NAME, SESSION, DATA_DIR
   common_vars.__logger__.debug('Received data = ' + str(_categories_channels_))
 
   for _category_ in _categories_channels_['categories_list']:
-    common_vars.__logger__.debug('Category:  id = \'' + str(_category_['id_category']) + '\', Name = \'' + str(_category_['category_name']) + '\', Title = \'' + str(_category_['category_desc']) + '\'')
+    common_vars.__logger__.debug('Category:  id = \'' + str(_category_['id_category']) + '\', Name = \'' + str(_category_['category_desc']) + '\', Title = \'' + str(_category_['category_desc']) + '\'')
     
     for _channel_ in _categories_channels_['channels_list']:
       if "channel_categories" in _channel_:
