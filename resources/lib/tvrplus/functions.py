@@ -279,7 +279,7 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
   common_vars.__logger__.debug('Found _stream_manifest_url_ = ' + _stream_manifest_url_)
 
 #  # Set the headers to be used with imputstream.adaptive
-#  _headers_ = ''
+  _headers_ = ''
 #  _headers_ = _headers_ + '&User-Agent=' + common_vars.__digionline_userAgent__
 
 #  common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
@@ -300,8 +300,19 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
 
   play_item = xbmcgui.ListItem(path=_stream_manifest_url_)
 
-  # Pass the item to the Kodi player.
-  xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
+  # Create a playable item with a path to play.
+  is_helper = inputstreamhelper.Helper('hls')
+  if is_helper.check_inputstream():
+    play_item = xbmcgui.ListItem(path=_stream_manifest_url_ + '|' + _headers_)
+    play_item.setProperty('inputstream', 'inputstream.adaptive')
+    play_item.setProperty('inputstream.adaptive.manifest_headers', _headers_)
+    play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
+    play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+    play_item.setMimeType('application/vnd.apple.mpegurl')
+    play_item.setContentLookup(False)
+    
+    # Pass the item to the Kodi player.
+    xbmcplugin.setResolvedUrl(int(common_vars.__handle__), True, listitem=play_item)
 
   common_vars.__logger__.debug('Exit function')
 

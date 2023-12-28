@@ -384,11 +384,11 @@ def play_video(CHANNEL_ENDPOINT, NAME, COOKIEJAR, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Created: _headers_ = ' + _headers_)
 
       # Create a playable item with a path to play.
-      # See:  https://github.com/peak3d/inputstream.adaptive/issues/131#issuecomment-375059796
       is_helper = inputstreamhelper.Helper('hls')
       if is_helper.check_inputstream():
         play_item = xbmcgui.ListItem(path=_stream_manifest_url_ + '|' + _headers_)
         play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
         play_item.setMimeType('application/vnd.apple.mpegurl')

@@ -1304,6 +1304,7 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
       if is_helper.check_inputstream():
         play_item = xbmcgui.ListItem(path=_stream_details_['stream']['abr'] + '|' + _headers_)
         play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
         play_item.setMimeType('application/vnd.apple.mpegurl')
@@ -1333,15 +1334,11 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Created: _lic_headers_ = ' + _lic_headers_)
 
       # Create a playable item with a path to play.
-      ### See:
-      ###    https://github.com/peak3d/inputstream.adaptive/wiki
-      ###    https://github.com/peak3d/inputstream.adaptive/wiki/Integration
-      ###    https://github.com/emilsvennesson/script.module.inputstreamhelper
-
       is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
       if is_helper.check_inputstream():
         play_item = xbmcgui.ListItem(path=_stream_details_['stream']['abr'])
         play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
         play_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
@@ -1394,15 +1391,11 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
       common_vars.__logger__.debug('Created: _lic_headers_ = ' + _lic_headers_)
 
       # Create a playable item with a path to play.
-      ### See:
-      ###    https://github.com/peak3d/inputstream.adaptive/wiki
-      ###    https://github.com/peak3d/inputstream.adaptive/wiki/Integration
-      ###    https://github.com/emilsvennesson/script.module.inputstreamhelper
-
       is_helper = inputstreamhelper.Helper('mpd', drm='com.widevine.alpha')
       if is_helper.check_inputstream():
         play_item = xbmcgui.ListItem(path=_channel_details_['data']['stream_url'])
         play_item.setProperty('inputstream', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.stream_headers', _headers_)
         play_item.setProperty('inputstream.adaptive.license_type', 'com.widevine.alpha')
         play_item.setProperty('inputstream.adaptive.manifest_type', 'mpd')
