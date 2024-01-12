@@ -1357,7 +1357,7 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
     _channel_details_ = digionline__tv_getChannelDetails(CHANNEL_ID, NAME, SESSION, DATA_DIR)
     common_vars.__logger__.debug('Received data: ' + str(_channel_details_))
     
-    if _channel_details_['meta'] != "":
+    if _channel_details_['meta']:
       if _channel_details_['meta']['error']['code'] == 10014:
         common_vars.__logger__.debug('Response error code: ' + str(_channel_details_['meta']['error']['code']))
         common_vars.__logger__.debug('Reset state data and re-authenticate.')
@@ -1370,8 +1370,6 @@ def digionline__playVideo(BEHAVE_AS, CHANNEL_ID, NAME, SESSION, DATA_DIR):
         return
 
     if _channel_details_['data']['stream_url'] != "" and _channel_details_['data']['stream_proxy'] != "":
-      
-      #common_vars.__logger__.debug('Playing a \'' + _channel_details_['data']['encryption_type'] + '\' encrypted stream')
       
       # Set the headers to be used with imputstream.adaptive
       _headers_ = ''
