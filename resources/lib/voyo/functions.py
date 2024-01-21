@@ -26,6 +26,8 @@ import os
 import logging
 import http.cookiejar
 import re
+from datetime import datetime
+from datetime import timedelta
 import time
 import json
 import inputstreamhelper
@@ -438,7 +440,7 @@ def list_channels(NAME, COOKIEJAR, SESSION, DATA_DIR):
     common_vars.__logger__.debug('Channel name: ' + channel['name'])
     common_vars.__logger__.debug('Channel url: ' + channel['url'])
     common_vars.__logger__.debug('Channel logo: ' + channel['logo'])
-    common_vars.__logger__.debug('Channel ID: ' + channel['id'])
+    common_vars.__logger__.debug('Channel ID: ' + str(channel['id']))
     common_vars.__logger__.debug('Channel data-url: ' + channel['data-url'])
 
     # Create a list item with a text label and a thumbnail image.
@@ -496,6 +498,8 @@ def get_channels(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__ = logging.getLogger(NAME)
   common_vars.__logger__.debug('Enter function')
 
+  __URL__ = 'https://voyo.protv.ro/api/v1/apps/program'
+
   # Setup headers for the request
   MyHeaders = {
     'Host': 'voyo.protv.ro',
@@ -508,13 +512,18 @@ def get_channels(NAME, COOKIEJAR, SESSION):
     'Cache-Control': 'max-age=0'
   }
 
-  common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
+  MyParams = {
+    "no_epg": 1
+  }
+
   common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
-  common_vars.__logger__.debug('URL: https://voyo.protv.ro/live')
+  common_vars.__logger__.debug('URL: ' + __URL__)
   common_vars.__logger__.debug('Method: GET')
+  common_vars.__logger__.debug('Parameters: ' + str(MyParams))
+
 
   # Send the GET request
-  _request_ = SESSION.get('https://voyo.protv.ro/live', headers=MyHeaders)
+  _request_ = SESSION.get(__URL__, headers=MyHeaders, params=MyParams)
 
   # Save cookies for later use.
   COOKIEJAR.save(ignore_discard=True)
@@ -524,31 +533,16 @@ def get_channels(NAME, COOKIEJAR, SESSION):
   common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
   common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
   
-  _raw_channel_data_ = re.findall('<section class="c-section">(.+?)</section>', _request_.content.decode(), re.IGNORECASE|re.DOTALL)
-  common_vars.__logger__.debug('Found _raw_channel_data_ = ' + str(_raw_channel_data_))
-  
-  _raw_channels_ = re.findall('<div class="col-sm-6 col-lg-4 col-xl-3 i">(.+?)</a>', str(_raw_channel_data_), re.IGNORECASE|re.DOTALL)
-  common_vars.__logger__.debug('Found _raw_channels_ = ' + str(_raw_channels_))
+  _raw_channels_ = _request_.json()
+  common_vars.__logger__.debug('_raw_channels_ = ' + str(_raw_channels_))
   
   # Initialize the list of channels
   _channels_ = []
 
-  for _raw_channel_ in _raw_channels_:
-    common_vars.__logger__.debug('_raw_channel_ = ' + str(_raw_channel_))
+  for _channel_ in _raw_channels_['available_channels']:
+    common_vars.__logger__.debug('_channel_ = ' + str(_channel_))
 
     _channel_record_ = {}
-
-    _channel_name_ = re.findall('title="(.+?)"', _raw_channel_, re.IGNORECASE)[0]
-    common_vars.__logger__.debug('_channel_name_ = ' + str(_channel_name_))
-
-    _channel_url_ = re.findall('<a href="(.+?)"', _raw_channel_, re.IGNORECASE)[0]
-    common_vars.__logger__.debug('_channel_url_ = ' + str(_channel_url_))
-
-    _channel_logo_ = re.findall('<img src="(.+?)"', _raw_channel_, re.IGNORECASE)[0]
-    common_vars.__logger__.debug('_channel_logo_ = ' + str(_channel_logo_))
-
-    _channel_id_ = re.findall('data-channel-id="(.+?)"', _raw_channel_, re.IGNORECASE|re.DOTALL)[0]
-    common_vars.__logger__.debug('_channel_id_ = ' + str(_channel_id_))
 
     MyHeaders = {
       'Host': 'voyo.protv.ro',
@@ -563,11 +557,11 @@ def get_channels(NAME, COOKIEJAR, SESSION):
 
     common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
     common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
-    common_vars.__logger__.debug('URL: ' + str(_channel_url_))
+    common_vars.__logger__.debug('URL: ' + _raw_channels_['available_channels'][_channel_]['url'])
     common_vars.__logger__.debug('Method: GET')
 
     # Send the GET request
-    _request_ = SESSION.get(str(_channel_url_), headers=MyHeaders)
+    _request_ = SESSION.get(_raw_channels_['available_channels'][_channel_]['url'], headers=MyHeaders)
 
     # Save cookies for later use.
     COOKIEJAR.save(ignore_discard=True)
@@ -583,10 +577,10 @@ def get_channels(NAME, COOKIEJAR, SESSION):
     _channel_data_url_ = re.findall('src="(.+?)\?autoplay', str(_raw_channel_data_url_), re.IGNORECASE|re.DOTALL)[0]
     common_vars.__logger__.debug('Found _channel_data_url_ = ' + str(_channel_data_url_))
 
-    _channel_record_["name"] = _channel_name_
-    _channel_record_["url"] = _channel_url_
-    _channel_record_["logo"] = _channel_logo_
-    _channel_record_["id"] = _channel_id_
+    _channel_record_["name"] = _raw_channels_['available_channels'][_channel_]['channel_name']
+    _channel_record_["url"] = _raw_channels_['available_channels'][_channel_]['url']
+    _channel_record_["logo"] = _raw_channels_['available_channels'][_channel_]['channel_logo_url']
+    _channel_record_["id"] = _raw_channels_['available_channels'][_channel_]['id']
     _channel_record_["data-url"] = _channel_data_url_
 
     common_vars.__logger__.debug('Created: _channel_record_ = ' + str(_channel_record_))
@@ -630,126 +624,179 @@ def PVRIPTVSimpleClientIntegration_update_m3u_file(M3U_FILE, START_NUMBER, NAME,
   return _CHNO_
   
 
-#def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SESSION):
-#  common_vars.__logger__ = logging.getLogger(NAME)
-#  common_vars.__logger__.debug('Enter function')
-#  
-#  common_vars.__logger__.debug('XML_FILE = ' + XML_FILE)
-#
-#  # Get the list of channels in the category.
-#  channels = get_channels(NAME, COOKIEJAR, SESSION)
-#  common_vars.__logger__.debug('Received channels = ' + str(channels))
-#
-#  epg = get_epg_data(NAME, COOKIEJAR, SESSION)
-#  common_vars.__logger__.debug('Received epg = ' + str(epg))
-#
-#  _data_file_ = open(XML_FILE, 'a', encoding='utf-8')
-#
-#  for channel in channels:
-#     #common_vars.__logger__.debug('Channel name = ' + channel['name'])
-#     #common_vars.__logger__.debug('Channel url = ' + channel['url'])
-#     #common_vars.__logger__.debug('Channel logo = ' + channel['logo'])
-#     #common_vars.__logger__.debug('Channel id = ' + channel['id'])
-#     #common_vars.__logger__.debug('Channel data-url = ' + channel['data-url'])
-#
-#     _line_ = "  <channel id=\"voyo__" + channel['id'] + "\">"
-#     _data_file_.write(_line_ + "\n")
-#     _line_ = "    <display-name>" + channel['name'] + "</display-name>"
-#     _data_file_.write(_line_ + "\n")
-#     _line_ = "  </channel>"
-#     _data_file_.write(_line_ + "\n")
-#     
-#     for program in epg[channel['id']]:
-#
-#       ###### Probably there is a better way to deal with this ######
-#       program['start_at'] = re.sub('-', '', program['start_at'], flags=re.IGNORECASE)
-#       program['start_at'] = re.sub('T', '', program['start_at'], flags=re.IGNORECASE)
-#       program['start_at'] = re.sub(':', '', program['start_at'], flags=re.IGNORECASE)
-#       program['start_at'] = re.sub('\+', ' +', program['start_at'], flags=re.IGNORECASE)
-#
-#       program['end_at'] = re.sub('-', '', program['end_at'], flags=re.IGNORECASE)
-#       program['end_at'] = re.sub('T', '', program['end_at'], flags=re.IGNORECASE)
-#       program['end_at'] = re.sub(':', '', program['end_at'], flags=re.IGNORECASE)
-#       program['end_at'] = re.sub('\+', ' +', program['end_at'], flags=re.IGNORECASE)
-#       ###### Probably there is a better way to deal with this ######
-#
-#       _line_ = "  <programme start=\"" + program['start_at'] + "\" stop=\"" + program['end_at'] + "\" channel=\"voyo__" + channel['id'] + "\">"
-#       _data_file_.write(_line_ + "\n")
-#
-#       # Replace unwanted characters in the program name
-#       program['title'] = re.sub('&nbsp;', ' ', program['title'], flags=re.IGNORECASE)
-#       program['title'] = re.sub('&apos;', '\'', program['title'], flags=re.IGNORECASE)
-#       _line_ = "    <title>" + program['title'] + "</title>"
-#       _data_file_.write(_line_ + "\n")
-#
-#       # Replace unwanted characters in the program description
-#       program['short_description'] = re.sub('&nbsp;', ' ', program['short_description'], flags=re.IGNORECASE)
-#       program['short_description'] = re.sub('&apos;', '\'', program['short_description'], flags=re.IGNORECASE)
-#       program['description'] = re.sub('&nbsp;', ' ', program['description'], flags=re.IGNORECASE)
-#       program['description'] = re.sub('&apos;', '\'', program['description'], flags=re.IGNORECASE)
-#       
-#       _line_ = "    <desc>" + program['short_description'] + "\n\n    " + program['description'] + "\n    </desc>"
-#       _data_file_.write(_line_ + "\n")
-#
-#       _line_ = "  </programme>"
-#       _data_file_.write(_line_ + "\n")
-#       
-#  _data_file_.close
-#
-#  common_vars.__logger__.debug('Exit function')
-#
-#
-#
-#def get_epg_data(NAME, COOKIEJAR, SESSION):
-#  ####
-#  #
-#  # Get from voyo.protv.ro the EPG data.
-#  #
-#  # Parameters:
-#  #      NAME: Logger name to use for sending the log messages
-#  #      COOKIEJAR: The cookiejar to be used with the given session
-#  #      SESSION: The session to be used for this call
-#  #
-#  # Return: A dict object containing the EPG data
-#  #
-#  ####
-#  common_vars.__logger__ = logging.getLogger(NAME)
-#  common_vars.__logger__.debug('Enter function')
-#
-#  # Setup headers for the request
-#  MyHeaders = {
-#    'Host': 'protvplus.ro',
-#    'User-Agent': common_vars.__protvplus_userAgent__,
-#    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-#    'Accept-Language': 'en-US',
-#    'Accept-Encoding': 'identity',
-#    'Connection': 'keep-alive',
-#    'Upgrade-Insecure-Requests': '1',
-#    'Cache-Control': 'max-age=0'
-#  }
-#
-#  common_vars.__logger__.debug('Cookies: ' + str(list(COOKIEJAR)))
-#  common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
-#  common_vars.__logger__.debug('URL: https://protvplus.ro/tv-program')
-#  common_vars.__logger__.debug('Method: GET')
-#
-#  # Send the GET request
-#  _request_ = SESSION.get('https://protvplus.ro/tv-program', headers=MyHeaders)
-#
-#  # Save cookies for later use.
-#  COOKIEJAR.save(ignore_discard=True)
-#  
-#  common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
-#  common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
-#  common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
-#  common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
-#  
-#  _raw_epg_data_ = re.findall('EPG_program = (.+?);\n', _request_.content.decode(), re.IGNORECASE|re.DOTALL)[0]
-#  common_vars.__logger__.debug('Found _raw_epg_data_ = ' + str(_raw_epg_data_))
-#
-#  _epg_data_ = json.loads(_raw_epg_data_)
-#
-#  common_vars.__logger__.debug('Exit function')
-#  
-#  return _epg_data_
+def getEPG_by_date(DATE, NAME, COOKIEJAR, SESSION):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+  common_vars.__logger__.debug('Called with arguments:')
+  common_vars.__logger__.debug('    DATE:' + str(DATE))
+
+  __URL__ = 'https://voyo.protv.ro/api/v1/apps/program'
+
+  # Setup headers for the request
+  MyHeaders = {
+    'Host': 'voyo.protv.ro',
+    'User-Agent': common_vars.__voyo_userAgent__,
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US',
+    'Accept-Encoding': 'identity',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Cache-Control': 'max-age=0'
+  }
+
+  MyParams = {
+    "day": str(DATE)
+  }
+
+  common_vars.__logger__.debug('Headers: ' + str(MyHeaders))
+  common_vars.__logger__.debug('URL: ' + __URL__)
+  common_vars.__logger__.debug('Method: GET')
+  common_vars.__logger__.debug('Parameters: ' + str(MyParams))
+
+
+  # Send the GET request
+  _request_ = SESSION.get(__URL__, headers=MyHeaders, params=MyParams)
+
+  # Save cookies for later use.
+  COOKIEJAR.save(ignore_discard=True)
+
+  common_vars.__logger__.debug('Received status code: ' + str(_request_.status_code))
+  common_vars.__logger__.debug('Received cookies: ' + str(list(COOKIEJAR)))
+  common_vars.__logger__.debug('Received headers: ' + str(_request_.headers))
+  common_vars.__logger__.debug('Received data: ' + _request_.content.decode())
+
+  __ret__ = _request_.json()
+
+  common_vars.__logger__.debug('Exit function')
+  return __ret__
+
+
+def get_epg_data(NAME, COOKIEJAR, SESSION):
+  ####
+  #
+  # Get from voyo.protv.ro the EPG data.
+  #
+  # Parameters:
+  #      NAME: Logger name to use for sending the log messages
+  #      COOKIEJAR: The cookiejar to be used with the given session
+  #      SESSION: The session to be used for this call
+  #
+  # Return: A json object containing the EPG data
+  #
+  ####
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  _epg_data_ = []
+
+  _today_ = datetime.date(datetime.today())
+  common_vars.__logger__.debug('_today_: ' + str(_today_))
+  _rcvd_today_ = getEPG_by_date(_today_, NAME, COOKIEJAR, SESSION)
+
+  _rcvd_channels_ = _rcvd_today_['available_channels']
+
+  _today_plus_1_ = datetime.date(datetime.today()) + timedelta(days=1)
+  common_vars.__logger__.debug('_today_plus_1_: ' + str(_today_plus_1_))
+  _rcvd_today_plus_1_ = getEPG_by_date(_today_plus_1_, NAME, COOKIEJAR, SESSION)
+
+  _today_plus_2_ = datetime.date(datetime.today()) + timedelta(days=2)
+  common_vars.__logger__.debug('_today_plus_2_: ' + str(_today_plus_2_))
+  _rcvd_today_plus_2_ = getEPG_by_date(_today_plus_2_, NAME, COOKIEJAR, SESSION)
+
+
+  for _channel_ in _rcvd_channels_:
+    _channel_record_ = {}
+    _channel_epg_items_ = []
+    for _epg_channel_ in _rcvd_today_['epg'][0]['channels']:
+      if _epg_channel_['id'] == _rcvd_channels_[_channel_]['id']:
+        for _segment_ in _epg_channel_['segments']:
+          for _epg_item_ in _segment_['items']:
+            _channel_epg_items_.append(_epg_item_);
+
+    for _epg_channel_ in _rcvd_today_plus_1_['epg'][0]['channels']:
+      if _epg_channel_['id'] == _rcvd_channels_[_channel_]['id']:
+        for _segment_ in _epg_channel_['segments']:
+          for _epg_item_ in _segment_['items']:
+            _channel_epg_items_.append(_epg_item_);
+
+    for _epg_channel_ in _rcvd_today_plus_2_['epg'][0]['channels']:
+      if _epg_channel_['id'] == _rcvd_channels_[_channel_]['id']:
+        for _segment_ in _epg_channel_['segments']:
+          for _epg_item_ in _segment_['items']:
+            _channel_epg_items_.append(_epg_item_);
+
+    _channel_record_["channel_id"] = _rcvd_channels_[_channel_]['id']
+    _channel_record_["channel_name"] = _rcvd_channels_[_channel_]['channel_name']
+    _channel_record_["channel_epg"] = _channel_epg_items_
+
+    _epg_data_.append(_channel_record_)
+
+  common_vars.__logger__.debug('Exit function')
+
+  return _epg_data_
+
+def PVRIPTVSimpleClientIntegration_update_EPG_file(XML_FILE, NAME, COOKIEJAR, SESSION):
+  common_vars.__logger__ = logging.getLogger(NAME)
+  common_vars.__logger__.debug('Enter function')
+
+  common_vars.__logger__.debug('XML_FILE = ' + XML_FILE)
+
+  _epg_data_ = get_epg_data(NAME, COOKIEJAR, SESSION)
+  common_vars.__logger__.debug('Received epg data = ' + str(_epg_data_))
+
+  _data_file_ = open(XML_FILE, 'a', encoding='utf-8')
+
+  for _record_ in _epg_data_:
+    common_vars.__logger__.debug('Channel ID => ' + str(_record_['channel_id']))
+    common_vars.__logger__.debug('Channel name: ' + str(_record_['channel_name']))
+    common_vars.__logger__.debug('Channel title: ' + str(_record_['channel_name']))
+
+    _line_ = "  <channel id=\"voyo__" + str(_record_['channel_id']) + "\">"
+    _data_file_.write(_line_ + "\n")
+    _line_ = "    <display-name>" + str(_record_['channel_name']) + "</display-name>"
+    _data_file_.write(_line_ + "\n")
+    _line_ = "  </channel>"
+    _data_file_.write(_line_ + "\n")
+
+    for _program_data_ in _record_['channel_epg']:
+
+      _start_dt_ = datetime.fromisoformat(_program_data_['start_at'])
+      _start_timestamp = _start_dt_.timestamp()
+      _start_date_time_object_ = datetime.utcfromtimestamp(int(_start_timestamp))
+
+      _stop_dt_ = datetime.fromisoformat(_program_data_['end_at'])
+      _stop_timestamp = _stop_dt_.timestamp()
+      _stop_date_time_object_ = datetime.utcfromtimestamp(int(_stop_timestamp))
+
+      _line_ = "  <programme start=\"" + str(_start_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" stop=\"" + str(_stop_date_time_object_.strftime("%Y%m%d%H%M%S")) + "\" channel=\"voyo__" + str(_record_['channel_id']) + "\">"
+      _data_file_.write(_line_ + "\n")
+
+      _selected_program_title_ = _program_data_['title']
+      if _program_data_['show']:
+        _selected_program_title_ = _program_data_['show']['title']
+
+      # Escape special characters in the program name
+      #_selected_program_title_ = re.sub('<', '&lt;', _selected_program_title_, flags=re.IGNORECASE)
+      #_selected_program_title_ = re.sub('>', '&gt;', _selected_program_title_, flags=re.IGNORECASE)
+      #_selected_program_title_ = re.sub('&', '&amp;', _selected_program_title_, flags=re.IGNORECASE)
+      _line_ = "    <title>" + _selected_program_title_ + "</title>"
+      _data_file_.write(_line_ + "\n")
+
+      # Escape special characters in the program description
+      #_program_data_['short_description'] = re.sub('<', '&lt;', _program_data_['short_description'], flags=re.IGNORECASE)
+      #_program_data_['short_description'] = re.sub('>', '&gt;', _program_data_['short_description'], flags=re.IGNORECASE)
+      #_program_data_['short_description'] = re.sub('&', '&amp;', _program_data_['short_description'], flags=re.IGNORECASE)
+
+      #_program_data_['description'] = re.sub('<', '&lt;', _program_data_['description'], flags=re.IGNORECASE)
+      #_program_data_['description'] = re.sub('>', '&gt;', _program_data_['description'], flags=re.IGNORECASE)
+      #_program_data_['description'] = re.sub('&', '&amp;', _program_data_['description'], flags=re.IGNORECASE)
+      _line_ = "    <desc>" + str(_program_data_['short_description']) + "\n\n    " + str(_program_data_['description']) + "\n    </desc>"
+      _data_file_.write(_line_ + "\n")
+
+      _line_ = "  </programme>"
+      _data_file_.write(_line_ + "\n")
+
+  _data_file_.close
+
+  common_vars.__logger__.debug('Exit function')
 

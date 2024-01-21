@@ -414,8 +414,8 @@ def PVRIPTVSimpleClientIntegration_update_EPG_file():
       common_vars.__logger__.debug('__rsd__[\'state_data\'] = ' + str(__rsd__['state_data']))
       digionline_functions.digionline__write_PVRIPTVSimpleClientIntegration_FileVersionsData(__rsd__['state_data'], common_vars.__ServiceID__, MyServiceAddon_DataDir)
 
-#    if common_vars.__config_voyo_Enabled__ == 'true':
-#      voyo_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_ServiceSession__)
+    if common_vars.__config_voyo_Enabled__ == 'true':
+      voyo_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__voyo_CookieJar__, common_vars.__voyo_ServiceSession__)
 
 #    if common_vars.__config_primaplay_Enabled__ == 'true':
 #      primaplay_functions.PVRIPTVSimpleClientIntegration_update_EPG_file(_tmp_epg_file_, common_vars.__ServiceID__, common_vars.__primaplay_CookieJar__, common_vars.__primaplay_ServiceSession__)
