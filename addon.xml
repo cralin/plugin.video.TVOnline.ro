@@ -22,7 +22,7 @@
 -->
 
 
-<addon id="plugin.video.TVOnline.ro" provider-name="cralin" name="TVOnline.ro" version="21.0.0-RC01">
+<addon id="plugin.video.TVOnline.ro" provider-name="cralin" name="TVOnline.ro" version="21.0.0-RC02">
   <requires>
     <import addon="xbmc.python" version="3.0.1"/>
     <import addon="script.module.requests" version="2.31.0"/>
